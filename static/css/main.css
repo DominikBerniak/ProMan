@@ -1,3 +1,20 @@
-#boards {
-    background-color: green;
+.board-container{
+    width: 90%;
+    margin: 2vh auto;
+}
+.board-header{
+    display: flex;
+    background-color: pink;
+    justify-content: space-between;
+}
+.board-header button{
+    border: none;
+    background-color: transparent;
+}
+.board-header button:focus {
+    outline: none;
+}
+.board{
+    display: flex;
+    justify-content: space-between;
 }
