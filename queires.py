@@ -63,3 +63,11 @@ def rename_board(board_id, new_board_title):
         """
         , {"new_board_title": new_board_title, "board_id": board_id}
     )
+
+def add_board_to_db(board_name):
+    return data_manager.execute(
+        """
+        INSERT INTO boards
+        (title) VALUES (%(board_name)s);
+        """
+    , {'board_name': board_name})

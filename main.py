@@ -35,6 +35,14 @@ def get_columns_for_board(board_id: int):
     return queires.get_columns_by_ids(columns_ids)
 
 
+@app.route("/api/boards", methods=["POST"])
+def add_new_board():
+    json_dictionary = request.get_json()
+    board_name = json_dictionary["board-name"]
+    queires.add_board_to_db(board_name)
+    return redirect('/api/boards')
+
+
 @app.route("/api/boards/<int:board_id>/cards/")
 @json_response
 def get_cards_for_board(board_id: int):

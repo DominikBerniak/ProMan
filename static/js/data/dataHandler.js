@@ -1,3 +1,5 @@
+import {boardsManager} from "../controller/boardsManager.js";
+
 export let dataHandler = {
   getBoards: async function () {
     const response = await apiGet("/api/boards");
@@ -23,8 +25,22 @@ export let dataHandler = {
   getCard: async function (cardId) {
     // the card is retrieved and then the callback function is called with the card
   },
-  createNewBoard: async function (boardTitle) {
-    // creates new board, saves it and calls the callback function with its data
+  createNewBoard: async function (e) {
+      console.log(e)
+        e.preventDefault()
+        const form = e.currentTarget
+        const url = form.action;
+        console.log(url)
+        try {
+            const formData = new FormData(form);
+            await apiPost(url, formData).then(function () {
+                let root = document.getElementById("root")
+                root.innerHTML = ''
+                boardsManager.loadBoards()
+            })
+        }catch (error){
+            console.log(error);
+        }
   },
   createNewCard: async function (cardTitle, boardId, statusId) {
     // creates new card, saves it and calls the callback function with its data
@@ -41,7 +57,19 @@ async function apiGet(url) {
   }
 }
 
-async function apiPost(url, payload) {}
+async function apiPost(url, formData) {
+  const plainFormData = Object.fromEntries(formData.entries());
+  const formDataJsonString = JSON.stringify(plainFormData);
+  const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: formDataJsonString,
+        });
+    return response.text()
+}
 
 async function apiDelete(url) {}
 

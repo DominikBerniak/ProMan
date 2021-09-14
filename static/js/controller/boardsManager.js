@@ -8,10 +8,10 @@ export let boardsManager = {
   loadBoards: async function () {
     const boards = await dataHandler.getBoards();
     for (let board of boards) {
-      const boardBuilder = htmlFactory(htmlTemplates.board);
-      const content = boardBuilder(board);
-      domManager.addChild("#root", content);
-      domManager.addEventListener(
+        const boardBuilder = htmlFactory(htmlTemplates.board);
+        const content = boardBuilder(board);
+        domManager.addChild("#root", content);
+        domManager.addEventListener(
         `.toggle-board-button[data-board-id="${board.id}"]`,
         "click",
         showHideButtonHandler);
@@ -20,6 +20,16 @@ export let boardsManager = {
           changeTitleHandler);
     }
   },
+    addNewBoard: async function () {
+    domManager.addEventListener('#boardModal',
+        'show.bs.modal',
+        showModal);
+    let form = document.getElementById('board_form')
+    form.addEventListener('submit', function (e) {
+      dataHandler.createNewBoard(e)
+      $('#boardModal').modal('hide');
+    })
+    }
 };
 
 function showHideButtonHandler(clickEvent) {
@@ -30,6 +40,10 @@ function showHideButtonHandler(clickEvent) {
   }else{
     columnManager.closeColumns(boardId);
   }
+}
+function showModal(event) {
+    let modal = this
+    modal.find('.modal-title').text('New board')
 }
 function changeTitleHandler(e){
   let boardId = parseInt(e.currentTarget.dataset.boardId)
