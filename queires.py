@@ -39,4 +39,31 @@ def add_board_to_db(board_name):
         INSERT INTO boards
         (title) VALUES (%(board_name)s);
         """
-    , {'board_name': board_name})
+        , {'board_name': board_name})
+
+
+def register(email, username, hashed_password):
+    return data_manager.execute(
+        """
+        INSERT INTO users (username, email, password)
+        VALUES (%(username)s, %(email)s, %(hashed_password)s);
+        """
+        , {'username': username, 'email': email, "hashed_password": hashed_password})
+
+
+def check_if_email_exists(email):
+    dbase_output = data_manager.execute_select(
+        """SELECT id FROM users
+           WHERE email = %(email)s;"""
+        , {"email": email}
+    )
+    return False if dbase_output == [] else True
+
+
+def check_if_username_exists(username):
+    dbase_output = data_manager.execute_select(
+        """SELECT id FROM users
+           WHERE username = %(username)s;"""
+        , {"username": username}
+    )
+    return False if dbase_output == [] else True

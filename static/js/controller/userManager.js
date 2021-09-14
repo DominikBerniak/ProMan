@@ -1,5 +1,6 @@
 import { domManager } from "../view/domManager.js";
 import { dataHandler } from "../data/dataHandler.js";
+import { boardsManager } from "./boardsManager.js";
 
 
 
@@ -25,11 +26,20 @@ async function shootRequest(e) {
   e.preventDefault()
   const form = e.currentTarget
   const url = form.action;
-  console.log(form)
-  console.log(url)
   try {
     const formData = new FormData(form);
-    await apiPost(url, formData)
+    let response = await apiPost(url, formData)
+      switch (response.status){
+          case 200:
+              document.getElementById("root").innerHTML = ""
+              boardsManager.loadBoards()
+              break
+          case 401:
+              alert("wrongData")
+              break
+
+      }
+
   } catch (error) {
     console.log(error);
   }
@@ -48,5 +58,5 @@ async function apiPost(url, formData) {
             },
             body: formDataJsonString,
         });
-    return response.text()
+    return response
 }

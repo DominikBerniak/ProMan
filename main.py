@@ -1,7 +1,7 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from dotenv import load_dotenv
 
-
+import data_manager
 from util import json_response
 import mimetypes
 import queires
@@ -40,10 +40,14 @@ def add_new_board():
 @app.route("/api/register", methods=["POST"])
 def register():
     json_dictionary = request.get_json()
-    print(json_dictionary)
-    # board_name = json_dictionary["board-name"]
-    # queires.add_board_to_db(board_name)
-    return redirect('/')
+    email = json_dictionary["email"]
+    password = json_dictionary["password"]
+    username = json_dictionary["username"]
+    if queires.check_if_email_exists(email) or queires.check_if_username_exists(username):
+        return jsonify(json_dictionary), 401
+    else:
+        data_manager.register(email, username, password)
+        return jsonify(json_dictionary), 200
 
 
 @app.route("/api/boards/<int:board_id>/cards/")
