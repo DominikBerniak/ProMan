@@ -1,4 +1,7 @@
 {% extends "header.html" %}
 {% block content %}
+    {% if wrong %}
+    <script>alert("wrong")</script>
+    {% endif %}
     <div id="root"></div>
 {% endblock %}

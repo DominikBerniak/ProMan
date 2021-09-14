@@ -20,11 +20,9 @@ export let dataHandler = {
     // the card is retrieved and then the callback function is called with the card
   },
   createNewBoard: async function (e) {
-      console.log(e)
         e.preventDefault()
         const form = e.currentTarget
         const url = form.action;
-        console.log(url)
         try {
             const formData = new FormData(form);
             await apiPost(url, formData)

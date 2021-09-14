@@ -23,20 +23,23 @@ export let boardsManager = {
         showModal)
     let form = document.getElementById('board_form')
     form.addEventListener('submit', function (e) {
+      console.log()
       dataHandler.createNewBoard(e)
       $('#boardModal').modal('hide');
     })
-}}
+
+  },
+}
 
 function showHideButtonHandler(clickEvent) {
   const boardId = clickEvent.target.dataset.boardId;
   const board = document.querySelector(`.board[data-board-id="${boardId}"]`);
-  const boards = document.querySelectorAll('.')
   if (board.childElementCount === 0){
     cardsManager.loadCards(boardId);
   }else{
     cardsManager.closeCards(boardId);
-  }}
+  }
+}
 
 
 function showModal(event) {

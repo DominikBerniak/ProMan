@@ -31,9 +31,19 @@ def get_boards():
 @app.route("/api/boards", methods=["POST"])
 def add_new_board():
     json_dictionary = request.get_json()
+    print(json_dictionary)
     board_name = json_dictionary["board-name"]
     queires.add_board_to_db(board_name)
     return redirect('/api/boards')
+
+
+@app.route("/api/register", methods=["POST"])
+def register():
+    json_dictionary = request.get_json()
+    print(json_dictionary)
+    # board_name = json_dictionary["board-name"]
+    # queires.add_board_to_db(board_name)
+    return redirect('/')
 
 
 @app.route("/api/boards/<int:board_id>/cards/")
