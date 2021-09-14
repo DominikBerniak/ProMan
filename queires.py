@@ -31,3 +31,35 @@ def get_cards_for_board(board_id):
         , {"board_id": board_id})
 
     return matching_cards
+
+
+def get_columns_for_board(board_id):
+    return data_manager.execute_select(
+        """
+        SELECT columns_ids FROM boards
+        WHERE id = %(board_id)s
+        ;
+        """
+        , {"board_id": board_id})[0]["columns_ids"]
+
+
+def get_columns_by_ids(columns_ids):
+    columns_ids = tuple(columns_ids)
+    return data_manager.execute_select(
+        """
+        SELECT * FROM columns
+        WHERE id IN %(columns_ids)s
+        ;
+        """
+        , {"columns_ids": columns_ids})
+
+
+def rename_board(board_id, new_board_title):
+    data_manager.execute(
+        """
+        UPDATE boards
+        SET title = %(new_board_title)s
+        WHERE id = %(board_id)s;
+        """
+        , {"new_board_title": new_board_title, "board_id": board_id}
+    )

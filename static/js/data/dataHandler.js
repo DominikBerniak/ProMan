@@ -3,6 +3,10 @@ export let dataHandler = {
     const response = await apiGet("/api/boards");
     return response;
   },
+  getColumnByBoardId: async function (boardId) {
+    const response = await apiGet(`/api/boards/${boardId}/columns/`);
+    return response;
+  },
   getBoard: async function (boardId) {
     // the board is retrieved and then the callback function is called with the board
   },

@@ -9,22 +9,17 @@ export let cardsManager = {
     for (let card of cards) {
       const cardBuilder = htmlFactory(htmlTemplates.card);
       const content = cardBuilder(card);
-      domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
-      domManager.addEventListener(
-        `.card[data-card-id="${card.id}"]`,
-        "click",
-        deleteButtonHandler
-      );
+      domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
+      // domManager.addEventListener(
+      //   `.card[data-card-id="${card.id}"]`,
+      //   "click",
+      //   deleteButtonHandler
+      // );
     }
-  },
-  closeCards: function (boardId){
-    let cards = document.querySelectorAll(`.board[data-board-id="${boardId}"] .card`);
-    cards.forEach(card =>{
-      card.remove();
+    document.querySelectorAll(`.board[data-board-id=\"${boardId}\"] .column`).forEach(column=>{
+      column.removeAttribute("hidden");
     })
-    const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-    button.innerHTML ="V";
-  }
+  },
 };
 
 function deleteButtonHandler(clickEvent) {}
