@@ -21,14 +21,14 @@ export let boardsManager = {
     }
   },
     addNewBoard: async function () {
-    domManager.addEventListener('#boardModal',
+      domManager.addEventListener('#boardModal',
         'show.bs.modal',
         showModal);
-    let form = document.getElementById('board_form')
-    form.addEventListener('submit', function (e) {
-      dataHandler.createNewBoard(e)
-      $('#boardModal').modal('hide');
-    })
+      let form = document.getElementById('board_form')
+      form.addEventListener('submit', function (e) {
+        dataHandler.createNewBoard(e)
+        $('#boardModal').modal('hide');
+      })
     }
 };
 
@@ -52,7 +52,7 @@ function changeTitleHandler(e){
     let boardTitle = e.currentTarget;
     boardTitle.innerHTML = `
     <form class="board-title-form" action="/api/boards/${boardId}/rename/" method="post">
-        <input name="title">
+        <input name="title" value="${oldBoardTitle}">
     </form>`
     let input = document.querySelector(".board-title-form input");
     input.focus();
@@ -63,7 +63,12 @@ function changeTitleHandler(e){
       e.preventDefault();
       if (!input.value){
         boardTitle.innerHTML = oldBoardTitle;
+      }else{
+        dataHandler.renameBoard(e)
+            .then(()=>{
+              boardTitle.innerHTML = input.value;
+            });
       }
-    })
+    });
   }
 }

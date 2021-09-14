@@ -17,9 +17,39 @@ export let cardsManager = {
       // );
     }
     document.querySelectorAll(`.board[data-board-id=\"${boardId}\"] .column`).forEach(column=>{
-      column.removeAttribute("hidden");
+        const newCardButton = document.createElement("button");
+        newCardButton.innerHTML = "New Card";
+        newCardButton.classList.add("new-card-button", "btn");
+        column.appendChild(newCardButton);
+        const columnId = column.dataset.columnId;
+        newCardButton.addEventListener("click",e=>{
+            addNewCardHandler(e, boardId, columnId);
+        })
+        column.removeAttribute("hidden");
     })
   },
 };
 
-function deleteButtonHandler(clickEvent) {}
+function addNewCardHandler(e, boardId, columnId){
+    if (e.currentTarget.childElementCount ===0){
+        const button = e.currentTarget;
+        button.innerHTML = `
+        <form class="new-card-form" method="post">
+            <input name="card-title">
+        </form>`
+        const form = e.currentTarget.querySelector("form");
+        const input = e.currentTarget.querySelector("input");
+        form.addEventListener("submit",e=>{
+            e.preventDefault();
+            dataHandler.createNewCard(input.value,boardId, columnId)
+                .then(()=>{
+                    const newCard = document.createElement("div");
+                    newCard.classList.add("card");
+                    newCard.innerHTML = `${input.value}`
+                    button.before(newCard);
+                    form.remove();
+                    button.innerHTML = "New Card";
+                });
+        })
+    }
+}
