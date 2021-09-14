@@ -18,3 +18,13 @@
     display: flex;
     justify-content: space-between;
 }
+.btn-default {
+    background-color: plum;
+    color:#FFF;
+    border-color: plum;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    background-color: purple;
+    color:#FFF;
+    border-color: purple;
+}

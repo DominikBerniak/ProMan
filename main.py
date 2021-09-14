@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
 from dotenv import load_dotenv
 
 
@@ -26,6 +26,14 @@ def get_boards():
     All the boards
     """
     return queires.get_boards()
+
+
+@app.route("/api/boards", methods=["POST"])
+def add_new_board():
+    json_dictionary = request.get_json()
+    board_name = json_dictionary["board-name"]
+    queires.add_board_to_db(board_name)
+    return redirect('/api/boards')
 
 
 @app.route("/api/boards/<int:board_id>/cards/")

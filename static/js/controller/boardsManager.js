@@ -17,15 +17,29 @@ export let boardsManager = {
       );
     }
   },
-};
+  addNewBoard: async function () {
+    domManager.addEventListener('#boardModal',
+        'show.bs.modal',
+        showModal)
+    let form = document.getElementById('board_form')
+    form.addEventListener('submit', function (e) {
+      dataHandler.createNewBoard(e)
+      $('#boardModal').modal('hide');
+    })
+}}
 
 function showHideButtonHandler(clickEvent) {
   const boardId = clickEvent.target.dataset.boardId;
   const board = document.querySelector(`.board[data-board-id="${boardId}"]`);
+  const boards = document.querySelectorAll('.')
   if (board.childElementCount === 0){
     cardsManager.loadCards(boardId);
   }else{
     cardsManager.closeCards(boardId);
-  }
+  }}
 
+
+function showModal(event) {
+    let modal = this
+    modal.find('.modal-title').text('New board')
 }
