@@ -26,6 +26,7 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#registerModal">Sign Up</a>
           <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#loginModal">Log in</a>
+          <a class="nav-item nav-link" href="/logout">Log Out</a>
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#boardModal">Add new board</button>
         </div>
       </div>
@@ -105,7 +106,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="/api/login" method="POST" id="register_form">
+            <form action="/api/login" method="POST" id="login_form">
               <div class="form-group">
                 <label for="login" class="col-form-label">Username/Email</label>
                 <input type="text" class="form-control" id="login" name="login">

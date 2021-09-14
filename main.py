@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, jsonify, session
 from dotenv import load_dotenv
 
 import data_manager
@@ -9,6 +9,7 @@ import queires
 mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
+app.secret_key = "\xfd\x1b\xc9]0\x17\x1a\xd1\xe4\xf4#a\xbd/\xeb"
 
 
 @app.route("/")
@@ -43,11 +44,42 @@ def register():
     email = json_dictionary["email"]
     password = json_dictionary["password"]
     username = json_dictionary["username"]
+    # zabezpiecz przed maupą w username
     if queires.check_if_email_exists(email) or queires.check_if_username_exists(username):
         return jsonify(json_dictionary), 401
     else:
         data_manager.register(email, username, password)
         return jsonify(json_dictionary), 200
+
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    json_dictionary = request.get_json()
+    login = json_dictionary["login"]
+    password = json_dictionary["password"]
+    if "@" in login:
+        column = "email"
+        username = None
+        email = login
+    else:
+        column = "username"
+        username = login
+        email = None
+    if not email:
+        email = queires.get_email_by_username(username)
+    if queires.check_if_email_exists(email) and data_manager.check_password(email, password):
+        session["email"] = email
+        session["username"] = username
+        return jsonify(json_dictionary), 200
+    else:
+        return jsonify(json_dictionary), 401
+
+
+@app.route('/logout')
+def logout():
+    print("logout")
+    session.clear()
+    return redirect("/")
 
 
 @app.route("/api/boards/<int:board_id>/cards/")

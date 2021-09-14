@@ -78,3 +78,9 @@ def hash_password(password):
 def register(email, username, password):
     hashed_password = hash_password(password)
     queires.register(email, username, hashed_password)
+
+
+def check_password(email, password_to_check):
+    hashed_password = queires.get_hashed_password(email).encode("utf8")
+    password_to_check = password_to_check.encode("utf8")
+    return bcrypt.checkpw(password_to_check, hashed_password)

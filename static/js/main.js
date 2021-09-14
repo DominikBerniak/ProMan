@@ -6,6 +6,7 @@ function init() {
   boardsManager.loadBoards();
   boardsManager.addNewBoard();
   userManager.registerUser();
+  userManager.loginUser()
 }
 
 
