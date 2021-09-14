@@ -22,6 +22,8 @@ function boardBuilder(board) {
     return `<div class="board-container">
                 <div class="board-header">
                     <div class="board-title" data-board-id="${board.id}">${board.title}</div>
+                    <form action="/api/boards/${board.id}/delete" method="post" id="delete_button">
+                    </form>
                     <button class="toggle-board-button" data-board-id="${board.id}">V</button>
                 </div>
                 <div class="board" data-board-id=${board.id}></div>

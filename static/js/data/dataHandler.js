@@ -30,7 +30,6 @@ export let dataHandler = {
         e.preventDefault()
         const form = e.currentTarget
         const url = form.action;
-        console.log(url)
         try {
             const formData = new FormData(form);
             await apiPost(url, formData).then(function () {

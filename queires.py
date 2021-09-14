@@ -71,3 +71,11 @@ def add_board_to_db(board_name):
         (title) VALUES (%(board_name)s);
         """
     , {'board_name': board_name})
+
+def delete_board_from_db(board_id):
+    return data_manager.execute(
+        """
+        DELETE FROM board
+        WHERE id = %(board_id)s
+        """
+    , {"board_id": board_id})
