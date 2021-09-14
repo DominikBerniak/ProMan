@@ -1,6 +1,3 @@
-import { dataHandler } from "../data/dataHandler.js";
-
-
 export let navbarManager = {
   generateNavbar: async function () {
         let response = await fetch("/getUsername", {

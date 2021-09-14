@@ -45,9 +45,7 @@ async function handleRegistration(e) {
           case 401:
               alert("wrongData")
               break
-
       }
-
   } catch (error) {
     console.log(error);
   }
@@ -64,32 +62,16 @@ async function handleLogin(e) {
           case 200:
               document.getElementById("navigation").innerHTML = ""
               navbarManager.generateNavbar()
-
               alert("login successful")
-
-
-
-              // await response.json().then(data => {
-              //     let username = data["username"]
-              //     document.getElementById("username").innerHTML = username
-              //
-              //   });
-
-
-
               break
           case 401:
               alert("wrongData")
               break
-
       }
-
   } catch (error) {
     console.log(error);
   }
 }
-
-
 
 
 async function apiPost(url, formData) {
