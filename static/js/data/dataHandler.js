@@ -1,3 +1,5 @@
+import {boardsManager} from "../controller/boardsManager.js";
+
 export let dataHandler = {
   getBoards: async function () {
     const response = await apiGet("/api/boards");
@@ -27,7 +29,11 @@ export let dataHandler = {
         console.log(url)
         try {
             const formData = new FormData(form);
-            await apiPost(url, formData)
+            await apiPost(url, formData).then(function () {
+                let root = document.getElementById("root")
+                root.innerHTML = ''
+                boardsManager.loadBoards()
+            })
         }catch (error){
             console.log(error);
         }
