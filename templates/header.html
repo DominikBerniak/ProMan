@@ -17,20 +17,23 @@
 
     </head>
     <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/">ProMan</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#registerModal">Sign Up</a>
-          <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#loginModal">Log in</a>
-          <a class="nav-item nav-link" href="/logout">Log Out</a>
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#boardModal">Add new board</button>
-        </div>
-      </div>
-    </nav>
+    <div id="navigation"></div>
+
+{#    <nav class="navbar navbar-expand-lg navbar-light bg-light">#}
+{#      <a class="navbar-brand" href="/">ProMan</a>#}
+{#      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">#}
+{#        <span class="navbar-toggler-icon"></span>#}
+{#      </button>#}
+{#      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">#}
+{#        <div class="navbar-nav">#}
+{#          <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#registerModal">Sign Up</a>#}
+{#          <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#loginModal">Log in</a>#}
+{#          <a class="nav-item nav-link" href="/logout">Log Out</a>#}
+{#            <div id="username"></div>#}
+{#          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#boardModal">Add new board</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </nav>#}
 
     {% block content %}
     {% endblock %}

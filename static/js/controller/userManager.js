@@ -1,6 +1,5 @@
 import { domManager } from "../view/domManager.js";
-import { dataHandler } from "../data/dataHandler.js";
-import { boardsManager } from "./boardsManager.js";
+import { navbarManager } from "./navbarManager.js";
 
 
 
@@ -63,9 +62,21 @@ async function handleLogin(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
-              document.getElementById("root").innerHTML = ""
-              boardsManager.loadBoards()
+              document.getElementById("navigation").innerHTML = ""
+              navbarManager.generateNavbar()
+
               alert("login successful")
+
+
+
+              // await response.json().then(data => {
+              //     let username = data["username"]
+              //     document.getElementById("username").innerHTML = username
+              //
+              //   });
+
+
+
               break
           case 401:
               alert("wrongData")
@@ -77,6 +88,7 @@ async function handleLogin(e) {
     console.log(error);
   }
 }
+
 
 
 

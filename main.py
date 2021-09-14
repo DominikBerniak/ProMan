@@ -70,16 +70,28 @@ def login():
     if queires.check_if_email_exists(email) and data_manager.check_password(email, password):
         session["email"] = email
         session["username"] = username
-        return jsonify(json_dictionary), 200
+        print((session))
+
+        return session, 200
     else:
         return jsonify(json_dictionary), 401
 
 
 @app.route('/logout')
 def logout():
-    print("logout")
     session.clear()
     return redirect("/")
+
+
+@app.route('/getUsername')
+def get_username():
+    if session.get("username"):
+        username = {"username": session["username"]}
+        print(username)
+        return jsonify(username), 200
+    else:
+        return jsonify({}), 404
+
 
 
 @app.route("/api/boards/<int:board_id>/cards/")
@@ -90,6 +102,8 @@ def get_cards_for_board(board_id: int):
     :param board_id: id of the parent board
     """
     return queires.get_cards_for_board(board_id)
+
+
 
 
 def main():
