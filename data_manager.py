@@ -1,6 +1,10 @@
 import os
+
+import bcrypt
 import psycopg2
 import psycopg2.extras
+
+import queires
 
 
 def establish_connection(connection_data=None):
@@ -64,3 +68,19 @@ def execute(statement, variables):
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
             cursor.execute(statement, variables)
 
+
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode("utf8"), salt)
+    return hashed_password.decode("utf8")
+
+
+def register(email, username, password):
+    hashed_password = hash_password(password)
+    queires.register(email, username, hashed_password)
+
+
+def check_password(email, password_to_check):
+    hashed_password = queires.get_hashed_password(email).encode("utf8")
+    password_to_check = password_to_check.encode("utf8")
+    return bcrypt.checkpw(password_to_check, hashed_password)
