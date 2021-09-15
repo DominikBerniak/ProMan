@@ -66,7 +66,7 @@ def add_new_card(board_id, title, column_id):
     data_manager.execute(
         """INSERT INTO cards (board_id, title, column_id)
         VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
-        , {"board_id": board_id, "title": title, "column_id":column_id}
+        , {"board_id": board_id, "title": title, "column_id":column_id})
 
 
 def register(email, username, hashed_password):
