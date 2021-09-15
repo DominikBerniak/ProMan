@@ -5,8 +5,7 @@ export let dataHandler = {
     return await apiGet("/api/boards");
   },
   getColumnByBoardId: async function (boardId) {
-    const response = await apiGet(`/api/boards/${boardId}/columns/`);
-    return response;
+    return await apiGet(`/api/boards/${boardId}/columns/`);
   },
   getBoard: async function (boardId) {
     // the board is retrieved and then the callback function is called with the board
@@ -66,10 +65,28 @@ export let dataHandler = {
         }
     },
     editCard: async function (cardId, title){
-        const url = "/api/boards/cards/edit/"
+        const url = "/api/boards/cards/edit/";
         try {
             const data = {"cardId": cardId, "title": title};
             return await apiPost(url, data, false);
+        }catch (error){
+            console.log(error);
+        }
+    },
+    addColumn: async function (columnName){
+        const url = `/api/boards/column/`;
+        try {
+            const data = {"columnName": columnName};
+            return await apiPost(url, data, false);
+        }catch (error){
+            console.log(error);
+        }
+    },
+    editColumn: async function (columnName, columnId, boardId, cardsIds){
+        const url = `/api/boards/column/${columnId}`;
+        try {
+            const data = {"columnName": columnName, "boardId": boardId, "cardsIds": cardsIds};
+            return await apiPut(url, data);
         }catch (error){
             console.log(error);
         }
@@ -110,4 +127,13 @@ return response.text()
 
 async function apiDelete(url) {}
 
-async function apiPut(url) {}
+async function apiPut(url, data) {
+    const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return response.json();
+}

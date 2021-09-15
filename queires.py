@@ -87,6 +87,7 @@ def edit_card(card_id, title):
         , {"card_id": card_id, "title": title}
     )
 
+
 def register(email, username, hashed_password):
     return data_manager.execute(
         """
@@ -128,3 +129,56 @@ def get_hashed_password(email):
     WHERE email = %(email)s;
     """, {"email": email}, False)
     return output["password"]
+
+
+def add_column(column_name):
+    data_manager.execute("""
+        INSERT INTO columns (name)
+        VALUES (%(column_name)s);"""
+        ,{"column_name": column_name}
+    )
+
+
+def get_latest_column_id():
+    return data_manager.execute_select(
+        """
+        SELECT id FROM columns
+        ORDER BY id DESC
+        LIMIT 1;"""
+        , fetchall=False
+    )
+
+
+def get_column_by_name(column_name):
+    return data_manager.execute_select(
+        """
+        SELECT * FROM columns
+        WHERE name = %(column_name)s;"""
+        , {"column_name": column_name}, False
+    )
+
+
+def update_columns_for_board(board_id, old_column_id, new_column_id):
+    columns_ids = data_manager.execute_select(
+        """SELECT columns_ids FROM boards
+            WHERE id = %(board_id)s"""
+        , {"board_id": board_id}, False
+    )["columns_ids"]
+    for i in range(len(columns_ids)):
+        if columns_ids[i] == old_column_id:
+            columns_ids[i] = new_column_id
+    data_manager.execute(
+        """UPDATE boards
+            SET columns_ids = %(columns_ids)s
+            WHERE id = %(board_id)s;"""
+        , {"columns_ids": columns_ids, "board_id": board_id}
+    )
+
+
+def update_column_for_card(card_id, new_column_id):
+    data_manager.execute(
+        """UPDATE cards
+            SET column_id = %(new_column_id)s
+            WHERE id = %(card_id)s;"""
+        , {"new_column_id": new_column_id, "card_id": card_id}
+    )

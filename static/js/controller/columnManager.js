@@ -15,6 +15,10 @@ export let columnManager = {
         }
         document.querySelectorAll(".column").forEach(column=>{
             column.style.width = `${Math.floor(80 / columnCount)}%`;
+            const columnHeader = column.querySelector(".column-header");
+            columnHeader.addEventListener("click",e=>{
+                editColumnTitle(e)
+            })
         })
         cardsManager.loadCards(boardId);
   },
@@ -27,3 +31,55 @@ export let columnManager = {
         button.innerHTML ="V";
   }
 };
+function editColumnTitle(e){
+    let columnHeader = e.currentTarget;
+    const oldTitle = columnHeader.innerHTML;
+    if (columnHeader.childElementCount === 0){
+        columnHeader.innerHTML = `<form>
+            <input name="column-name" value="${oldTitle}">
+        </form>`
+        const form = columnHeader.querySelector("form");
+        const input = columnHeader.querySelector("input");
+        input.focus();
+        let submitSuccess = false;
+        input.addEventListener("focusout",e=>{
+            if (!submitSuccess){
+                columnHeader.innerHTML = oldTitle;
+            }
+        });
+        form.addEventListener("submit",e=>{
+            e.preventDefault();
+            const boardId = columnHeader.closest(".board").dataset.boardId;
+            if (!input.value){
+                input.blur();
+            }else if(checkIfColumnNameExist(input.value, boardId)){
+                alert(`Column ${input.value} already exists!`)
+                input.blur();
+            }else{
+                submitSuccess = true;
+                const column = columnHeader.closest(".column")
+                const columnId = column.dataset.columnId;
+                const cardsIds = [];
+                column.querySelectorAll(".card").forEach(card=>{
+                    cardsIds.push(card.dataset.cardId);
+                })
+                dataHandler.editColumn(input.value, columnId, boardId, cardsIds)
+                    .then(response=>{
+                        column.dataset.columnId = response["columnId"];
+                        columnHeader.innerHTML = input.value;
+                    })
+            }
+        })
+    }
+}
+
+function checkIfColumnNameExist(columnName, boardId){
+    const board = document.querySelector(`.board[data-board-id="${boardId}"]`);
+    let columnNameExists = false;
+    board.querySelectorAll(".column-header").forEach(columnHeader=>{
+        if(columnHeader.innerHTML === columnName) {
+            columnNameExists = true;
+        }
+    })
+    return columnNameExists;
+}
