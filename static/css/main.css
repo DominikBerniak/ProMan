@@ -1,3 +1,19 @@
+#nav{
+    display: flex;
+    justify-content: space-between;
+}
+
+#login-status{
+    display: flex;
+    margin: 4px;
+    padding-right: 2px;
+}
+
+#right-site{
+    display: flex;
+}
+
+
 .board-container{
     width: 90%;
     margin: 2vh auto;
@@ -33,5 +49,9 @@
     background-color: purple;
     color:#FFF;
     border-color: purple;
+}
+
+.hidden{
+    visibility: hidden;
 }
 

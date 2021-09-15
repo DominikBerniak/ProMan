@@ -64,8 +64,49 @@ def add_board_to_db(board_name):
 
 def add_new_card(board_id, title, column_id):
     data_manager.execute(
-        """
-        INSERT INTO cards (board_id, title, column_id)
+        """INSERT INTO cards (board_id, title, column_id)
         VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
         , {"board_id": board_id, "title": title, "column_id":column_id}
+
+
+def register(email, username, hashed_password):
+    return data_manager.execute(
+        """
+        INSERT INTO users (username, email, password)
+        VALUES (%(username)s, %(email)s, %(hashed_password)s);
+        """
+        , {'username': username, 'email': email, "hashed_password": hashed_password})
+
+
+def check_if_email_exists(email):
+    dbase_output = data_manager.execute_select(
+        """SELECT id FROM users
+           WHERE email = %(email)s;"""
+        , {"email": email}
     )
+    return False if dbase_output == [] else True
+
+
+def check_if_username_exists(username):
+    dbase_output = data_manager.execute_select(
+        """SELECT id FROM users
+           WHERE username = %(username)s;"""
+        , {"username": username}
+    )
+    return False if dbase_output == [] else True
+
+
+def get_email_by_username(username):
+    dbase_output = data_manager.execute_select("""
+    SELECT email FROM users
+    WHERE username = %(username)s
+    """, {"username": username}, False)
+    return dbase_output["email"] if dbase_output is not None else None
+
+
+def get_hashed_password(email):
+    output = data_manager.execute_select("""
+    SELECT password FROM users
+    WHERE email = %(email)s;
+    """, {"email": email}, False)
+    return output["password"]
