@@ -70,8 +70,6 @@ def login():
     if queires.check_if_email_exists(email) and data_manager.check_password(email, password):
         session["email"] = email
         session["username"] = username
-        print((session))
-
         return session, 200
     else:
         return jsonify(json_dictionary), 401
@@ -87,7 +85,6 @@ def logout():
 def get_username():
     if session.get("username"):
         username = {"username": session["username"]}
-        print(username)
         return jsonify(username), 200
     else:
         return jsonify({}), 404

@@ -60,7 +60,7 @@ async function handleLogin(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
-              document.getElementById("navigation").innerHTML = ""
+              document.getElementById("right-site").innerHTML = ""
               navbarManager.generateNavbar()
               alert("login successful")
               break
@@ -87,3 +87,4 @@ async function apiPost(url, formData) {
         });
     return response
 }
+
