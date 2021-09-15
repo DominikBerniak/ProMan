@@ -1,6 +1,11 @@
+import {boardsManager} from "../controller/boardsManager.js";
+
 export let dataHandler = {
   getBoards: async function () {
-    const response = await apiGet("/api/boards");
+    return await apiGet("/api/boards");
+  },
+  getColumnByBoardId: async function (boardId) {
+    const response = await apiGet(`/api/boards/${boardId}/columns/`);
     return response;
   },
   getBoard: async function (boardId) {
@@ -25,16 +30,40 @@ export let dataHandler = {
         const url = form.action;
         try {
             const formData = new FormData(form);
-            await apiPost(url, formData)
+            await apiPost(url, formData).then(()=> {
+                reloadBoards(form);
+            })
         }catch (error){
             console.log(error);
         }
   },
-  createNewCard: async function (cardTitle, boardId, statusId) {
-    // creates new card, saves it and calls the callback function with its data
+    renameBoard: async function(e){
+        const form = e.currentTarget;
+        const url = form.action;
+        try {
+            const formData = new FormData(form);
+            return await apiPost(url, formData)
+        }catch (error){
+            console.log(error);
+        }
+    },
+    createNewCard: async function (cardTitle, boardId, columnId) {
+        let url = `/api/boards/${boardId}/new-card/`;
+        try {
+            const data = {"cardTitle": cardTitle, "boardId":boardId, "columnId": columnId};
+            return await apiPost(url, data, false);
+        }catch (error){
+            console.log(error);
+        }
   },
 };
 
+function reloadBoards(form){
+    let root = document.getElementById("root")
+    root.innerHTML = ''
+    boardsManager.loadBoards();
+    form.querySelector("input").value="";
+}
 async function apiGet(url) {
   let response = await fetch(url, {
     method: "GET",
@@ -45,10 +74,12 @@ async function apiGet(url) {
   }
 }
 
-async function apiPost(url, formData) {
-  const plainFormData = Object.fromEntries(formData.entries());
-  const formDataJsonString = JSON.stringify(plainFormData);
-  const response = await fetch(url, {
+async function apiPost(url, data, dataFromForm=true) {
+    if (dataFromForm){
+        data = Object.fromEntries(data.entries());
+    }
+    const formDataJsonString = JSON.stringify(data);
+    const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -56,7 +87,7 @@ async function apiPost(url, formData) {
             },
             body: formDataJsonString,
         });
-    return response.text()
+return response.text()
 }
 
 async function apiDelete(url) {}

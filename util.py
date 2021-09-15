@@ -13,3 +13,11 @@ def json_response(func):
         return jsonify(func(*args, **kwargs))
 
     return decorated_function
+
+
+def parse_list_to_dict(key, values):
+    dict = {}
+    for value in values:
+        print(value)
+        dict[key] = value
+    return dict

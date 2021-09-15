@@ -23,6 +23,9 @@
     background-color: pink;
     justify-content: space-between;
 }
+.board-header .board-title{
+    cursor: pointer;
+}
 .board-header button{
     border: none;
     background-color: transparent;
@@ -33,6 +36,9 @@
 .board{
     display: flex;
     justify-content: space-between;
+}
+.board-header-up-icon{
+    background-image: url("arrow-up.png");
 }
 .btn-default {
     background-color: plum;

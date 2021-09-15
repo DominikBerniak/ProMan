@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify, session
 from dotenv import load_dotenv
-
 import data_manager
+import util
 from util import json_response
 import mimetypes
 import queires
@@ -27,6 +27,13 @@ def get_boards():
     All the boards
     """
     return queires.get_boards()
+
+
+@app.route("/api/boards/<int:board_id>/columns/")
+@json_response
+def get_columns_for_board(board_id: int):
+    columns_ids = queires.get_columns_for_board(board_id)
+    return queires.get_columns_by_ids(columns_ids)
 
 
 @app.route("/api/boards", methods=["POST"])
@@ -102,6 +109,21 @@ def get_cards_for_board(board_id: int):
     return queires.get_cards_for_board(board_id)
 
 
+@app.route("/api/boards/<int:board_id>/rename/", methods=["POST"])
+def rename_board(board_id: int):
+    new_board_title = request.get_json()["title"]
+    queires.rename_board(board_id, new_board_title)
+    return redirect("/")
+
+
+@app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
+def add_new_card(board_id: int):
+    card_data = request.get_json()
+    board_id = card_data["boardId"]
+    column_id = card_data["columnId"]
+    title = card_data["cardTitle"]
+    queires.add_new_card(board_id, title, column_id)
+    return redirect("/")
 
 
 def main():
