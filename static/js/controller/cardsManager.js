@@ -10,11 +10,11 @@ export let cardsManager = {
       const cardBuilder = htmlFactory(htmlTemplates.card);
       const content = cardBuilder(card);
       domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
-      // domManager.addEventListener(
-      //   `.card[data-card-id="${card.id}"]`,
-      //   "click",
-      //   deleteButtonHandler
-      // );
+      domManager.addEventListener(
+        `.card[data-card-id="${card.id}"]`,
+        "click",
+        cardEditDeleteHandler
+      );
     }
     document.querySelectorAll(`.board[data-board-id=\"${boardId}\"] .column`).forEach(column=>{
         const newCardButton = document.createElement("button");
@@ -39,6 +39,10 @@ function addNewCardHandler(e, boardId, columnId){
         </form>`
         const form = e.currentTarget.querySelector("form");
         const input = e.currentTarget.querySelector("input");
+        input.focus();
+        input.addEventListener("focusout", e=>{
+            button.innerHTML = "New Card";
+        });
         form.addEventListener("submit",e=>{
             e.preventDefault();
             dataHandler.createNewCard(input.value,boardId, columnId)
@@ -47,9 +51,47 @@ function addNewCardHandler(e, boardId, columnId){
                     newCard.classList.add("card");
                     newCard.innerHTML = `${input.value}`
                     button.before(newCard);
-                    form.remove();
                     button.innerHTML = "New Card";
                 });
+        })
+    }
+}
+function cardEditDeleteHandler(){
+    if (this.childElementCount ===0){
+        let oldCardMessage = this.innerHTML;
+        const card = this;
+        const cardId = card.dataset.cardId;
+        card.innerHTML = `<div class="card-edit-box">
+                <form method="post">
+                    <input name="card-title" value="${oldCardMessage}">
+                </form>
+                <button class="delete-card">X</button>
+                </div>`
+        const form = this.querySelector("form");
+        const input = this.querySelector("input");
+        const deleteCardButton = this.querySelector(".delete-card")
+        input.focus();
+        deleteCardButton.addEventListener("click",e=>{
+            dataHandler.deleteCard(cardId)
+                .then(()=>{
+                    this.remove();
+                })
+        });
+        const board = this.closest(".board");
+        let unfocused = false;
+        form.addEventListener("submit",e=>{
+            unfocused = true;
+            e.preventDefault();
+            dataHandler.editCard(cardId,input.value)
+                .then(()=>{
+                    this.innerHTML = input.value;
+                })
+        })
+        board.addEventListener("click",e=>{
+            if (input !== document.activeElement && deleteCardButton !== document.activeElement && !unfocused){
+                card.innerHTML = oldCardMessage;
+                unfocused = true;
+            }
         })
     }
 }

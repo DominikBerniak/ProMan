@@ -18,7 +18,6 @@ export let boardsManager = {
       domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
           "click",
           changeTitleHandler);
-      domManager.addEventListener()
     }
   },
     addNewBoard: async function () {
@@ -47,7 +46,7 @@ function showModal(event) {
     modal.find('.modal-title').text('New board')
 }
 function changeTitleHandler(e){
-  let boardId = parseInt(e.currentTarget.dataset.boardId)
+  let boardId = e.currentTarget.dataset.boardId;
   if (e.currentTarget.childElementCount ===0){
     let oldBoardTitle = e.currentTarget.innerHTML;
     let boardTitle = e.currentTarget;
@@ -74,6 +73,4 @@ function changeTitleHandler(e){
   }
 }
 
-function deleteBoardHandler(e) {
 
-}
