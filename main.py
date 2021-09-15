@@ -86,7 +86,6 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    print("dupa")
     return jsonify({}), 200
 
 
@@ -148,6 +147,31 @@ def edit_card():
     title = json["title"]
     queires.edit_card(card_id, title)
     return redirect("/")
+
+
+@app.route('/api/boards/column/', methods=["POST"])
+def add_column():
+    column_name = request.get_json()["columnName"]
+    queires.add_column(column_name)
+    return redirect("/")
+
+
+@app.route('/api/boards/column/<column_id>', methods=["PUT"])
+def edit_column(column_id):
+    data = request.get_json()
+    column_name = data["columnName"]
+    board_id = data["boardId"]
+    old_column_id = int(column_id)
+    cards_ids = [int(x) for x in data["cardsIds"]]
+    if not data_manager.check_if_column_exists(column_name):
+        queires.add_column(column_name)
+        new_column_id = queires.get_latest_column_id()["id"]
+    else:
+        new_column_id = queires.get_column_by_name(column_name)["id"]
+    queires.update_columns_for_board(board_id, old_column_id, new_column_id)
+    for card_id in cards_ids:
+        queires.update_column_for_card(card_id, new_column_id)
+    return jsonify({"columnId": new_column_id})
 
 
 def main():

@@ -84,3 +84,7 @@ def check_password(email, password_to_check):
     hashed_password = queires.get_hashed_password(email).encode("utf8")
     password_to_check = password_to_check.encode("utf8")
     return bcrypt.checkpw(password_to_check, hashed_password)
+
+
+def check_if_column_exists(column_name):
+    return queires.get_column_by_name(column_name) is not None

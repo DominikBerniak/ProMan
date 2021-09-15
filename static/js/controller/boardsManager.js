@@ -54,15 +54,16 @@ function changeTitleHandler(e){
     <form class="board-title-form" action="/api/boards/${boardId}/rename/" method="post">
         <input name="title" value="${oldBoardTitle}">
     </form>`
-    let input = document.querySelector(".board-title-form input");
+    const form = boardTitle.querySelector("form");
+    let input = boardTitle.querySelector("input");
     input.focus();
     input.addEventListener("focusout", e=>{
       boardTitle.innerHTML = oldBoardTitle;
     });
-    document.querySelector(".board-title-form").addEventListener("submit", e=>{
+    form.addEventListener("submit", e=>{
       e.preventDefault();
       if (!input.value){
-        boardTitle.innerHTML = oldBoardTitle;
+        input.blur();
       }else{
         dataHandler.renameBoard(e)
             .then(()=>{

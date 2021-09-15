@@ -45,6 +45,10 @@ function addNewCardHandler(e, boardId, columnId){
         });
         form.addEventListener("submit",e=>{
             e.preventDefault();
+            if (!input.value){
+                input.blur();
+                return;
+            }
             dataHandler.createNewCard(input.value,boardId, columnId)
                 .then(()=>{
                     const newCard = document.createElement("div");
@@ -82,6 +86,10 @@ function cardEditDeleteHandler(){
         form.addEventListener("submit",e=>{
             unfocused = true;
             e.preventDefault();
+            if(!input.value){
+                card.innerHTML = oldCardMessage;
+                return;
+            }
             dataHandler.editCard(cardId,input.value)
                 .then(()=>{
                     this.innerHTML = input.value;
