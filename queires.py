@@ -67,5 +67,22 @@ def add_new_card(board_id, title, column_id):
         """
         INSERT INTO cards (board_id, title, column_id)
         VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
-        , {"board_id": board_id, "title": title, "column_id":column_id}
+        , {"board_id": board_id, "title": title, "column_id": column_id}
+    )
+
+
+def delete_card(card_id):
+    data_manager.execute(
+        """DELETE FROM cards
+            WHERE id = %(card_id)s;"""
+        , {"card_id": card_id}
+    )
+
+
+def edit_card(card_id, title):
+    data_manager.execute(
+        """UPDATE cards 
+            SET title = %(title)s
+            WHERE id = %(card_id)s;"""
+        , {"card_id": card_id, "title": title}
     )

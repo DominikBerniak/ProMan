@@ -7,6 +7,11 @@
     background-color: pink;
     justify-content: space-between;
 }
+.column-header{
+    margin-bottom: 1vh;
+    border-bottom: 1px solid black;
+    text-align: center;
+}
 .board-header .board-title{
     cursor: pointer;
 }
@@ -33,5 +38,11 @@
     background-color: purple;
     color:#FFF;
     border-color: purple;
+}
+.card{
+    cursor: pointer;
+}
+.card-edit-box{
+    display: flex;
 }
 

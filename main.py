@@ -70,6 +70,22 @@ def add_new_card(board_id: int):
     return redirect("/")
 
 
+@app.route('/api/boards/cards/delete/', methods=["POST"])
+def delete_card():
+    card_id = request.get_json()["cardId"]
+    queires.delete_card(card_id)
+    return redirect("/")
+
+
+@app.route('/api/boards/cards/edit/', methods=["POST"])
+def edit_card():
+    json = request.get_json()
+    card_id = json["cardId"]
+    title = json["title"]
+    queires.edit_card(card_id, title)
+    return redirect("/")
+
+
 def main():
     app.run(debug=True)
 

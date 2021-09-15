@@ -46,7 +46,7 @@ function showModal(event) {
     modal.find('.modal-title').text('New board')
 }
 function changeTitleHandler(e){
-  let boardId = parseInt(e.currentTarget.dataset.boardId)
+  let boardId = e.currentTarget.dataset.boardId;
   if (e.currentTarget.childElementCount ===0){
     let oldBoardTitle = e.currentTarget.innerHTML;
     let boardTitle = e.currentTarget;

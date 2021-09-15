@@ -58,6 +58,24 @@ export let dataHandler = {
             console.log(error);
         }
   },
+    deleteCard: async function (cardId){
+        const url = "/api/boards/cards/delete/"
+        try {
+            const data = {"cardId": cardId};
+            return await apiPost(url, data, false);
+        }catch (error){
+            console.log(error);
+        }
+    },
+    editCard: async function (cardId, title){
+        const url = "/api/boards/cards/edit/"
+        try {
+            const data = {"cardId": cardId, "title": title};
+            return await apiPost(url, data, false);
+        }catch (error){
+            console.log(error);
+        }
+    },
 };
 
 function reloadBoards(form){
