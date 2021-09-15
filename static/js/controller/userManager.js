@@ -87,7 +87,7 @@ async function handleLogout(e) {
     if (response.status === 200){
         document.getElementById("login-status").innerHTML = ""
         navbarManager.generateNavbar()
-        document.getElementById("logout").className = "nav-item nav-link"
+        document.getElementById("logout").className = "btn btn-default"
     }
 }
 
