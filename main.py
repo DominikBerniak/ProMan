@@ -6,6 +6,7 @@ from util import json_response
 import mimetypes
 import queires
 
+
 mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
@@ -114,6 +115,7 @@ def rename_board(board_id: int):
     new_board_title = request.get_json()["title"]
     queires.rename_board(board_id, new_board_title)
     return redirect("/")
+
 
 @app.route("/api/boards/<int:board_id>/delete", methods=['POST'])
 def delete_board(board_id):
