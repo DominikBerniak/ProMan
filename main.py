@@ -88,7 +88,7 @@ def get_username():
         username = {"username": session["username"]}
         return jsonify(username), 200
     else:
-        return jsonify({}), 404
+        return jsonify({}), 401
 
 
 

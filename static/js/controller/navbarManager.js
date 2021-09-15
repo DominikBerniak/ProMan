@@ -3,7 +3,6 @@ export let navbarManager = {
         let response = await fetch("/getUsername", {
             method: "GET",
         });
-      console.log(response.status)
       switch (response.status){
           case 200:
               response.json().then(data => {
@@ -12,7 +11,7 @@ export let navbarManager = {
                   document.getElementById("logout").className = "btn btn-default"
               });
               break
-          case 404:
+          case 401:
               const content = buildNavGuest();
               document.getElementById("login-status").innerHTML = content
               document.getElementById("logout").className = "hidden"
@@ -32,7 +31,7 @@ function buildNavGuest(){
         "            <span class=\"navbar-toggler-icon\"></span>\n" +
         "          </button>\n" +
         "          <div class=\"collapse navbar-collapse\" id=\"navbarNavAltMarkup\">\n" +
-        "              <div id=\"username\">currently as QUEST</div>\n" +
+        "              <div id=\"username\">currently as GUEST</div>\n" +
         "            <div class=\"navbar-nav\">\n" +
         "              <a class=\"nav-item nav-link\" href=\"\" data-toggle=\"modal\" data-target=\"#registerModal\">Sign Up</a>\n" +
         "              <a class=\"nav-item nav-link\" href=\"\" data-toggle=\"modal\" data-target=\"#loginModal\">Log in</a>\n" +
