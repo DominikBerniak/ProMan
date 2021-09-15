@@ -56,14 +56,24 @@ def get_cards_for_board(board_id: int):
 
 @app.route("/api/boards/<int:board_id>/rename/", methods=["POST"])
 def rename_board(board_id: int):
-    # new_board_title = request.get_json()["title"]
-    new_board_title = request.form.get("title")
+    new_board_title = request.get_json()["title"]
     queires.rename_board(board_id, new_board_title)
+    return redirect("/")
+
+
+@app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
+def add_new_card(board_id: int):
+    card_data = request.get_json()
+    board_id = card_data["boardId"]
+    column_id = card_data["columnId"]
+    title = card_data["cardTitle"]
+    queires.add_new_card(board_id, title, column_id)
     return redirect("/")
 
 
 @app.route("/api/boards/<int:board_id>/delete", methods=['POST'])
 def delete_board(board_id):
+    queires.delete_cards_by_board_id(board_id)
     queires.delete_board_from_db(board_id)
     return redirect("/")
 

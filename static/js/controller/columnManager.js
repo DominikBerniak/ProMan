@@ -11,6 +11,14 @@ export let columnManager = {
           const content = columnBuilder(column);
           domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
         }
+        let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
+        let deleteButton = document.createElement("div")
+        deleteButton.classList.add('delete-board')
+        deleteButton.innerHTML = `
+                <form action="/api/boards/${boardId}/delete" method="post" >
+                    <button type="submit" name="delete_board_button" id="delete_board_button">Delete board</button>
+                </form>`
+        boardTitle.after(deleteButton)
         cardsManager.loadCards(boardId);
   },
     closeColumns: function (boardId){
@@ -18,6 +26,8 @@ export let columnManager = {
         columns.forEach(column =>{
           column.remove();
         })
+        let deleteButton = document.querySelector('.delete-board')
+        deleteButton.remove()
         const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
         button.innerHTML ="V";
   }

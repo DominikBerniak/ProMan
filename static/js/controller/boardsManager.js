@@ -18,17 +18,18 @@ export let boardsManager = {
       domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
           "click",
           changeTitleHandler);
+      domManager.addEventListener()
     }
   },
     addNewBoard: async function () {
-    domManager.addEventListener('#boardModal',
+      domManager.addEventListener('#boardModal',
         'show.bs.modal',
         showModal);
-    let form = document.getElementById('board_form')
+      let form = document.getElementById('board_form')
       form.addEventListener('submit', function (e) {
         dataHandler.createNewBoard(e)
         $('#boardModal').modal('hide');
-    })
+      })
     }
 };
 
@@ -41,12 +42,10 @@ function showHideButtonHandler(clickEvent) {
     columnManager.closeColumns(boardId);
   }
 }
-
 function showModal(event) {
     let modal = this
     modal.find('.modal-title').text('New board')
 }
-
 function changeTitleHandler(e){
   let boardId = parseInt(e.currentTarget.dataset.boardId)
   if (e.currentTarget.childElementCount ===0){
@@ -54,7 +53,7 @@ function changeTitleHandler(e){
     let boardTitle = e.currentTarget;
     boardTitle.innerHTML = `
     <form class="board-title-form" action="/api/boards/${boardId}/rename/" method="post">
-        <input name="title">
+        <input name="title" value="${oldBoardTitle}">
     </form>`
     let input = document.querySelector(".board-title-form input");
     input.focus();
@@ -65,7 +64,16 @@ function changeTitleHandler(e){
       e.preventDefault();
       if (!input.value){
         boardTitle.innerHTML = oldBoardTitle;
+      }else{
+        dataHandler.renameBoard(e)
+            .then(()=>{
+              boardTitle.innerHTML = input.value;
+            });
       }
-    })
+    });
   }
+}
+
+function deleteBoardHandler(e) {
+
 }

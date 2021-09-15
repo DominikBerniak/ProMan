@@ -1,22 +1,10 @@
 import data_manager
 
 
-def get_card_status(status_id):
-    status = data_manager.execute_select(
-        """
-        SELECT * FROM statuses s
-        WHERE s.id = %(status_id)s
-        ;
-        """
-        , {"status_id": status_id})
-    return status
-
-
 def get_boards():
     return data_manager.execute_select(
         """
-        SELECT * FROM boards
-        ;
+        SELECT * FROM boards ORDER BY id;
         """
     )
 
@@ -68,14 +56,30 @@ def add_board_to_db(board_name):
     return data_manager.execute(
         """
         INSERT INTO boards
-        (title) VALUES (%(board_name)s);
+        (title, columns_ids) VALUES (%(board_name)s, ARRAY[1,2,3,4]);
         """
-    , {'board_name': board_name})
+        , {'board_name': board_name})
 
+
+def add_new_card(board_id, title, column_id):
+    data_manager.execute(
+        """
+        INSERT INTO cards (board_id, title, column_id)
+        VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
+        , {"board_id": board_id, "title": title, "column_id":column_id}
+    )
 def delete_board_from_db(board_id):
     return data_manager.execute(
         """
-        DELETE FROM board
+        DELETE FROM boards
         WHERE id = %(board_id)s
+        """
+    , {"board_id": board_id})
+
+def delete_cards_by_board_id(board_id):
+    return data_manager.execute(
+        """
+        DELETE FROM cards
+        WHERE board_id = %(board_id)s
         """
     , {"board_id": board_id})
