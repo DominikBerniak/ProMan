@@ -8,12 +8,14 @@ export let navbarManager = {
           case 200:
               response.json().then(data => {
                   const content = buildNavUser(data["username"])
-                  document.getElementById("right-site").innerHTML = content
+                  document.getElementById("login-status").innerHTML = content
+                  document.getElementById("logout").className = "nav-item nav-link"
               });
               break
           case 404:
               const content = buildNavGuest();
-              document.getElementById("right-site").innerHTML = content
+              document.getElementById("login-status").innerHTML = content
+              document.getElementById("logout").className = "hidden"
               break
       }
 
@@ -47,7 +49,7 @@ function buildNavUser(username){
         "          <div class=\"collapse navbar-collapse\" id=\"navbarNavAltMarkup\">\n" +
         `              <div id="username">logged in as ${username}</div>\n` +
         "            <div class=\"navbar-nav\">\n" +
-        "              <a class=\"nav-item nav-link\" href=\"/logout\">Log Out</a>\n" +
+        // "              <a class=\"nav-item nav-link\" href=\"/logout\">Log Out</a>\n" +
         "            </div>\n" +
         "            </div>\n"
 }

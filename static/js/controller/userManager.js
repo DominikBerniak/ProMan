@@ -23,6 +23,12 @@ export let userManager = {
       handleLogin(e)
       $('#loginModal').modal('hide');
     })
+    },
+    logoutUser: function () {
+    let form = document.getElementById('logout')
+    form.addEventListener('submit', function (e) {
+      handleLogout(e)
+    })
     }
 }
 function showModal(event) {
@@ -60,9 +66,8 @@ async function handleLogin(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
-              document.getElementById("right-site").innerHTML = ""
+              document.getElementById("login-status").innerHTML = ""
               navbarManager.generateNavbar()
-              alert("login successful")
               break
           case 401:
               alert("wrongData")
@@ -71,6 +76,19 @@ async function handleLogin(e) {
   } catch (error) {
     console.log(error);
   }
+}
+
+
+async function handleLogout(e) {
+    e.preventDefault()
+    let response = await fetch("/logout", {
+            method: "GET",
+        });
+    if (response.status === 200){
+        document.getElementById("login-status").innerHTML = ""
+        navbarManager.generateNavbar()
+        document.getElementById("logout").className = "nav-item nav-link"
+    }
 }
 
 

@@ -78,7 +78,8 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect("/")
+    print("dupa")
+    return jsonify({}), 200
 
 
 @app.route('/getUsername')

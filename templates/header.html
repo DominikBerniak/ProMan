@@ -23,10 +23,18 @@
           <a class="navbar-brand" href="/">ProMan</a>
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#boardModal">Add new board</button>
         </div>
-        <div id="right-site"></div>
+        <div id="right-site">
+            <div id="login-status"></div>
+             <form action="/logout" method="GET" id="logout">
+                <button class="nav-item nav-link" type="submit">Log Out</button>
+            </form>
+        </div>
+
+
     </nav>
-
-
+{#            <form action="/logout" method="GET" id="logout">#}
+{#                <button class="nav-item nav-link" type="submit">Log Out</button>#}
+{#            </form>#}
 
     {% block content %}
     {% endblock %}

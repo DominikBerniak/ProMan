@@ -9,6 +9,7 @@ function init() {
   boardsManager.addNewBoard();
   userManager.registerUser();
   userManager.loginUser()
+  userManager.logoutUser()
 }
 
 

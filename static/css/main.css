@@ -3,6 +3,10 @@
     justify-content: space-between;
 }
 
+#right-site{
+    display: flex;
+}
+
 
 .board-container{
     width: 90%;
@@ -33,4 +37,9 @@
     background-color: purple;
     color:#FFF;
     border-color: purple;
+}
+
+
+.hidden{
+    visibility: hidden;
 }
