@@ -45,7 +45,7 @@ def add_new_board():
         queires.add_board_to_db(board_name)
         return jsonify({}), 200
     else:
-        return jsonify({}), 401
+        return jsonify({}), 203
 
 
 @app.route("/api/register", methods=["POST"])
@@ -55,9 +55,9 @@ def register():
     password = json_dictionary["password"]
     username = json_dictionary["username"]
     if "@" in username:
-        return jsonify(json_dictionary), 401
+        return jsonify(json_dictionary), 203
     if queires.check_if_email_exists(email) or queires.check_if_username_exists(username):
-        return jsonify(json_dictionary), 401
+        return jsonify(json_dictionary), 203
     else:
         data_manager.register(email, username, password)
         return jsonify(json_dictionary), 200
@@ -83,7 +83,7 @@ def login():
         session["username"] = username
         return session, 200
     else:
-        return jsonify(json_dictionary), 401
+        return jsonify(json_dictionary), 203
 
 
 @app.route('/logout')
@@ -98,7 +98,7 @@ def get_username():
         username = {"username": session["username"]}
         return jsonify(username), 200
     else:
-        return jsonify({}), 401
+        return jsonify({}), 203
 
 
 @app.route("/api/boards/<int:board_id>/cards/")
@@ -118,7 +118,7 @@ def rename_board(board_id: int):
         queires.rename_board(board_id, new_board_title)
         return jsonify({}), 200
     else:
-        return jsonify({}), 401
+        return jsonify({}), 203
 
 
 @app.route("/api/boards/<int:board_id>/delete", methods=['POST'])
@@ -183,7 +183,7 @@ def edit_column(board_id, column_id):
             queires.update_column_for_card(card_id, new_column_id)
         return jsonify({"columnId": new_column_id})
     else:
-        return jsonify({}), 401
+        return jsonify({}), 203
 
 
 def main():

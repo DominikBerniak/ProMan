@@ -11,7 +11,7 @@ export let navbarManager = {
                   document.getElementById("logout").className = "btn btn-default"
               });
               break
-          case 401:
+          case 203:
               const content = buildNavGuest();
               document.getElementById("login-status").innerHTML = content
               document.getElementById("logout").className = "hidden"

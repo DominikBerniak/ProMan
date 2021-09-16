@@ -37,7 +37,7 @@ export let dataHandler = {
                     console.log("halo")
                     reloadBoards(form)
                     break
-                case 401:
+                case 203:
                     alert("Unauthorized")
             }
         }catch (error){
@@ -51,7 +51,7 @@ export let dataHandler = {
             const formData = new FormData(form);
             let response = await apiPost(url, formData)
             switch (response.status){
-                case 401:
+                case 203:
 
             }
 

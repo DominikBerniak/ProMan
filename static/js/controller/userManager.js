@@ -45,7 +45,7 @@ async function handleRegistration(e) {
           case 200:
               alert("registration successful, you can log in now")
               break
-          case 401:
+          case 203:
               alert("wrongData")
               break
       }
@@ -75,7 +75,7 @@ async function handleLogin(e) {
               })
 
               break
-          case 401:
+          case 203:
               alert("wrongData")
               break
       }
