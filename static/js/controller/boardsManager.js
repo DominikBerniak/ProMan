@@ -40,11 +40,6 @@ function showHideButtonHandler(clickEvent) {
   }
 }
 
-function showModal(event) {
-    let modal = this
-    modal.find('.modal-title').text('New board')
-}
-
 function changeTitleHandler(e){
   let boardId = e.currentTarget.dataset.boardId;
   if (e.currentTarget.childElementCount ===0){
