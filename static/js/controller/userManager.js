@@ -73,7 +73,9 @@ async function handleLogin(e) {
               document.querySelectorAll(".column-header").forEach(elem =>{
                   elem.addEventListener("click", editColumnTitle)
               })
-
+              document.querySelectorAll(".new-card-button").forEach(elem => {
+                    elem.classList.remove("hidden")
+              })
               break
           case 203:
               alert("wrongData")
@@ -103,6 +105,9 @@ async function handleLogout(e) {
             let new_element = old_element.cloneNode(true);
             old_element.parentNode.replaceChild(new_element, old_element);
         })
+        document.querySelectorAll(".new-card-button").forEach(elem => {
+              elem.classList.add("hidden")
+          })
     }
 }
 

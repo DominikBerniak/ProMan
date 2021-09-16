@@ -130,12 +130,15 @@ def delete_board(board_id):
 
 @app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
 def add_new_card(board_id):
-    card_data = request.get_json()
-    column_id = card_data["columnId"]
-    title = card_data["cardTitle"]
-    queires.add_new_card(board_id, title, column_id)
-    card_id = queires.get_latest_card_id()["id"]
-    return jsonify({"cardId": card_id})
+    if session.get("username"):
+        card_data = request.get_json()
+        column_id = card_data["columnId"]
+        title = card_data["cardTitle"]
+        queires.add_new_card(board_id, title, column_id)
+        card_id = queires.get_latest_card_id()["id"]
+        return jsonify({"cardId": card_id}), 200
+    else:
+        return jsonify({}), 203
 
 
 @app.route('/api/boards/cards/delete/', methods=["POST"])
