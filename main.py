@@ -168,24 +168,26 @@ def add_column(board_id):
 
 @app.route('/api/boards/<board_id>/columns/<column_id>', methods=["PUT"])
 def edit_column(board_id, column_id):
-    data = request.get_json()
-    column_name = data["columnName"]
-    old_column_id = int(column_id)
-    cards_ids = [int(x) for x in data["cardsIds"]]
-    if not data_manager.check_if_column_exists(column_name):
-        queires.add_column(column_name)
-        new_column_id = queires.get_latest_column_id()["id"]
+    if session.get("username"):
+        data = request.get_json()
+        column_name = data["columnName"]
+        old_column_id = int(column_id)
+        cards_ids = [int(x) for x in data["cardsIds"]]
+        if not data_manager.check_if_column_exists(column_name):
+            queires.add_column(column_name)
+            new_column_id = queires.get_latest_column_id()["id"]
+        else:
+            new_column_id = queires.get_column_by_name(column_name)["id"]
+        queires.update_columns_for_board(board_id, old_column_id, new_column_id)
+        for card_id in cards_ids:
+            queires.update_column_for_card(card_id, new_column_id)
+        return jsonify({"columnId": new_column_id})
     else:
-        new_column_id = queires.get_column_by_name(column_name)["id"]
-    queires.update_columns_for_board(board_id, old_column_id, new_column_id)
-    for card_id in cards_ids:
-        queires.update_column_for_card(card_id, new_column_id)
-    return jsonify({"columnId": new_column_id})
+        return jsonify({}), 401
 
 
 def main():
     app.run(debug=True)
-
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))

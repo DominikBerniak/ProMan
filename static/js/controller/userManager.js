@@ -3,6 +3,7 @@ import { navbarManager } from "./navbarManager.js";
 import { boardsManager } from "./boardsManager.js";
 import { dataHandler } from "../data/dataHandler.js";
 import { changeTitleHandler } from "./boardsManager.js";
+import { editColumnTitle } from "./columnManager.js";
 
 
 export let userManager = {
@@ -69,6 +70,10 @@ async function handleLogin(e) {
                   domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
                     "click", changeTitleHandler);
               }
+              document.querySelectorAll(".column-header").forEach(elem =>{
+                  elem.addEventListener("click", editColumnTitle)
+              })
+
               break
           case 401:
               alert("wrongData")
@@ -89,9 +94,14 @@ async function handleLogout(e) {
         document.getElementById("login-status").innerHTML = ""
         navbarManager.generateNavbar()
         document.getElementById("logout").className = "btn btn-default"
-
         document.querySelectorAll(".board-title").forEach(elem => {
             elem.removeEventListener("click", changeTitleHandler)
+        })
+        document.querySelectorAll(".column-header").forEach(elem => {
+            // elem.removeEventListener("click", editColumnTitle)
+            let old_element = elem
+            let new_element = old_element.cloneNode(true);
+            old_element.parentNode.replaceChild(new_element, old_element);
         })
     }
 }

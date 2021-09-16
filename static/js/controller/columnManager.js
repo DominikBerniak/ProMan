@@ -47,16 +47,20 @@ export let columnManager = {
 };
 
 function handleColumns(columnCount){
-    document.querySelectorAll(".column").forEach(column=>{
+    document.querySelectorAll(".column").forEach(async column=>{
         column.style.width = `${Math.floor(80 / columnCount)}%`;
         const columnHeader = column.querySelector(".column-header");
-        columnHeader.addEventListener("click",e=>{
-            editColumnTitle(e)
-        })
+         let response = await fetch("/getUsername", {
+            method: "GET",});
+         if (response.status === 200) {
+             columnHeader.addEventListener("click", e => {
+                 editColumnTitle(e)
+             })
+         }
     })
 }
 
-function editColumnTitle(e){
+export let editColumnTitle = function(e){
     let columnHeader = e.currentTarget;
     const oldTitle = columnHeader.innerHTML;
     if (columnHeader.childElementCount === 0){
