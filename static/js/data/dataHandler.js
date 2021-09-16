@@ -17,9 +17,16 @@ export let dataHandler = {
         const url = form.action;
         try {
             const formData = new FormData(form);
-            await apiPost(url, formData).then(()=> {
-                reloadBoards(form);
-            })
+            let response = await apiPost(url, formData)
+            console.log(response.status)
+            switch (response.status){
+                case 200:
+                    console.log("halo")
+                    reloadBoards(form)
+                    break
+                case 203:
+                    alert("Unauthorized")
+            }
         }catch (error){
             console.log(error);
         }
@@ -29,7 +36,15 @@ export let dataHandler = {
         const url = form.action;
         try {
             const formData = new FormData(form);
-            return await apiPost(url, formData)
+            let response = await apiPost(url, formData)
+            switch (response.status){
+                case 203:
+
+            }
+
+
+
+            // return await apiPost(url, formData)
         }catch (error){
             console.log(error);
         }
@@ -144,3 +159,4 @@ async function apiPut(url, data) {
     });
     return response.json();
 }
+

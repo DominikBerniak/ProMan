@@ -35,4 +35,3 @@ function columnBuilder(column){
 function cardBuilder(card) {
     return `<div class="card p-2 mt-1 mb-1" data-card-id="${card.id}">${card.title}</div>`;
 }
-

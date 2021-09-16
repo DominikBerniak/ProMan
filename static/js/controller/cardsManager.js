@@ -19,17 +19,26 @@ export let cardsManager = {
         cardEditDeleteHandler
       );
     }
-    document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`).forEach(column=>{
+    for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
         const newCardButton = document.createElement("button");
         newCardButton.innerHTML = "New card";
-        newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
+
+        let response = await fetch("/getUsername", {
+            method: "GET",
+        });
+        if (response.status === 200) {
+            newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
+        }
+        else {
+            newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
+        }
         column.appendChild(newCardButton);
         const columnId = column.dataset.columnId;
         newCardButton.addEventListener("click",e=>{
             addNewCardHandler(e, boardId, columnId);
         })
         column.removeAttribute("hidden");
-    })
+    }
   },
 };
 

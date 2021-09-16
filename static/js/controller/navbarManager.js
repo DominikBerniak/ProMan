@@ -9,15 +9,17 @@ export let navbarManager = {
                   const content = buildNavUser(data["username"])
                   document.getElementById("login-status").innerHTML = content
                   document.getElementById("logout").className = "btn btn-default"
+                  document.getElementById("add-new-board-button").className = "btn btn-default"
               });
               break
-          case 401:
+          case 203:
               const content = buildNavGuest();
               document.getElementById("login-status").innerHTML = content
               document.getElementById("logout").className = "hidden"
+              document.getElementById("add-new-board-button").className = "hidden"
+
               break
       }
-
     }
 }
 

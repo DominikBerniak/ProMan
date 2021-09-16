@@ -1,6 +1,9 @@
 import { domManager } from "../view/domManager.js";
 import { navbarManager } from "./navbarManager.js";
-
+import { boardsManager } from "./boardsManager.js";
+import { dataHandler } from "../data/dataHandler.js";
+import { changeTitleHandler } from "./boardsManager.js";
+import { columnTitleEditDeleteHandler } from "./columnManager.js";
 
 
 export let userManager = {
@@ -25,10 +28,6 @@ export let userManager = {
     })
     }
 }
-function showModal(event) {
-    let modal = this
-    modal.find('.modal-title').text('New board')
-}
 
 
 async function handleRegistration(e) {
@@ -40,9 +39,9 @@ async function handleRegistration(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
-              alert("registration successful, you can log in now")
+              domManager.displayAlertModal("Registration successful, you can log in now")
               break
-          case 401:
+          case 203:
               alert("wrongData")
               break
       }
@@ -60,11 +59,23 @@ async function handleLogin(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
+              domManager.displayAlertModal("Login successful!")
               document.getElementById("login-status").innerHTML = ""
               navbarManager.generateNavbar()
+              const boards = await dataHandler.getBoards();
+              for (let board of boards) {
+                  domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+                    "click", changeTitleHandler);
+              }
+              document.querySelectorAll(".column-header").forEach(elem =>{
+                  elem.addEventListener("click", editColumnTitle)
+              })
+              document.querySelectorAll(".new-card-button").forEach(elem => {
+                    elem.classList.remove("hidden")
+              })
               break
-          case 401:
-              alert("wrongData")
+          case 203:
+              domManager.displayAlertModal("Wrong data, please try again!")
               break
       }
   } catch (error) {
@@ -79,9 +90,22 @@ async function handleLogout(e) {
             method: "GET",
         });
     if (response.status === 200){
+        domManager.displayAlertModal("Logout successful!")
         document.getElementById("login-status").innerHTML = ""
         navbarManager.generateNavbar()
         document.getElementById("logout").className = "btn btn-default"
+        document.querySelectorAll(".board-title").forEach(elem => {
+            elem.removeEventListener("click", changeTitleHandler)
+        })
+        document.querySelectorAll(".column-header").forEach(elem => {
+            // elem.removeEventListener("click", editColumnTitle)
+            let old_element = elem
+            let new_element = old_element.cloneNode(true);
+            old_element.parentNode.replaceChild(new_element, old_element);
+        })
+        document.querySelectorAll(".new-card-button").forEach(elem => {
+              elem.classList.add("hidden")
+          })
     }
 }
 
