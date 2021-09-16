@@ -38,11 +38,13 @@ def get_columns_for_board(board_id: int):
 
 @app.route("/api/boards", methods=["POST"])
 def add_new_board():
-    json_dictionary = request.get_json()
-    print(json_dictionary)
-    board_name = json_dictionary["board-name"]
-    queires.add_board_to_db(board_name)
-    return redirect('/api/boards')
+    if session.get("username"):
+        json_dictionary = request.get_json()
+        board_name = json_dictionary["board-name"]
+        queires.add_board_to_db(board_name)
+        return jsonify({}), 200
+    else:
+        return jsonify({}), 401
 
 
 @app.route("/api/register", methods=["POST"])
@@ -51,7 +53,8 @@ def register():
     email = json_dictionary["email"]
     password = json_dictionary["password"]
     username = json_dictionary["username"]
-    # zabezpiecz przed maupą w username
+    if "@" in username:
+        return jsonify(json_dictionary), 401
     if queires.check_if_email_exists(email) or queires.check_if_username_exists(username):
         return jsonify(json_dictionary), 401
     else:
@@ -85,7 +88,6 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    print("dupa")
     return jsonify({}), 200
 
 
@@ -111,9 +113,12 @@ def get_cards_for_board(board_id: int):
 
 @app.route("/api/boards/<int:board_id>/rename/", methods=["POST"])
 def rename_board(board_id: int):
-    new_board_title = request.get_json()["title"]
-    queires.rename_board(board_id, new_board_title)
-    return redirect("/")
+    if session.get("username"):
+        new_board_title = request.get_json()["title"]
+        queires.rename_board(board_id, new_board_title)
+        return jsonify({}), 200
+    else:
+        return jsonify({}), 401
 
 
 @app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
