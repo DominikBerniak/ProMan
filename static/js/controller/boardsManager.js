@@ -37,8 +37,7 @@ export let boardsManager = {
         let form = document.getElementById('board_form')
         form.addEventListener('submit', function (e) {
           if (modalTitle.innerHTML === "New board"){
-            console.log("dupa");
-          // dataHandler.createNewBoard(e)
+            dataHandler.createNewBoard(e)
             $('#boardModal').modal('hide');
           }
       })

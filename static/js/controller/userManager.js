@@ -64,8 +64,11 @@ async function handleLogin(e) {
           case 200:
               document.getElementById("login-status").innerHTML = ""
               navbarManager.generateNavbar()
-              document.getElementById("root").innerHTML = ""
-              boardsManager.loadBoards()
+              const boards = await dataHandler.getBoards();
+              for (let board of boards) {
+                  domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+                    "click", changeTitleHandler);
+              }
               break
           case 401:
               alert("wrongData")
@@ -90,8 +93,6 @@ async function handleLogout(e) {
         document.querySelectorAll(".board-title").forEach(elem => {
             elem.removeEventListener("click", changeTitleHandler)
         })
-
-
     }
 }
 
