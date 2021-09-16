@@ -6,6 +6,7 @@ from util import json_response
 import mimetypes
 import queires
 
+
 mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
@@ -40,7 +41,8 @@ def get_columns_for_board(board_id: int):
 def add_new_board():
     json_dictionary = request.get_json()
     board_name = json_dictionary["board-name"]
-    queires.add_board_to_db(board_name)
+    if board_name != '':
+        queires.add_board_to_db(board_name)
     return redirect('/api/boards')
 
 
@@ -110,6 +112,13 @@ def get_cards_for_board(board_id: int):
 def rename_board(board_id: int):
     new_board_title = request.get_json()["title"]
     queires.rename_board(board_id, new_board_title)
+    return redirect("/")
+
+
+@app.route("/api/boards/<int:board_id>/delete", methods=['POST'])
+def delete_board(board_id):
+    queires.delete_cards_by_board_id(board_id)
+    queires.delete_board_from_db(board_id)
     return redirect("/")
 
 

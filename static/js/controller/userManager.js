@@ -5,9 +5,6 @@ import { navbarManager } from "./navbarManager.js";
 
 export let userManager = {
   registerUser: function () {
-    domManager.addEventListener('#registerModal',
-        'show.bs.modal',
-        showModal)
     let form = document.getElementById('register_form')
     form.addEventListener('submit', function (e) {
       handleRegistration(e)
@@ -15,9 +12,6 @@ export let userManager = {
     })
   },
     loginUser: function () {
-    domManager.addEventListener('#loginModal',
-        'show.bs.modal',
-        showModal)
     let form = document.getElementById('login_form')
     form.addEventListener('submit', function (e) {
       handleLogin(e)

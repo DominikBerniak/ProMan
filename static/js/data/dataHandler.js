@@ -23,6 +23,7 @@ export let dataHandler = {
   getCard: async function (cardId) {
     // the card is retrieved and then the callback function is called with the card
   },
+
   createNewBoard: async function (e) {
         e.preventDefault()
         const form = e.currentTarget
@@ -99,6 +100,7 @@ function reloadBoards(form){
     boardsManager.loadBoards();
     form.querySelector("input").value="";
 }
+
 async function apiGet(url) {
   let response = await fetch(url, {
     method: "GET",
@@ -125,7 +127,23 @@ async function apiPost(url, data, dataFromForm=true) {
 return response.text()
 }
 
-async function apiDelete(url) {}
+async function apiDelete(url, data, dataFromForm=true) {
+    if (dataFromForm){
+        data = Object.fromEntries(data.entries());
+    }
+    const formDataJsonString = JSON.stringify(data);
+    const response = await fetch(url, {
+       method: 'DELETE',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: formDataJsonString
+   });
+
+return response.json( );
+}
+
+
 
 async function apiPut(url, data) {
     const response = await fetch(url, {

@@ -20,10 +20,8 @@ export let boardsManager = {
           changeTitleHandler);
     }
   },
+
     addNewBoard: async function () {
-      domManager.addEventListener('#boardModal',
-        'show.bs.modal',
-        showModal);
       let form = document.getElementById('board_form')
       form.addEventListener('submit', function (e) {
         dataHandler.createNewBoard(e)
@@ -41,10 +39,12 @@ function showHideButtonHandler(clickEvent) {
     columnManager.closeColumns(boardId);
   }
 }
+
 function showModal(event) {
     let modal = this
     modal.find('.modal-title').text('New board')
 }
+
 function changeTitleHandler(e){
   let boardId = e.currentTarget.dataset.boardId;
   if (e.currentTarget.childElementCount ===0){
@@ -73,3 +73,5 @@ function changeTitleHandler(e){
     });
   }
 }
+
+
