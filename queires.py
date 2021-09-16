@@ -52,7 +52,6 @@ def rename_board(board_id, new_board_title):
         , {"new_board_title": new_board_title, "board_id": board_id}
     )
 
-
 def add_board_to_db(board_name):
     return data_manager.execute(
         """
@@ -69,7 +68,21 @@ def add_new_card(board_id, title, column_id):
         VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
         , {"board_id": board_id, "title": title, "column_id": column_id}
     )
+def delete_board_from_db(board_id):
+    return data_manager.execute(
+        """
+        DELETE FROM boards
+        WHERE id = %(board_id)s
+        """
+    , {"board_id": board_id})
 
+def delete_cards_by_board_id(board_id):
+    return data_manager.execute(
+        """
+        DELETE FROM cards
+        WHERE board_id = %(board_id)s
+        """
+    , {"board_id": board_id})
 
 def delete_card(card_id):
     data_manager.execute(
