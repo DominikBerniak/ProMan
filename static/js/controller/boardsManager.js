@@ -22,10 +22,20 @@ export let boardsManager = {
   },
 
     addNewBoard: async function () {
-      let form = document.getElementById('board_form')
-      form.addEventListener('submit', function (e) {
-        dataHandler.createNewBoard(e)
-        $('#boardModal').modal('hide');
+      const newBoardButton = document.getElementById("add-new-board-button");
+      newBoardButton.addEventListener("click", ()=>{
+        let modalTitle = document.querySelector("#boardModal #boardModalLabel");
+        modalTitle.innerHTML = "New board";
+        document.querySelector("#board_form .col-form-label").innerHTML = "Name your board:";
+        $('#boardModal').modal();
+        let form = document.getElementById('board_form')
+        form.addEventListener('submit', function (e) {
+          if (modalTitle.innerHTML === "New board"){
+            console.log("dupa");
+          // dataHandler.createNewBoard(e)
+            $('#boardModal').modal('hide');
+          }
+      })
       })
     }
 };

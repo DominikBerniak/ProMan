@@ -74,8 +74,8 @@ export let dataHandler = {
             console.log(error);
         }
     },
-    addColumn: async function (columnName){
-        const url = `/api/boards/column/`;
+    addColumn: async function (columnName, boardId){
+        const url = `/api/boards/${boardId}/columns/`;
         try {
             const data = {"columnName": columnName};
             return await apiPost(url, data, false);
@@ -84,9 +84,9 @@ export let dataHandler = {
         }
     },
     editColumn: async function (columnName, columnId, boardId, cardsIds){
-        const url = `/api/boards/column/${columnId}`;
+        const url = `/api/boards/${boardId}/columns/${columnId}`;
         try {
-            const data = {"columnName": columnName, "boardId": boardId, "cardsIds": cardsIds};
+            const data = {"columnName": columnName, "cardsIds": cardsIds};
             return await apiPut(url, data);
         }catch (error){
             console.log(error);
@@ -124,7 +124,7 @@ async function apiPost(url, data, dataFromForm=true) {
             },
             body: formDataJsonString,
         });
-return response.text()
+return response.json()
 }
 
 async function apiDelete(url, data, dataFromForm=true) {

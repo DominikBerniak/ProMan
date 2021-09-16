@@ -1,7 +1,7 @@
 export const htmlTemplates = {
     board: 1,
     column: 2,
-    card: 3
+    card: 3,
 }
 
 export function htmlFactory(template) {
@@ -19,7 +19,7 @@ export function htmlFactory(template) {
 }
 
 function boardBuilder(board) {
-    return `<div class="board-container">
+    return `<div class="board-container" data-board-id="${board.id}">
                 <div class="board-header">
                     <div class="board-title" data-board-id="${board.id}">${board.title}</div>
                     <button class="toggle-board-button" data-board-id="${board.id}">V</button>
