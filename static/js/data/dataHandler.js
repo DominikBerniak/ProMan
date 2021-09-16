@@ -47,6 +47,14 @@ export let dataHandler = {
             console.log(error);
         }
     },
+    deleteBoard: async function(boardId) {
+        const url = `/api/boards/${boardId}/`;
+        try {
+            return await apiDelete(url)
+        }catch (error){
+            console.log(error);
+        }
+    },
     createNewCard: async function (cardTitle, boardId, columnId) {
         let url = `/api/boards/${boardId}/new-card/`;
         try {
@@ -127,23 +135,16 @@ async function apiPost(url, data, dataFromForm=true) {
 return response.text()
 }
 
-async function apiDelete(url, data, dataFromForm=true) {
-    if (dataFromForm){
-        data = Object.fromEntries(data.entries());
-    }
-    const formDataJsonString = JSON.stringify(data);
+async function apiDelete(url) {
     const response = await fetch(url, {
        method: 'DELETE',
        headers: {
          'Content-Type': 'application/json'
        },
-       body: formDataJsonString
    });
 
 return response.json( );
 }
-
-
 
 async function apiPut(url, data) {
     const response = await fetch(url, {
@@ -155,4 +156,3 @@ async function apiPut(url, data) {
     });
     return response.json();
 }
-

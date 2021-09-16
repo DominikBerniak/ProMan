@@ -27,7 +27,16 @@ export let boardsManager = {
         dataHandler.createNewBoard(e)
         $('#boardModal').modal('hide');
       })
-    }
+    },
+  handleDeleteBoard: function (boardId) {
+    domManager.displayConfirmModal("Are you sure you want to delete this board?")
+        domManager.addEventListener('#confirmButton',
+            'click',
+            function () {
+            dataHandler.deleteBoard(boardId)
+            $('#confirmModal').modal('hide')
+            })
+  }
 };
 
 function showHideButtonHandler(clickEvent) {
@@ -68,5 +77,4 @@ function changeTitleHandler(e){
     });
   }
 }
-
 

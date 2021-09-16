@@ -116,7 +116,7 @@ def rename_board(board_id: int):
     return redirect("/")
 
 
-@app.route("/api/boards/<int:board_id>/delete", methods=['POST'])
+@app.route("/api/boards/<int:board_id>/", methods=['DELETE'])
 def delete_board(board_id):
     queires.delete_cards_by_board_id(board_id)
     queires.delete_board_from_db(board_id)
