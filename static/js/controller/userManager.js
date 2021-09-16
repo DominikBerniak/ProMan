@@ -25,10 +25,6 @@ export let userManager = {
     })
     }
 }
-function showModal(event) {
-    let modal = this
-    modal.find('.modal-title').text('New board')
-}
 
 
 async function handleRegistration(e) {
@@ -40,10 +36,10 @@ async function handleRegistration(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
-              alert("registration successful, you can log in now")
+              domManager.displayAlertModal("Registration successful, you can log in now")
               break
           case 401:
-              alert("wrongData")
+              domManager.displayAlertModal("Wrong data, please try again!")
               break
       }
   } catch (error) {
@@ -60,11 +56,12 @@ async function handleLogin(e) {
     let response = await apiPost(url, formData)
       switch (response.status){
           case 200:
+              domManager.displayAlertModal("Login successful!")
               document.getElementById("login-status").innerHTML = ""
               navbarManager.generateNavbar()
               break
           case 401:
-              alert("wrongData")
+              domManager.displayAlertModal("Wrong data, please try again!")
               break
       }
   } catch (error) {
@@ -79,6 +76,7 @@ async function handleLogout(e) {
             method: "GET",
         });
     if (response.status === 200){
+        domManager.displayAlertModal("Logout successful!")
         document.getElementById("login-status").innerHTML = ""
         navbarManager.generateNavbar()
         document.getElementById("logout").className = "btn btn-default"

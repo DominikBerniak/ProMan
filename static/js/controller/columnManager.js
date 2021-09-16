@@ -78,7 +78,7 @@ function editColumnTitle(e){
             if (!input.value){
                 input.blur();
             }else if(checkIfColumnNameExist(input.value, boardId)){
-                alert(`Column ${input.value} already exists!`)
+                domManager.displayAlertModal("Alert", `Column ${input.value} already exists!`)
                 input.blur();
             }else{
                 submitSuccess = true;
