@@ -50,6 +50,7 @@ export let boardsManager = {
             'click',
             function () {
             dataHandler.deleteBoard(boardId)
+            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
             $('#confirmModal').modal('hide')
             })
   }
