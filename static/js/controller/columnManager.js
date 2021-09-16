@@ -190,7 +190,6 @@ function deleteBoardButtonHandler(boardId) {
     testButton.innerHTML = 'Delete'
     deleteButton.appendChild(testButton)
     boardTitle.after(deleteButton)
-    cardsManager.loadCards(boardId);
     deleteButton.firstChild.addEventListener("click", () => boardsManager.handleDeleteBoard(boardId))
     return deleteButton
 }
