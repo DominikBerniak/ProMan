@@ -185,12 +185,11 @@ function deleteBoardButtonHandler(boardId) {
     let testButton = document.createElement('button')
     let dataAttribute = document.createAttribute('data-board-id')
     dataAttribute.value = boardId
-    testButton.classList.add('delete_board_button')
+    testButton.classList.add('delete_board_button', "btn");
     testButton.setAttributeNode(dataAttribute)
     testButton.innerHTML = 'Delete'
     deleteButton.appendChild(testButton)
     boardTitle.after(deleteButton)
-    cardsManager.loadCards(boardId);
     deleteButton.firstChild.addEventListener("click", () => boardsManager.handleDeleteBoard(boardId))
     return deleteButton
 }
