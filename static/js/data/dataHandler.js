@@ -7,23 +7,10 @@ export let dataHandler = {
   getColumnByBoardId: async function (boardId) {
     return await apiGet(`/api/boards/${boardId}/columns/`);
   },
-  getBoard: async function (boardId) {
-    // the board is retrieved and then the callback function is called with the board
-  },
-  getStatuses: async function () {
-    // the statuses are retrieved and then the callback function is called with the statuses
-  },
-  getStatus: async function (statusId) {
-    // the status is retrieved and then the callback function is called with the status
-  },
   getCardsByBoardId: async function (boardId) {
     const response = await apiGet(`/api/boards/${boardId}/cards/`);
     return response;
   },
-  getCard: async function (cardId) {
-    // the card is retrieved and then the callback function is called with the card
-  },
-
   createNewBoard: async function (e) {
         e.preventDefault()
         const form = e.currentTarget
@@ -92,6 +79,14 @@ export let dataHandler = {
             console.log(error);
         }
     },
+    deleteColumn: async function (boardId, columnId){
+        const url = `/api/boards/${boardId}/columns/${columnId}`;
+        try {
+            return await apiDelete(url);
+        }catch (error){
+            console.log(error);
+        }
+    },
 };
 
 function reloadBoards(form){
@@ -127,19 +122,13 @@ async function apiPost(url, data, dataFromForm=true) {
 return response.json()
 }
 
-async function apiDelete(url, data, dataFromForm=true) {
-    if (dataFromForm){
-        data = Object.fromEntries(data.entries());
-    }
-    const formDataJsonString = JSON.stringify(data);
+async function apiDelete(url) {
     const response = await fetch(url, {
        method: 'DELETE',
        headers: {
          'Content-Type': 'application/json'
-       },
-       body: formDataJsonString
+       }
    });
-
 return response.json( );
 }
 

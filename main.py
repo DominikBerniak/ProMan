@@ -177,6 +177,15 @@ def edit_column(board_id, column_id):
     return jsonify({"columnId": new_column_id})
 
 
+@app.route('/api/boards/<board_id>/columns/<column_id>', methods=["DELETE"])
+def delete_column(board_id, column_id):
+    board_id = int(board_id)
+    column_id = int(column_id)
+    queires.delete_column_from_board(board_id, column_id)
+    queires.delete_cards_by_board_id_and_column_id(board_id, column_id)
+    return jsonify({"deleted": True})
+
+
 def main():
     app.run(debug=True)
 

@@ -26,13 +26,13 @@ export let boardsManager = {
       newBoardButton.addEventListener("click", ()=>{
         let modalTitle = document.querySelector("#boardModal #boardModalLabel");
         modalTitle.innerHTML = "New board";
-        document.querySelector("#board_form .col-form-label").innerHTML = "Name your board:";
+        let modalLabel = document.querySelector("#board_form .col-form-label");
+        modalLabel.innerHTML = "Name your board:";
         $('#boardModal').modal();
         let form = document.getElementById('board_form')
         form.addEventListener('submit', function (e) {
           if (modalTitle.innerHTML === "New board"){
-            console.log("dupa");
-          // dataHandler.createNewBoard(e)
+            dataHandler.createNewBoard(e)
             $('#boardModal').modal('hide');
           }
       })
@@ -62,7 +62,7 @@ function changeTitleHandler(e){
     let boardTitle = e.currentTarget;
     boardTitle.innerHTML = `
     <form class="board-title-form" action="/api/boards/${boardId}/rename/" method="post">
-        <input name="title" value="${oldBoardTitle}">
+        <input class="rounded" name="title" value="${oldBoardTitle}">
     </form>`
     const form = boardTitle.querySelector("form");
     let input = boardTitle.querySelector("input");
