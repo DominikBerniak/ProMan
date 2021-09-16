@@ -28,6 +28,6 @@ export let domManager = {
     modalTitle.innerHTML = 'Confirm changes'
     modalBody.innerHTML = `
     <p> ${modalBodyContent} </p>`
-    $('#alertModal').modal();
+    $('#confirmModal').modal();
   }
 };

@@ -49,6 +49,14 @@ export let dataHandler = {
             console.log(error);
         }
     },
+    deleteBoard: async function(boardId) {
+        const url = `/api/boards/${boardId}/`;
+        try {
+            return await apiDelete(url)
+        }catch (error){
+            console.log(error);
+        }
+    },
     createNewCard: async function (cardTitle, boardId, columnId) {
         let url = `/api/boards/${boardId}/new-card/`;
         try {
@@ -147,8 +155,6 @@ async function apiDelete(url) {
 return response.json( );
 }
 
-
-
 async function apiPut(url, data) {
     const response = await fetch(url, {
         method: "PUT",
@@ -159,4 +165,3 @@ async function apiPut(url, data) {
     });
     return response.json();
 }
-

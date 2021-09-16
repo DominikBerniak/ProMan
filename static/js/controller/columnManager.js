@@ -3,6 +3,7 @@ import { htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import { domManager } from "../view/domManager.js";
 import {cardsManager} from "./cardsManager.js";
 import {addNewCardHandler} from "./cardsManager.js";
+import {boardsManager} from "./boardsManager.js";
 
 export let columnManager = {
     loadColumns: async function (boardId) {
@@ -15,14 +16,7 @@ export let columnManager = {
             domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
         }
         handleColumns(columnCount);
-        let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
-        let deleteBoardButton = document.createElement("div")
-        deleteBoardButton.classList.add('delete-board')
-        deleteBoardButton.innerHTML = `
-                <form action="/api/boards/${boardId}/delete" method="post" >
-                    <button type="submit" name="delete_board_button" id="delete_board_button" class="btn">Delete board</button>
-                </form>`
-        boardTitle.after(deleteBoardButton)
+        let deleteBoardButton = deleteBoardButtonHandler(boardId)
         let addColumn = document.createElement("div")
         addColumn.classList.add("add-column-container")
         addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
@@ -182,4 +176,21 @@ function addColumnHandler(boardId){
             $('#boardModal').modal('hide');
         }
     });
+}
+
+function deleteBoardButtonHandler(boardId) {
+    let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
+    let deleteButton = document.createElement("div")
+    deleteButton.classList.add('delete-board')
+    let testButton = document.createElement('button')
+    let dataAttribute = document.createAttribute('data-board-id')
+    dataAttribute.value = boardId
+    testButton.classList.add('delete_board_button')
+    testButton.setAttributeNode(dataAttribute)
+    testButton.innerHTML = 'Delete'
+    deleteButton.appendChild(testButton)
+    boardTitle.after(deleteButton)
+    cardsManager.loadCards(boardId);
+    deleteButton.firstChild.addEventListener("click", () => boardsManager.handleDeleteBoard(boardId))
+    return deleteButton
 }
