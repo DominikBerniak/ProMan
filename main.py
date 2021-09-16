@@ -96,7 +96,6 @@ def get_username():
         return jsonify({}), 401
 
 
-
 @app.route("/api/boards/<int:board_id>/cards/")
 @json_response
 def get_cards_for_board(board_id: int):
@@ -147,11 +146,10 @@ def add_column():
     return redirect("/")
 
 
-@app.route('/api/boards/column/<column_id>', methods=["PUT"])
-def edit_column(column_id):
+@app.route('/api/boards/<board_id>/columns/<column_id>', methods=["PUT"])
+def edit_column(board_id, column_id):
     data = request.get_json()
     column_name = data["columnName"]
-    board_id = data["boardId"]
     old_column_id = int(column_id)
     cards_ids = [int(x) for x in data["cardsIds"]]
     if not data_manager.check_if_column_exists(column_name):

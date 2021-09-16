@@ -83,9 +83,9 @@ export let dataHandler = {
         }
     },
     editColumn: async function (columnName, columnId, boardId, cardsIds){
-        const url = `/api/boards/column/${columnId}`;
+        const url = `/api/boards/${boardId}/columns/${columnId}`;
         try {
-            const data = {"columnName": columnName, "boardId": boardId, "cardsIds": cardsIds};
+            const data = {"columnName": columnName, "cardsIds": cardsIds};
             return await apiPut(url, data);
         }catch (error){
             console.log(error);
