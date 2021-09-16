@@ -22,7 +22,6 @@ export let cardsManager = {
     for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
         const newCardButton = document.createElement("button");
         newCardButton.innerHTML = "New card";
-
         let response = await fetch("/getUsername", {
             method: "GET",
         });
