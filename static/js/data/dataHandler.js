@@ -134,7 +134,7 @@ async function apiPost(url, data, dataFromForm=true) {
             },
             body: formDataJsonString,
         });
-return response.json()
+return response
 }
 
 async function apiDelete(url) {
