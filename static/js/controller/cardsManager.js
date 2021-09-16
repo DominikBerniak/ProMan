@@ -1,6 +1,7 @@
 import { dataHandler } from "../data/dataHandler.js";
 import { htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import { domManager } from "../view/domManager.js";
+import {columnManager} from "./columnManager.js";
 
 export let cardsManager = {
   loadCards: async function (boardId) {
@@ -16,7 +17,7 @@ export let cardsManager = {
         cardEditDeleteHandler
       );
     }
-    document.querySelectorAll(`.board[data-board-id=\"${boardId}\"] .column`).forEach(column=>{
+    document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`).forEach(column=>{
         const newCardButton = document.createElement("button");
         newCardButton.innerHTML = "New Card";
         newCardButton.classList.add("new-card-button", "btn");
@@ -30,7 +31,7 @@ export let cardsManager = {
   },
 };
 
-function addNewCardHandler(e, boardId, columnId){
+export let addNewCardHandler = function(e, boardId, columnId){
     if (e.currentTarget.childElementCount ===0){
         const button = e.currentTarget;
         button.innerHTML = `
@@ -50,9 +51,12 @@ function addNewCardHandler(e, boardId, columnId){
                 return;
             }
             dataHandler.createNewCard(input.value,boardId, columnId)
-                .then(()=>{
+                .then(response=>{
                     const newCard = document.createElement("div");
                     newCard.classList.add("card");
+                    let dataAttribute = document.createAttribute("data-card-id");
+                    dataAttribute.value = response["cardId"];
+                    newCard.setAttributeNode(dataAttribute);
                     newCard.innerHTML = `${input.value}`
                     button.before(newCard);
                     button.innerHTML = "New Card";

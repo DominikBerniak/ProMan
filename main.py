@@ -123,13 +123,13 @@ def delete_board(board_id):
 
 
 @app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
-def add_new_card(board_id: int):
+def add_new_card(board_id):
     card_data = request.get_json()
-    board_id = card_data["boardId"]
     column_id = card_data["columnId"]
     title = card_data["cardTitle"]
     queires.add_new_card(board_id, title, column_id)
-    return redirect("/")
+    card_id = queires.get_latest_card_id()["id"]
+    return jsonify({"cardId": card_id})
 
 
 @app.route('/api/boards/cards/delete/', methods=["POST"])
@@ -148,11 +148,16 @@ def edit_card():
     return redirect("/")
 
 
-@app.route('/api/boards/column/', methods=["POST"])
-def add_column():
+@app.route('/api/boards/<board_id>/columns/', methods=["POST"])
+def add_column(board_id):
     column_name = request.get_json()["columnName"]
-    queires.add_column(column_name)
-    return redirect("/")
+    if not data_manager.check_if_column_exists(column_name):
+        queires.add_column(column_name)
+        new_column_id = queires.get_latest_column_id()["id"]
+    else:
+        new_column_id = queires.get_column_by_name(column_name)["id"]
+    queires.add_column_to_board(board_id, new_column_id)
+    return jsonify({"columnId": new_column_id})
 
 
 @app.route('/api/boards/<board_id>/columns/<column_id>', methods=["PUT"])

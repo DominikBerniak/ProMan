@@ -74,8 +74,8 @@ export let dataHandler = {
             console.log(error);
         }
     },
-    addColumn: async function (columnName){
-        const url = `/api/boards/column/`;
+    addColumn: async function (columnName, boardId){
+        const url = `/api/boards/${boardId}/columns/`;
         try {
             const data = {"columnName": columnName};
             return await apiPost(url, data, false);
@@ -124,7 +124,7 @@ async function apiPost(url, data, dataFromForm=true) {
             },
             body: formDataJsonString,
         });
-return response.text()
+return response.json()
 }
 
 async function apiDelete(url, data, dataFromForm=true) {

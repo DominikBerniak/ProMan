@@ -21,7 +21,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
         <div class="left-site">
           <a class="navbar-brand" href="/">ProMan</a>
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#boardModal">Add new board</button>
+          <button type="button" class="btn btn-default" data-toggle="modal" id="add-new-board-button">Add new board</button>
         </div>
         <div id="right-site">
             <div id="login-status"></div>
@@ -38,12 +38,12 @@
     {% endblock %}
 
 
-    <!-- modal -->
+    <!-- add new content modal -->
     <div class="modal fade" id="boardModal" tabindex="-1" role="dialog" aria-labelledby="boardModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="boardModalLabel">New board</h5>
+            <h5 class="modal-title" id="boardModalLabel"></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -51,8 +51,8 @@
           <div class="modal-body">
             <form action="/api/boards" method="POST" id="board_form">
               <div class="form-group">
-                <label for="board-name" class="col-form-label">Name your board:</label>
-                <input type="text" class="form-control" id="board-name" name="board-name">
+                <label for="board-name" class="col-form-label"></label>
+                <input type="text" class="form-control" id="board-name" name="board-name" >
               </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
