@@ -5,6 +5,7 @@ import { columnManager} from "./columnManager.js";
 import { cardsManager } from "./cardsManager.js";
 
 export let boardsManager = {
+
   loadBoards: async function () {
     const boards = await dataHandler.getBoards();
     for (let board of boards) {
@@ -19,7 +20,7 @@ export let boardsManager = {
             method: "GET",
         });
         if (response.status === 200) {
-          domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+            domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
               "click",
               changeTitleHandler);
         }
@@ -60,7 +61,7 @@ function showModal(event) {
     modal.find('.modal-title').text('New board')
 }
 
-function changeTitleHandler(e){
+export let changeTitleHandler = function (e){
   let boardId = e.currentTarget.dataset.boardId;
   if (e.currentTarget.childElementCount ===0){
     let oldBoardTitle = e.currentTarget.innerHTML;

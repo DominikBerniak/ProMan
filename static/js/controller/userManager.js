@@ -1,7 +1,8 @@
 import { domManager } from "../view/domManager.js";
 import { navbarManager } from "./navbarManager.js";
 import { boardsManager } from "./boardsManager.js";
-
+import { dataHandler } from "../data/dataHandler.js";
+import { changeTitleHandler } from "./boardsManager.js";
 
 
 export let userManager = {
@@ -85,6 +86,12 @@ async function handleLogout(e) {
         document.getElementById("login-status").innerHTML = ""
         navbarManager.generateNavbar()
         document.getElementById("logout").className = "btn btn-default"
+
+        document.querySelectorAll(".board-title").forEach(elem => {
+            elem.removeEventListener("click", changeTitleHandler)
+        })
+
+
     }
 }
 
