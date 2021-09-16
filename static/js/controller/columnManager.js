@@ -2,9 +2,8 @@ import { dataHandler } from "../data/dataHandler.js";
 import { htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import { domManager } from "../view/domManager.js";
 import {cardsManager} from "./cardsManager.js";
+import {addNewCardHandler} from "./cardsManager.js";
 import {boardsManager} from "./boardsManager.js";
-
-
 
 export let columnManager = {
     loadColumns: async function (boardId) {
@@ -16,50 +15,78 @@ export let columnManager = {
             const content = columnBuilder(column);
             domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
         }
-        document.querySelectorAll(".column").forEach(column=>{
-            column.style.width = `${Math.floor(80 / columnCount)}%`;
-            const columnHeader = column.querySelector(".column-header");
-            columnHeader.addEventListener("click",e=>{
-                editColumnTitle(e)
-            })
+        handleColumns(columnCount);
+        let deleteBoardButton = deleteBoardButtonHandler(boardId)
+        let addColumn = document.createElement("div")
+        addColumn.classList.add("add-column-container")
+        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+        deleteBoardButton.after(addColumn)
+        addColumn.querySelector("button").addEventListener("click", e=>{
+            addColumnHandler(boardId);
         })
-        deleteBoardButtonHandler(boardId);
-    },
+        cardsManager.loadCards(boardId);
+  },
     closeColumns: function (boardId){
         let columns = document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`);
         columns.forEach(column =>{
           column.remove();
         })
-        let deleteButton = document.querySelector('.delete-board')
-        deleteButton.remove()
+        let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
+        deleteBoardButton.remove()
+        let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
+        addColumnButton.remove();
         const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-        button.innerHTML ="V";
+        button.classList.remove("bi-caret-up-square")
+        button.classList.add("bi-caret-down-square")
   }
 };
-function editColumnTitle(e){
+
+function handleColumns(columnCount){
+    document.querySelectorAll(".column").forEach(async column=>{
+        column.style.width = `${Math.floor(90 / columnCount)}%`;
+        const columnHeader = column.querySelector(".column-header");
+         let response = await fetch("/getUsername", {
+            method: "GET",});
+         if (response.status === 200) {
+             columnHeader.addEventListener("click", e => {
+                 columnTitleEditDeleteHandler(e)
+             })
+         }
+    })
+}
+
+export let columnTitleEditDeleteHandler = function(e){
     let columnHeader = e.currentTarget;
     const oldTitle = columnHeader.innerHTML;
     if (columnHeader.childElementCount === 0){
-        columnHeader.innerHTML = `<form>
-            <input name="column-name" value="${oldTitle}">
-        </form>`
+        columnHeader.innerHTML = `<div class="d-flex">
+            <form><input name="column-name" class="rounded" value="${oldTitle}"></form>
+            <button class="delete-column bi bi-x-square delete-icon-button clear-button"></button>
+            </div>`
         const form = columnHeader.querySelector("form");
         const input = columnHeader.querySelector("input");
+        const deleteColumnButton = columnHeader.querySelector(".delete-column");
         input.focus();
-        let submitSuccess = false;
-        input.addEventListener("focusout",e=>{
-            if (!submitSuccess){
-                columnHeader.innerHTML = oldTitle;
-            }
+        deleteColumnButton.addEventListener("click",e=>{
+            const column = columnHeader.closest(".column");
+            const columnId = column.dataset.columnId;
+            const boardId = column.closest(".board").dataset.boardId;
+            dataHandler.deleteColumn(boardId, columnId)
+                .then(()=>{
+                    column.remove();
+                    const columnNum = document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`).length;
+                    handleColumns(columnNum);
+                })
         });
+        let submitSuccess = false;
         form.addEventListener("submit",e=>{
             e.preventDefault();
             const boardId = columnHeader.closest(".board").dataset.boardId;
             if (!input.value){
-                input.blur();
+                restoreColumnTitle(columnHeader,oldTitle);
             }else if(checkIfColumnNameExist(input.value, boardId)){
                 domManager.displayAlertModal("Alert", `Column ${input.value} already exists!`)
-                input.blur();
+                restoreColumnTitle(columnHeader,oldTitle);
             }else{
                 submitSuccess = true;
                 const column = columnHeader.closest(".column")
@@ -75,9 +102,17 @@ function editColumnTitle(e){
                     })
             }
         })
+        document.addEventListener("click",e=>{
+            if (input !== document.activeElement && deleteColumnButton !== document.activeElement && !submitSuccess){
+                restoreColumnTitle(columnHeader,oldTitle);
+                submitSuccess = true;
+            }
+        })
     }
 }
-
+function restoreColumnTitle(columnHeader, title){
+    columnHeader.innerHTML = title;
+}
 function checkIfColumnNameExist(columnName, boardId){
     const board = document.querySelector(`.board[data-board-id="${boardId}"]`);
     let columnNameExists = false;
@@ -87,6 +122,60 @@ function checkIfColumnNameExist(columnName, boardId){
         }
     })
     return columnNameExists;
+}
+
+function addColumnHandler(boardId){
+    let modalTitle = document.querySelector("#boardModal #boardModalLabel");
+    let modalLabel = document.querySelector("#board_form .col-form-label");
+    modalTitle.innerHTML = "New column";
+    modalLabel.innerHTML = "Name your column:";
+    $('#boardModal').modal();
+    let form = document.getElementById('board_form');
+    let input = document.getElementById("board-name");
+    input.value = "";
+    input.focus();
+    form.addEventListener('submit', e=> {
+        e.preventDefault();
+        if (!input.value){
+            $('#boardModal').modal('hide');
+        }else{
+            dataHandler.addColumn(input.value, boardId)
+                .then(async response => {
+                    const columnId = response["columnId"];
+                    const column = {
+                        id: columnId,
+                        name: input.value
+                    };
+                    const columnBuilder = htmlFactory(2);
+                    const content = columnBuilder(column);
+                    domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
+                    let columnElem = document.querySelector(`.board[data-board-id="${boardId}"] .column[data-column-id="${columnId}"]`);
+                    columnElem.removeAttribute("hidden");
+                    const newCardButton = document.createElement("button");
+                    newCardButton.innerHTML = "New Card";
+
+                    let response2 = await fetch("/getUsername", {
+                        method: "GET",
+                    });
+                    if (response2.status === 200) {
+                        newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
+                    }
+                    else {
+                        newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
+                    }
+                    columnElem.appendChild(newCardButton);
+                    newCardButton.addEventListener("click", e => {
+                        addNewCardHandler(e, boardId, columnId)
+                    })
+                    let columnCount = 0;
+                    for (let column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
+                        columnCount++;
+                    }
+                    handleColumns(columnCount);
+                })
+            $('#boardModal').modal('hide');
+        }
+    });
 }
 
 function deleteBoardButtonHandler(boardId) {
@@ -103,4 +192,5 @@ function deleteBoardButtonHandler(boardId) {
     boardTitle.after(deleteButton)
     cardsManager.loadCards(boardId);
     deleteButton.firstChild.addEventListener("click", () => boardsManager.handleDeleteBoard(boardId))
+    return deleteButton
 }

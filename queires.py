@@ -68,6 +68,8 @@ def add_new_card(board_id, title, column_id):
         VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
         , {"board_id": board_id, "title": title, "column_id": column_id}
     )
+
+
 def delete_board_from_db(board_id):
     return data_manager.execute(
         """
@@ -76,6 +78,7 @@ def delete_board_from_db(board_id):
         """
     , {"board_id": board_id})
 
+
 def delete_cards_by_board_id(board_id):
     return data_manager.execute(
         """
@@ -83,6 +86,7 @@ def delete_cards_by_board_id(board_id):
         WHERE board_id = %(board_id)s
         """
     , {"board_id": board_id})
+
 
 def delete_card(card_id):
     data_manager.execute(
@@ -162,6 +166,16 @@ def get_latest_column_id():
     )
 
 
+def get_latest_card_id():
+    return data_manager.execute_select(
+        """
+        SELECT id FROM cards
+        ORDER BY id DESC
+        LIMIT 1;"""
+        , fetchall=False
+    )
+
+
 def get_column_by_name(column_name):
     return data_manager.execute_select(
         """
@@ -194,4 +208,31 @@ def update_column_for_card(card_id, new_column_id):
             SET column_id = %(new_column_id)s
             WHERE id = %(card_id)s;"""
         , {"new_column_id": new_column_id, "card_id": card_id}
+    )
+
+
+def add_column_to_board(board_id, new_column_id):
+    data_manager.execute(
+        """UPDATE boards
+            SET columns_ids = ARRAY_APPEND(columns_ids, %(new_column_id)s)
+            WHERE id = %(board_id)s;"""
+        , {"new_column_id": new_column_id, "board_id": board_id}
+    )
+
+
+def delete_column_from_board(board_id, column_id):
+    data_manager.execute(
+        """UPDATE boards
+            SET columns_ids = ARRAY_REMOVE(columns_ids, %(column_id)s)
+            WHERE id = %(board_id)s;"""
+        , {"board_id": board_id, "column_id": column_id}
+    )
+
+
+def delete_cards_by_board_id_and_column_id(board_id,column_id):
+    data_manager.execute(
+        """DELETE FROM cards
+            WHERE board_id = %(board_id)s AND column_id = %(column_id)s;
+        """
+        , {"board_id": board_id, "column_id": column_id}
     )

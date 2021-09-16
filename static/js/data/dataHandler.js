@@ -7,32 +7,26 @@ export let dataHandler = {
   getColumnByBoardId: async function (boardId) {
     return await apiGet(`/api/boards/${boardId}/columns/`);
   },
-  getBoard: async function (boardId) {
-    // the board is retrieved and then the callback function is called with the board
-  },
-  getStatuses: async function () {
-    // the statuses are retrieved and then the callback function is called with the statuses
-  },
-  getStatus: async function (statusId) {
-    // the status is retrieved and then the callback function is called with the status
-  },
   getCardsByBoardId: async function (boardId) {
     const response = await apiGet(`/api/boards/${boardId}/cards/`);
     return response;
   },
-  getCard: async function (cardId) {
-    // the card is retrieved and then the callback function is called with the card
-  },
-
   createNewBoard: async function (e) {
         e.preventDefault()
         const form = e.currentTarget
         const url = form.action;
         try {
             const formData = new FormData(form);
-            await apiPost(url, formData).then(()=> {
-                reloadBoards(form);
-            })
+            let response = await apiPost(url, formData)
+            console.log(response.status)
+            switch (response.status){
+                case 200:
+                    console.log("halo")
+                    reloadBoards(form)
+                    break
+                case 203:
+                    alert("Unauthorized")
+            }
         }catch (error){
             console.log(error);
         }
@@ -42,7 +36,15 @@ export let dataHandler = {
         const url = form.action;
         try {
             const formData = new FormData(form);
-            return await apiPost(url, formData)
+            let response = await apiPost(url, formData)
+            switch (response.status){
+                case 203:
+
+            }
+
+
+
+            // return await apiPost(url, formData)
         }catch (error){
             console.log(error);
         }
@@ -82,8 +84,8 @@ export let dataHandler = {
             console.log(error);
         }
     },
-    addColumn: async function (columnName){
-        const url = `/api/boards/column/`;
+    addColumn: async function (columnName, boardId){
+        const url = `/api/boards/${boardId}/columns/`;
         try {
             const data = {"columnName": columnName};
             return await apiPost(url, data, false);
@@ -92,10 +94,18 @@ export let dataHandler = {
         }
     },
     editColumn: async function (columnName, columnId, boardId, cardsIds){
-        const url = `/api/boards/column/${columnId}`;
+        const url = `/api/boards/${boardId}/columns/${columnId}`;
         try {
-            const data = {"columnName": columnName, "boardId": boardId, "cardsIds": cardsIds};
+            const data = {"columnName": columnName, "cardsIds": cardsIds};
             return await apiPut(url, data);
+        }catch (error){
+            console.log(error);
+        }
+    },
+    deleteColumn: async function (boardId, columnId){
+        const url = `/api/boards/${boardId}/columns/${columnId}`;
+        try {
+            return await apiDelete(url);
         }catch (error){
             console.log(error);
         }
@@ -132,7 +142,7 @@ async function apiPost(url, data, dataFromForm=true) {
             },
             body: formDataJsonString,
         });
-return response.text()
+return response.json()
 }
 
 async function apiDelete(url) {
@@ -140,9 +150,8 @@ async function apiDelete(url) {
        method: 'DELETE',
        headers: {
          'Content-Type': 'application/json'
-       },
+       }
    });
-
 return response.json( );
 }
 
