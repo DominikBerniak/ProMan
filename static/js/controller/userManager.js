@@ -1,6 +1,9 @@
 import { domManager } from "../view/domManager.js";
 import { navbarManager } from "./navbarManager.js";
-
+import { boardsManager } from "./boardsManager.js";
+import { dataHandler } from "../data/dataHandler.js";
+import { changeTitleHandler } from "./boardsManager.js";
+import { editColumnTitle } from "./columnManager.js";
 
 
 export let userManager = {
@@ -38,8 +41,8 @@ async function handleRegistration(e) {
           case 200:
               domManager.displayAlertModal("Registration successful, you can log in now")
               break
-          case 401:
-              domManager.displayAlertModal("Wrong data, please try again!")
+          case 203:
+              alert("wrongData")
               break
       }
   } catch (error) {
@@ -59,8 +62,19 @@ async function handleLogin(e) {
               domManager.displayAlertModal("Login successful!")
               document.getElementById("login-status").innerHTML = ""
               navbarManager.generateNavbar()
+              const boards = await dataHandler.getBoards();
+              for (let board of boards) {
+                  domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+                    "click", changeTitleHandler);
+              }
+              document.querySelectorAll(".column-header").forEach(elem =>{
+                  elem.addEventListener("click", editColumnTitle)
+              })
+              document.querySelectorAll(".new-card-button").forEach(elem => {
+                    elem.classList.remove("hidden")
+              })
               break
-          case 401:
+          case 203:
               domManager.displayAlertModal("Wrong data, please try again!")
               break
       }
@@ -80,6 +94,18 @@ async function handleLogout(e) {
         document.getElementById("login-status").innerHTML = ""
         navbarManager.generateNavbar()
         document.getElementById("logout").className = "btn btn-default"
+        document.querySelectorAll(".board-title").forEach(elem => {
+            elem.removeEventListener("click", changeTitleHandler)
+        })
+        document.querySelectorAll(".column-header").forEach(elem => {
+            // elem.removeEventListener("click", editColumnTitle)
+            let old_element = elem
+            let new_element = old_element.cloneNode(true);
+            old_element.parentNode.replaceChild(new_element, old_element);
+        })
+        document.querySelectorAll(".new-card-button").forEach(elem => {
+              elem.classList.add("hidden")
+          })
     }
 }
 

@@ -39,11 +39,13 @@ def get_columns_for_board(board_id: int):
 
 @app.route("/api/boards", methods=["POST"])
 def add_new_board():
-    json_dictionary = request.get_json()
-    board_name = json_dictionary["board-name"]
-    if board_name != '':
+    if session.get("username"):
+        json_dictionary = request.get_json()
+        board_name = json_dictionary["board-name"]
         queires.add_board_to_db(board_name)
-    return redirect('/api/boards')
+        return jsonify({}), 200
+    else:
+        return jsonify({}), 203
 
 
 @app.route("/api/register", methods=["POST"])
@@ -52,9 +54,10 @@ def register():
     email = json_dictionary["email"]
     password = json_dictionary["password"]
     username = json_dictionary["username"]
-    # zabezpiecz przed maupą w username
+    if "@" in username:
+        return jsonify(json_dictionary), 203
     if queires.check_if_email_exists(email) or queires.check_if_username_exists(username):
-        return jsonify(json_dictionary), 401
+        return jsonify(json_dictionary), 203
     else:
         data_manager.register(email, username, password)
         return jsonify(json_dictionary), 200
@@ -80,7 +83,7 @@ def login():
         session["username"] = username
         return session, 200
     else:
-        return jsonify(json_dictionary), 401
+        return jsonify(json_dictionary), 203
 
 
 @app.route('/logout')
@@ -95,7 +98,7 @@ def get_username():
         username = {"username": session["username"]}
         return jsonify(username), 200
     else:
-        return jsonify({}), 401
+        return jsonify({}), 203
 
 
 @app.route("/api/boards/<int:board_id>/cards/")
@@ -110,9 +113,12 @@ def get_cards_for_board(board_id: int):
 
 @app.route("/api/boards/<int:board_id>/rename/", methods=["POST"])
 def rename_board(board_id: int):
-    new_board_title = request.get_json()["title"]
-    queires.rename_board(board_id, new_board_title)
-    return redirect("/")
+    if session.get("username"):
+        new_board_title = request.get_json()["title"]
+        queires.rename_board(board_id, new_board_title)
+        return jsonify({}), 200
+    else:
+        return jsonify({}), 203
 
 
 @app.route("/api/boards/<int:board_id>/delete", methods=['POST'])
@@ -124,12 +130,15 @@ def delete_board(board_id):
 
 @app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
 def add_new_card(board_id):
-    card_data = request.get_json()
-    column_id = card_data["columnId"]
-    title = card_data["cardTitle"]
-    queires.add_new_card(board_id, title, column_id)
-    card_id = queires.get_latest_card_id()["id"]
-    return jsonify({"cardId": card_id})
+    if session.get("username"):
+        card_data = request.get_json()
+        column_id = card_data["columnId"]
+        title = card_data["cardTitle"]
+        queires.add_new_card(board_id, title, column_id)
+        card_id = queires.get_latest_card_id()["id"]
+        return jsonify({"cardId": card_id}), 200
+    else:
+        return jsonify({}), 203
 
 
 @app.route('/api/boards/cards/delete/', methods=["POST"])
@@ -162,24 +171,26 @@ def add_column(board_id):
 
 @app.route('/api/boards/<board_id>/columns/<column_id>', methods=["PUT"])
 def edit_column(board_id, column_id):
-    data = request.get_json()
-    column_name = data["columnName"]
-    old_column_id = int(column_id)
-    cards_ids = [int(x) for x in data["cardsIds"]]
-    if not data_manager.check_if_column_exists(column_name):
-        queires.add_column(column_name)
-        new_column_id = queires.get_latest_column_id()["id"]
+    if session.get("username"):
+        data = request.get_json()
+        column_name = data["columnName"]
+        old_column_id = int(column_id)
+        cards_ids = [int(x) for x in data["cardsIds"]]
+        if not data_manager.check_if_column_exists(column_name):
+            queires.add_column(column_name)
+            new_column_id = queires.get_latest_column_id()["id"]
+        else:
+            new_column_id = queires.get_column_by_name(column_name)["id"]
+        queires.update_columns_for_board(board_id, old_column_id, new_column_id)
+        for card_id in cards_ids:
+            queires.update_column_for_card(card_id, new_column_id)
+        return jsonify({"columnId": new_column_id})
     else:
-        new_column_id = queires.get_column_by_name(column_name)["id"]
-    queires.update_columns_for_board(board_id, old_column_id, new_column_id)
-    for card_id in cards_ids:
-        queires.update_column_for_card(card_id, new_column_id)
-    return jsonify({"columnId": new_column_id})
+        return jsonify({}), 203
 
 
 def main():
     app.run(debug=True)
-
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))

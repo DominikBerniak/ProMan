@@ -47,16 +47,20 @@ export let columnManager = {
 };
 
 function handleColumns(columnCount){
-    document.querySelectorAll(".column").forEach(column=>{
+    document.querySelectorAll(".column").forEach(async column=>{
         column.style.width = `${Math.floor(80 / columnCount)}%`;
         const columnHeader = column.querySelector(".column-header");
-        columnHeader.addEventListener("click",e=>{
-            editColumnTitle(e)
-        })
+         let response = await fetch("/getUsername", {
+            method: "GET",});
+         if (response.status === 200) {
+             columnHeader.addEventListener("click", e => {
+                 editColumnTitle(e)
+             })
+         }
     })
 }
 
-function editColumnTitle(e){
+export let editColumnTitle = function(e){
     let columnHeader = e.currentTarget;
     const oldTitle = columnHeader.innerHTML;
     if (columnHeader.childElementCount === 0){
@@ -122,7 +126,7 @@ function addColumnHandler(boardId){
             $('#boardModal').modal('hide');
         }else{
             dataHandler.addColumn(input.value, boardId)
-                .then(response=>{
+                .then(async response => {
                     const columnId = response["columnId"];
                     const column = {
                         id: columnId,
@@ -135,13 +139,22 @@ function addColumnHandler(boardId){
                     columnElem.removeAttribute("hidden");
                     const newCardButton = document.createElement("button");
                     newCardButton.innerHTML = "New Card";
-                    newCardButton.classList.add("new-card-button", "btn");
+
+                    let response2 = await fetch("/getUsername", {
+                        method: "GET",
+                    });
+                    if (response2.status === 200) {
+                        newCardButton.classList.add("new-card-button", "btn");
+                    }
+                    else {
+                        newCardButton.classList.add("new-card-button", "btn", "hidden");
+                    }
                     columnElem.appendChild(newCardButton);
-                    newCardButton.addEventListener("click",e=>{
+                    newCardButton.addEventListener("click", e => {
                         addNewCardHandler(e, boardId, columnId)
                     })
                     let columnCount = 0;
-                    for (let column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)){
+                    for (let column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
                         columnCount++;
                     }
                     handleColumns(columnCount);

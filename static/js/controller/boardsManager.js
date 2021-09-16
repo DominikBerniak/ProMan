@@ -5,6 +5,7 @@ import { columnManager} from "./columnManager.js";
 import { cardsManager } from "./cardsManager.js";
 
 export let boardsManager = {
+
   loadBoards: async function () {
     const boards = await dataHandler.getBoards();
     for (let board of boards) {
@@ -15,9 +16,14 @@ export let boardsManager = {
         `.toggle-board-button[data-board-id="${board.id}"]`,
         "click",
         showHideButtonHandler);
-      domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
-          "click",
-          changeTitleHandler);
+        let response = await fetch("/getUsername", {
+            method: "GET",
+        });
+        if (response.status === 200) {
+            domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+              "click",
+              changeTitleHandler);
+        }
     }
   },
 
@@ -31,8 +37,7 @@ export let boardsManager = {
         let form = document.getElementById('board_form')
         form.addEventListener('submit', function (e) {
           if (modalTitle.innerHTML === "New board"){
-            console.log("dupa");
-          // dataHandler.createNewBoard(e)
+            dataHandler.createNewBoard(e)
             $('#boardModal').modal('hide');
           }
       })
@@ -50,7 +55,12 @@ function showHideButtonHandler(clickEvent) {
   }
 }
 
-function changeTitleHandler(e){
+function showModal(event) {
+    let modal = this
+    modal.find('.modal-title').text('New board')
+}
+
+export let changeTitleHandler = function (e){
   let boardId = e.currentTarget.dataset.boardId;
   if (e.currentTarget.childElementCount ===0){
     let oldBoardTitle = e.currentTarget.innerHTML;
