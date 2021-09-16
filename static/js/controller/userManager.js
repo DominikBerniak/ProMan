@@ -1,5 +1,6 @@
 import { domManager } from "../view/domManager.js";
 import { navbarManager } from "./navbarManager.js";
+import { boardsManager } from "./boardsManager.js";
 
 
 
@@ -62,6 +63,8 @@ async function handleLogin(e) {
           case 200:
               document.getElementById("login-status").innerHTML = ""
               navbarManager.generateNavbar()
+              document.getElementById("root").innerHTML = ""
+              boardsManager.loadBoards()
               break
           case 401:
               alert("wrongData")

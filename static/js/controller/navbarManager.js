@@ -17,7 +17,6 @@ export let navbarManager = {
               document.getElementById("logout").className = "hidden"
               break
       }
-
     }
 }
 
