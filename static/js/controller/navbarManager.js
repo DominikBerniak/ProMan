@@ -8,7 +8,7 @@ export let navbarManager = {
               response.json().then(data => {
                   const content = buildNavUser(data["username"])
                   document.getElementById("login-status").innerHTML = content
-                  document.getElementById("logout").className = "btn btn-default"
+                  document.getElementById("logout").className = "";
                   document.getElementById("add-new-board-button").className = "btn btn-default"
               });
               break
