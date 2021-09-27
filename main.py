@@ -42,10 +42,10 @@ def add_new_board():
     if session.get("username"):
         json_dictionary = request.get_json()
         board_name = json_dictionary["board-name"]
-        queires.add_board_to_db(board_name)
-        return jsonify({}), 200
+        board_id = queires.add_board_to_db(board_name)["id"]
+        return jsonify({"status": 200, "id": board_id})
     else:
-        return jsonify({}), 203
+        return jsonify({"status": 203})
 
 
 @app.route("/api/register", methods=["POST"])

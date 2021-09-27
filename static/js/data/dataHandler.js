@@ -13,19 +13,19 @@ export let dataHandler = {
   },
   createNewBoard: async function (e) {
         e.preventDefault()
-        const form = e.currentTarget
+        const form = e.currentTarget;
         const url = form.action;
         try {
             const formData = new FormData(form);
-            let response = await apiPost(url, formData)
-            console.log(response.status)
+            let response = await apiPost(url, formData);
+            console.log(response.status);
             switch (response.status){
                 case 200:
-                    console.log("halo")
-                    reloadBoards(form)
-                    break
+                    let newBoard = {"columns_ids": [1,2,3,4],"id":response.id, "title": formData.get("board-name")};
+                    boardsManager.addBoardToDom(newBoard);
+                    break;
                 case 203:
-                    alert("Unauthorized")
+                    alert("Unauthorized");
             }
         }catch (error){
             console.log(error);
@@ -61,7 +61,7 @@ export let dataHandler = {
         let url = `/api/boards/${boardId}/new-card/`;
         try {
             const data = {"cardTitle": cardTitle, "boardId":boardId, "columnId": columnId};
-            return (await apiPost(url, data, false)).json();
+            return await apiPost(url, data, false);
         }catch (error){
             console.log(error);
         }
@@ -70,7 +70,7 @@ export let dataHandler = {
         const url = "/api/boards/cards/delete/"
         try {
             const data = {"cardId": cardId};
-            return (await apiPost(url, data, false)).json();
+            return (await apiPost(url, data, false));
         }catch (error){
             console.log(error);
         }
@@ -79,7 +79,7 @@ export let dataHandler = {
         const url = "/api/boards/cards/edit/";
         try {
             const data = {"cardId": cardId, "title": title};
-            return (await apiPost(url, data, false)).json();
+            return (await apiPost(url, data, false));
         }catch (error){
             console.log(error);
         }
@@ -88,7 +88,7 @@ export let dataHandler = {
         const url = `/api/boards/${boardId}/columns/`;
         try {
             const data = {"columnName": columnName};
-            return (await apiPost(url, data, false)).json();
+            return (await apiPost(url, data, false));
         }catch (error){
             console.log(error);
         }
@@ -142,7 +142,7 @@ async function apiPost(url, data, dataFromForm=true) {
             },
             body: formDataJsonString,
         });
-return response
+return response.json();
 }
 
 async function apiDelete(url) {

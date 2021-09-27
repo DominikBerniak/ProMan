@@ -85,7 +85,7 @@ export let columnTitleEditDeleteHandler = function(e){
             if (!input.value){
                 restoreColumnTitle(columnHeader,oldTitle);
             }else if(checkIfColumnNameExist(input.value, boardId)){
-                domManager.displayAlertModal("Alert", `Column ${input.value} already exists!`)
+                domManager.displayAlertModal(`Column ${input.value} already exists!`)
                 restoreColumnTitle(columnHeader,oldTitle);
             }else{
                 submitSuccess = true;
@@ -136,8 +136,12 @@ function addColumnHandler(boardId){
     input.focus();
     form.addEventListener('submit', e=> {
         e.preventDefault();
-        if (!input.value){
+        if (!input.value) {
             $('#boardModal').modal('hide');
+        }
+        else if(checkIfColumnNameExist(input.value, boardId)){
+                domManager.displayAlertModal(`Column ${input.value} already exists!`)
+                $('#boardModal').modal('hide');
         }else{
             dataHandler.addColumn(input.value, boardId)
                 .then(async response => {
@@ -146,7 +150,7 @@ function addColumnHandler(boardId){
                         id: columnId,
                         name: input.value
                     };
-                    const columnBuilder = htmlFactory(2);
+                    const columnBuilder = htmlFactory(2); //sprawdzic
                     const content = columnBuilder(column);
                     domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
                     let columnElem = document.querySelector(`.board[data-board-id="${boardId}"] .column[data-column-id="${columnId}"]`);

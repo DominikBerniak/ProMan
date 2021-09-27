@@ -69,6 +69,14 @@ def execute(statement, variables):
             cursor.execute(statement, variables)
 
 
+def execute_and_return(statement, variables, fetchall=True):
+    with establish_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+            cursor.execute(statement, variables)
+            result_set = cursor.fetchall() if fetchall else cursor.fetchone()
+    return result_set
+
+
 def hash_password(password):
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf8"), salt)
