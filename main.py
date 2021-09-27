@@ -24,9 +24,6 @@ def index():
 @app.route("/api/boards")
 @json_response
 def get_boards():
-    """
-    All the boards
-    """
     return queires.get_boards()
 
 
