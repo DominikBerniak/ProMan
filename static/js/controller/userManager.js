@@ -3,7 +3,12 @@ import {navbarManager} from "./navbarManager.js";
 import {boardsManager} from "./boardsManager.js";
 import {dataHandler} from "../data/dataHandler.js";
 import {changeTitleHandler} from "./boardsManager.js";
-import {columnManager, columnTitleEditDeleteHandler, deleteBoardButtonHandler} from "./columnManager.js";
+import {
+    addColumnHandler,
+    columnManager,
+    columnTitleEditDeleteHandler,
+    deleteBoardButtonHandler
+} from "./columnManager.js";
 import {cardEditDeleteHandler} from "./cardsManager.js";
 
 
@@ -96,10 +101,17 @@ async function handleLogin(e) {
                         cardEditDeleteHandler
                     );
                 }
-                for (let board of document.querySelectorAll(".board")){
-                    if (board.childElementCount !== 0){
+                for (let board of document.querySelectorAll(".board")) {
+                    if (board.childElementCount !== 0) {
                         let boardId = board.parentElement.getAttribute("data-board-id")
-                        deleteBoardButtonHandler(boardId)
+                        let deleteBoardButton = deleteBoardButtonHandler(boardId)
+                        let addColumn = document.createElement("div")
+                        addColumn.classList.add("add-column-container")
+                        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+                        deleteBoardButton.after(addColumn)
+                        addColumn.querySelector("button").addEventListener("click", e => {
+                            addColumnHandler(boardId);
+                        })
                     }
                 }
                 navbarManager.generateNavbar()
@@ -146,8 +158,6 @@ async function handleLogout(e) {
         document.querySelectorAll(".add_column_button").forEach(button => {
             button.remove()
         })
-
-
 
 
         navbarManager.generateNavbar()

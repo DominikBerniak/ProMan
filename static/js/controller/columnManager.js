@@ -95,7 +95,7 @@ function checkIfColumnNameExist(columnName, boardId) {
     return columnNameExists;
 }
 
-function addColumnHandler(boardId) {
+export function addColumnHandler(boardId) {
     let modalTitle = document.querySelector("#boardModal #boardModalLabel");
     modalTitle.innerHTML = "New column";
     let modalBody = document.getElementById("board-modal-body");
