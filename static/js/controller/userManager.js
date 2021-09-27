@@ -121,17 +121,19 @@ async function handleLogout(e) {
             elem.removeEventListener("click", changeTitleHandler)
         })
         document.querySelectorAll(".column-header").forEach(elem => {
-            // elem.removeEventListener("click", editColumnTitle)
-            let old_element = elem
+            let old_element = elem;
             let new_element = old_element.cloneNode(true);
             old_element.parentNode.replaceChild(new_element, old_element);
         })
-
+        document.querySelectorAll(".card").forEach(card => {
+            let old_card = card;
+            let new_card = old_card.cloneNode(true);
+            old_card.parentNode.replaceChild(new_card, old_card);
+        })
         document.querySelectorAll(".new-card-button").forEach(elem => {
             elem.classList.add("hidden")
         })
         navbarManager.generateNavbar()
-
     }
 }
 
