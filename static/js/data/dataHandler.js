@@ -1,4 +1,5 @@
 import {boardsManager} from "../controller/boardsManager.js";
+import {domManager} from "../view/domManager.js";
 
 export let dataHandler = {
   getBoards: async function () {
@@ -25,7 +26,8 @@ export let dataHandler = {
                     boardsManager.addBoardToDom(newBoard);
                     break;
                 case 203:
-                    alert("Unauthorized");
+                    domManager.displayAlertModal("You are not allowed to add new board. Try to " +
+                        "log in again.")
             }
         }catch (error){
             console.log(error);

@@ -14,14 +14,17 @@ export let columnManager = {
             addColumnToDom(column, boardId)
         }
         handleColumns(columnCount);
-        let deleteBoardButton = deleteBoardButtonHandler(boardId)
-        let addColumn = document.createElement("div")
-        addColumn.classList.add("add-column-container")
-        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
-        deleteBoardButton.after(addColumn)
-        addColumn.querySelector("button").addEventListener("click", e => {
-            addColumnHandler(boardId);
-        })
+
+        if (localStorage.getItem("username") !== null) {
+            let deleteBoardButton = deleteBoardButtonHandler(boardId)
+            let addColumn = document.createElement("div")
+            addColumn.classList.add("add-column-container")
+            addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+            deleteBoardButton.after(addColumn)
+            addColumn.querySelector("button").addEventListener("click", e => {
+                addColumnHandler(boardId);
+            })
+        }
         cardsManager.loadCards(boardId);
     },
     closeColumns: function (boardId) {
@@ -126,7 +129,7 @@ function addColumnHandler(boardId) {
     });
 }
 
-function deleteBoardButtonHandler(boardId) {
+export function deleteBoardButtonHandler(boardId) {
     let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
     let deleteButton = document.createElement("div")
     deleteButton.classList.add('delete-board')
@@ -200,9 +203,6 @@ async function addNewCardButton(boardId, columnId){
     newCardButton.innerHTML = "New Card";
     if (localStorage.getItem("username") !== null){
         newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
-    }
-    else {
-        newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
     }
     columnElem.appendChild(newCardButton);
     newCardButton.addEventListener("click", e => {

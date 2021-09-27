@@ -3,7 +3,7 @@ import {navbarManager} from "./navbarManager.js";
 import {boardsManager} from "./boardsManager.js";
 import {dataHandler} from "../data/dataHandler.js";
 import {changeTitleHandler} from "./boardsManager.js";
-import {columnTitleEditDeleteHandler} from "./columnManager.js";
+import {columnManager, columnTitleEditDeleteHandler, deleteBoardButtonHandler} from "./columnManager.js";
 import {cardEditDeleteHandler} from "./cardsManager.js";
 
 
@@ -95,6 +95,15 @@ async function handleLogin(e) {
                         "click",
                         cardEditDeleteHandler
                     );
+                }
+                let boarders = document.querySelectorAll(".board")
+                for (let board of boarders){
+                    if (board.childElementCount !== 0){
+                        console.log(board)
+                        console.log(board.parentElement.getAttribute("data-board-id"))
+                        let boardId = board.parentElement.getAttribute("data-board-id")
+                        deleteBoardButtonHandler(boardId)
+                    }
                 }
                 navbarManager.generateNavbar()
                 break
