@@ -127,7 +127,7 @@ function createFormFromButton(button){
     return button;
 }
 function getEditCardForm(oldCardMessage){
-    return `<div class="d-flex">
+    return `<div class="d-flex justify-content-between">
         <form method="post">
             <input name="card-title" class="rounded" value="${oldCardMessage}">
         </form>
