@@ -29,9 +29,9 @@ function boardBuilder(board) {
 }
 
 function columnBuilder(column){
-    return `<div class="column rounded m-2 p-2 d-flex flex-column" data-column-id="${column.id}" hidden><div class="column-header p-1">${column.name}</div></div>`;
+    return `<div class="column rounded m-2 p-2 d-flex flex-column dropzone" data-column-id="${column.id}" hidden><div class="column-header p-1">${column.name}</div></div>`;
 }
 
 function cardBuilder(card) {
-    return `<div class="card p-2 mt-1 mb-1" data-card-id="${card.id}">${card.title}</div>`;
+    return `<div class="card p-2 mt-1 mb-1" draggable="true" data-card-id="${card.id}">${card.title}</div>`;
 }

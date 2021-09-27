@@ -11,9 +11,7 @@ export let columnManager = {
         let columnCount = 0;
         for (let column of columns) {
             columnCount++;
-            const columnBuilder = htmlFactory(htmlTemplates.column);
-            const content = columnBuilder(column);
-            domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
+            addColumnToDom(column, boardId)
         }
         handleColumns(columnCount);
         let deleteBoardButton = deleteBoardButtonHandler(boardId)
@@ -51,6 +49,8 @@ function handleColumns(columnCount){
              columnHeader.addEventListener("click", e => {
                  columnTitleEditDeleteHandler(e)
              })
+             column.addEventListener('dragenter', e => columnDragEnter(e))
+             column.addEventListener('dragover', e => columnDragOver(e))
          }
     })
 }
@@ -126,17 +126,18 @@ function checkIfColumnNameExist(columnName, boardId){
 
 function addColumnHandler(boardId){
     let modalTitle = document.querySelector("#boardModal #boardModalLabel");
-    let modalLabel = document.querySelector("#board_form .col-form-label");
     modalTitle.innerHTML = "New column";
-    modalLabel.innerHTML = "Name your column:";
+    let modalBody = document.getElementById("board-modal-body");
+    modalBody.innerHTML = boardsManager.addFormToModal("Name your column:");
     $('#boardModal').modal();
-    let form = document.getElementById('board_form');
+    let form = document.getElementById('board-form');
     let input = document.getElementById("board-name");
     input.value = "";
     input.focus();
     form.addEventListener('submit', e=> {
         e.preventDefault();
         if (!input.value) {
+            domManager.displayAlertModal('You did not put any name to your column!')
             $('#boardModal').modal('hide');
         }
         else if(checkIfColumnNameExist(input.value, boardId)){
@@ -150,9 +151,7 @@ function addColumnHandler(boardId){
                         id: columnId,
                         name: input.value
                     };
-                    const columnBuilder = htmlFactory(2); //sprawdzic
-                    const content = columnBuilder(column);
-                    domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
+                    addColumnToDom(column, boardId);
                     let columnElem = document.querySelector(`.board[data-board-id="${boardId}"] .column[data-column-id="${columnId}"]`);
                     columnElem.removeAttribute("hidden");
                     const newCardButton = document.createElement("button");
@@ -186,14 +185,28 @@ function deleteBoardButtonHandler(boardId) {
     let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
     let deleteButton = document.createElement("div")
     deleteButton.classList.add('delete-board')
-    let testButton = document.createElement('button')
+    let buttonElement = document.createElement('button')
     let dataAttribute = document.createAttribute('data-board-id')
     dataAttribute.value = boardId
-    testButton.classList.add('delete_board_button', "btn");
-    testButton.setAttributeNode(dataAttribute)
-    testButton.innerHTML = 'Delete'
-    deleteButton.appendChild(testButton)
+    buttonElement.classList.add('delete_board_button', "btn");
+    buttonElement.setAttributeNode(dataAttribute)
+    buttonElement.innerHTML = 'Delete'
+    deleteButton.appendChild(buttonElement)
     boardTitle.after(deleteButton)
     deleteButton.firstChild.addEventListener("click", () => boardsManager.handleDeleteBoard(boardId))
     return deleteButton
+}
+
+function addColumnToDom(column, boardId){
+    const columnBuilder = htmlFactory(htmlTemplates.column);
+    const content = columnBuilder(column);
+    domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
+}
+
+function columnDragEnter(e) {
+
+}
+
+function columnDragOver(e) {
+
 }

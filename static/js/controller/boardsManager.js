@@ -9,7 +9,6 @@ export let boardsManager = {
     loadBoards: async function () {
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            console.log(board)
             boardsManager.addBoardToDom(board);
         }
     },
@@ -20,22 +19,20 @@ export let boardsManager = {
             let modalTitle = document.querySelector("#boardModalLabel");
             modalTitle.innerHTML = "New board";
             let modalBody = document.getElementById("board-modal-body");
-            modalBody.innerHTML = `
-                <form action="/api/boards" method="POST" id="board-form">
-                    <div class="form-group">
-                        <label for="board-name" class="col-form-label">Name your board:</label>
-                        <input type="text" class="form-control" id="board-name" name="board-name">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-default">Add</button>
-                    </div>
-                </form>`
+            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:")
             $('#boardModal').modal();
             let form = document.getElementById('board-form');
-            form.addEventListener('submit', e=> {
-                dataHandler.createNewBoard(e);
-                $('#boardModal').modal('hide');
+            let input = document.getElementById("board-name");
+            input.value = "";
+            input.focus();
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                if(!input.value){
+                    $('#boardModal').modal('hide');
+                } else {
+                    dataHandler.createNewBoard(e);
+                    $('#boardModal').modal('hide');
+                }
             })
         })
     },
@@ -49,7 +46,7 @@ export let boardsManager = {
                 $('#confirmModal').modal('hide')
             })
     },
-    addBoardToDom: async function(board){
+    addBoardToDom: async function (board) {
         const boardBuilder = htmlFactory(htmlTemplates.board);
         const content = boardBuilder(board);
         domManager.addChild("#root", content);
@@ -65,6 +62,19 @@ export let boardsManager = {
                 "click",
                 changeTitleHandler);
         }
+    },
+    addFormToModal: function (title) {
+        return `
+            <form action="/api/boards" method="POST" id="board-form">
+                <div class="form-group">
+                    <label for="board-name" class="col-form-label">${title}</label>
+                    <input type="text" class="form-control" id="board-name" name="board-name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-default">Add</button>
+                </div>
+            </form>`
     }
 };
 
