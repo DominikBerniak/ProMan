@@ -9,7 +9,6 @@ export let boardsManager = {
     loadBoards: async function () {
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            console.log(board)
             boardsManager.addBoardToDom(board);
         }
     },

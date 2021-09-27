@@ -13,11 +13,13 @@ export let cardsManager = {
             const cardBuilder = htmlFactory(htmlTemplates.card);
             const content = cardBuilder(card);
             domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
-            domManager.addEventListener(
-                `.card[data-card-id="${card.id}"]`,
-                "click",
-                cardEditDeleteHandler
-            );
+            if (localStorage.getItem("username") !== null) {
+                domManager.addEventListener(
+                    `.card[data-card-id="${card.id}"]`,
+                    "click",
+                    cardEditDeleteHandler
+                );
+            }
         }
         for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
             const newCardButton = document.createElement("button");
@@ -64,7 +66,7 @@ export let addNewCardHandler = function (e, boardId, columnId) {
         }
     })
 }
-function cardEditDeleteHandler() {
+export function cardEditDeleteHandler() {
     if (this.childElementCount !== 0) {
         return;
     }

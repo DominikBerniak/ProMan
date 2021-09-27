@@ -4,6 +4,7 @@ import {boardsManager} from "./boardsManager.js";
 import {dataHandler} from "../data/dataHandler.js";
 import {changeTitleHandler} from "./boardsManager.js";
 import {columnTitleEditDeleteHandler} from "./columnManager.js";
+import {cardEditDeleteHandler} from "./cardsManager.js";
 
 
 export let userManager = {
@@ -87,6 +88,14 @@ async function handleLogin(e) {
                 document.querySelectorAll(".new-card-button").forEach(elem => {
                     elem.classList.remove("hidden")
                 })
+                let cards = document.querySelectorAll(".card")
+                for (let card of cards) {
+                    domManager.addEventListener(
+                        `.card[data-card-id="${card.getAttribute("data-card-id")}"]`,
+                        "click",
+                        cardEditDeleteHandler
+                    );
+                }
                 navbarManager.generateNavbar()
                 break
             case 203:
