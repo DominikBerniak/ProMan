@@ -22,12 +22,10 @@ export let cardsManager = {
         for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
             const newCardButton = document.createElement("button");
             newCardButton.innerHTML = "New card";
-            let response = await fetch("/getUsername", {
-                method: "GET",
-            });
-            if (response.status === 200) {
+            if (localStorage.getItem("username") !== null){
                 newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
-            } else {
+            }
+            else {
                 newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
             }
             column.appendChild(newCardButton);

@@ -4,8 +4,6 @@ import { navbarManager } from "./controller/navbarManager.js";
 
 
 async function init() {
-  userManager.checkLoginStatus()
-
   navbarManager.generateNavbar()
   boardsManager.loadBoards();
   boardsManager.addNewBoard();
@@ -16,7 +14,5 @@ async function init() {
 
 
 window.onload = function (){
-
-
   init();
 }

@@ -40,9 +40,6 @@ export let userManager = {
             localStorage.removeItem("username");
             localStorage.removeItem("userId");
         }
-        console.log(localStorage.getItem("username"))
-        console.log(localStorage.getItem("userId"))
-
     }
 }
 

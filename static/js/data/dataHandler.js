@@ -39,12 +39,7 @@ export let dataHandler = {
             let response = await apiPost(url, formData)
             switch (response.status){
                 case 203:
-
             }
-
-
-
-            // return await apiPost(url, formData)
         }catch (error){
             console.log(error);
         }

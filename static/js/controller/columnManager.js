@@ -43,10 +43,7 @@ function handleColumns(columnCount) {
     document.querySelectorAll(".column").forEach(async column => {
         column.style.width = `${Math.floor(90 / columnCount)}%`;
         const columnHeader = column.querySelector(".column-header");
-        let response = await fetch("/getUsername", {
-            method: "GET",
-        });
-        if (response.status === 200) {
+        if (localStorage.getItem("username") !== null){
             columnHeader.addEventListener("click", e => {
                 columnTitleEditDeleteHandler(e)
             })
@@ -201,13 +198,10 @@ async function addNewCardButton(boardId, columnId){
     columnElem.removeAttribute("hidden");
     const newCardButton = document.createElement("button");
     newCardButton.innerHTML = "New Card";
-
-    let response2 = await fetch("/getUsername", {
-        method: "GET",
-    });
-    if (response2.status === 200) {
+    if (localStorage.getItem("username") !== null){
         newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
-    } else {
+    }
+    else {
         newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
     }
     columnElem.appendChild(newCardButton);
