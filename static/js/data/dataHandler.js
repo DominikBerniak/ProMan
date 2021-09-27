@@ -88,7 +88,7 @@ export let dataHandler = {
         const url = `/api/boards/${boardId}/columns/`;
         try {
             const data = {"columnName": columnName};
-            return (await apiPost(url, data, false));
+            return await apiPost(url, data, false);
         }catch (error){
             console.log(error);
         }
