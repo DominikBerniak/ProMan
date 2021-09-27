@@ -96,11 +96,8 @@ async function handleLogin(e) {
                         cardEditDeleteHandler
                     );
                 }
-                let boarders = document.querySelectorAll(".board")
-                for (let board of boarders){
+                for (let board of document.querySelectorAll(".board")){
                     if (board.childElementCount !== 0){
-                        console.log(board)
-                        console.log(board.parentElement.getAttribute("data-board-id"))
                         let boardId = board.parentElement.getAttribute("data-board-id")
                         deleteBoardButtonHandler(boardId)
                     }
@@ -142,6 +139,17 @@ async function handleLogout(e) {
         document.querySelectorAll(".new-card-button").forEach(elem => {
             elem.classList.add("hidden")
         })
+        console.log(document.querySelectorAll(".delete_board_button"))
+        document.querySelectorAll(".delete_board_button").forEach(button => {
+            button.remove()
+        })
+        document.querySelectorAll(".add_column_button").forEach(button => {
+            button.remove()
+        })
+
+
+
+
         navbarManager.generateNavbar()
     }
 }
