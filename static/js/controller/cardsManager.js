@@ -65,7 +65,7 @@ export let addNewCardHandler = function(e, boardId, columnId){
                 return;
             }
             dataHandler.createNewCard(input.value,boardId, columnId)
-                .then(response=>{
+                .then(response=> {
                     const newCard = document.createElement("div");
                     newCard.classList.add("card", "p-2", "mt-1", "mb-1");
                     let dataAttribute = document.createAttribute("data-card-id");

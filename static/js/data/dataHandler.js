@@ -60,7 +60,7 @@ export let dataHandler = {
     createNewCard: async function (cardTitle, boardId, columnId) {
         let url = `/api/boards/${boardId}/new-card/`;
         try {
-            const data = {"cardTitle": cardTitle, "boardId":boardId, "columnId": columnId};
+            const data = {"cardTitle": cardTitle, "boardId": boardId, "columnId": columnId};
             return await apiPost(url, data, false);
         }catch (error){
             console.log(error);
