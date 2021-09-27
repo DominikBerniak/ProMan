@@ -32,10 +32,12 @@ export let columnManager = {
         columns.forEach(column => {
             column.remove();
         })
-        let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
-        deleteBoardButton.remove()
-        let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
-        addColumnButton.remove();
+        if (localStorage.getItem("username") !== null) {
+            let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
+            deleteBoardButton.remove()
+            let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
+            addColumnButton.remove();
+        }
         const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
         button.classList.remove("bi-caret-up-square")
         button.classList.add("bi-caret-down-square")

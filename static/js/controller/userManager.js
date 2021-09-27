@@ -151,7 +151,6 @@ async function handleLogout(e) {
         document.querySelectorAll(".new-card-button").forEach(elem => {
             elem.classList.add("hidden")
         })
-        console.log(document.querySelectorAll(".delete_board_button"))
         document.querySelectorAll(".delete_board_button").forEach(button => {
             button.remove()
         })
