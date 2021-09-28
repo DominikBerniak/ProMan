@@ -12,22 +12,23 @@ export let cardsManager = {
         for (let card of cards) {
             const cardBuilder = htmlFactory(htmlTemplates.card);
             const content = cardBuilder(card);
+
             domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
-            domManager.addEventListener(
-                `.card[data-card-id="${card.id}"]`,
-                "click",
-                cardEditDeleteHandler
-            );
+            if (localStorage.getItem("username") !== null) {
+                domManager.addEventListener(
+                    `.card[data-card-id="${card.id}"]`,
+                    "click",
+                    cardEditDeleteHandler
+                );
+            }
         }
         for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
             const newCardButton = document.createElement("button");
             newCardButton.innerHTML = "New card";
-            let response = await fetch("/getUsername", {
-                method: "GET",
-            });
-            if (response.status === 200) {
+            if (localStorage.getItem("username") !== null){
                 newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
-            } else {
+            }
+            else {
                 newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
             }
             column.appendChild(newCardButton);
@@ -66,7 +67,7 @@ export let addNewCardHandler = function (e, boardId, columnId) {
         }
     })
 }
-function cardEditDeleteHandler() {
+export function cardEditDeleteHandler() {
     if (this.childElementCount !== 0) {
         return;
     }

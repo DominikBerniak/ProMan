@@ -95,8 +95,10 @@ def logout():
 @app.route('/getUsername')
 def get_username():
     if session.get("username"):
-        username = {"username": session["username"]}
-        return jsonify(username), 200
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]["id"]
+        data = {"username": username, "id": user_id}
+        return jsonify(data), 200
     else:
         return jsonify({}), 203
 

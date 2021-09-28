@@ -1,26 +1,22 @@
+import {userManager} from "./userManager.js";
+
 export let navbarManager = {
   generateNavbar: async function () {
-        let response = await fetch("/getUsername", {
-            method: "GET",
-        });
-      switch (response.status){
-          case 200:
-              response.json().then(data => {
-                  const content = buildNavUser(data["username"])
-                  document.getElementById("login-status").innerHTML = content
-                  document.getElementById("logout").className = "";
-                  document.getElementById("add-new-board-button").className = "btn btn-default"
-              });
-              break
-          case 203:
-              const content = buildNavGuest();
-              document.getElementById("login-status").innerHTML = content
-              document.getElementById("logout").className = "hidden"
-              document.getElementById("add-new-board-button").className = "hidden"
-
-              break
+      await userManager.checkLoginStatus()
+      if (localStorage.getItem("username") !== null){
+          let content = buildNavUser(localStorage.getItem("username"))
+          document.getElementById("login-status").innerHTML = content
+          document.getElementById("logout").className = "";
+          document.getElementById("add-new-board-button").className = "btn btn-default"
+      }
+      else {
+          const content = buildNavGuest();
+          document.getElementById("login-status").innerHTML = content
+          document.getElementById("logout").className = "hidden"
+          document.getElementById("add-new-board-button").className = "hidden"
       }
     }
+
 }
 
 
