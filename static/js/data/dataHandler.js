@@ -23,7 +23,8 @@ export let dataHandler = {
             switch (response.status){
                 case 200:
                     let newBoard = {"columns_ids": [1,2,3,4],"id":response.id, "title": formData.get("board-name")};
-                    boardsManager.addBoardToDom(newBoard);
+                    boardsManager.addBoardToDom(newBoard, true);
+                    // zmodyfikować
                     break;
                 case 203:
                     domManager.displayAlertModal("You are not allowed to add new board. Try to " +
