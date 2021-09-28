@@ -58,8 +58,6 @@ def rename_board(board_id, new_board_title):
 def add_board_to_db(board_name, owner):
     return data_manager.execute_and_return(
         """
-        INSERT INTO boards (title, columns_ids) 
-        VALUES (%(board_name)s, ARRAY[1,2,3,4])
         INSERT INTO boards
         (title, columns_ids, owner) VALUES (%(board_name)s, ARRAY[1,2,3,4], %(owner)s)
         RETURNING id;

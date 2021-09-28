@@ -23,7 +23,7 @@ export let boardsManager = {
             let modalTitle = document.querySelector("#boardModalLabel");
             modalTitle.innerHTML = "New board";
             let modalBody = document.getElementById("board-modal-body");
-            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:", "Board title")
+            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:", "Board title", true);
             $('#boardModal').modal();
             let form = document.getElementById('board-form');
             let input = document.getElementById("board-name");
@@ -67,7 +67,7 @@ export let boardsManager = {
                 changeTitleHandler);
         }
     },
-    addFormToModal: function (title) {
+    addFormToModal: function (title, placeholder, checkbox=false) {
         let output = `
             <form action="/api/boards" method="POST" id="board-form">
                 <div class="form-group">
