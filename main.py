@@ -111,7 +111,7 @@ def get_cards_for_board(board_id: int):
     return queires.get_cards_for_board(board_id)
 
 
-@app.route("/api/boards/<int:board_id>/rename/", methods=["POST"])
+@app.route("/api/boards/<int:board_id>/", methods=["PUT"])
 def rename_board(board_id: int):
     if session.get("username"):
         new_board_title = request.get_json()["title"]
@@ -125,39 +125,33 @@ def rename_board(board_id: int):
 def delete_board(board_id):
     queires.delete_cards_by_board_id(board_id)
     queires.delete_board_from_db(board_id)
-    return redirect("/")
+    return jsonify({"status": 200})
 
 
-@app.route("/api/boards/<int:board_id>/new-card/", methods=["POST"])
-def add_new_card(board_id):
+@app.route("/api/boards/<int:board_id>/<int:column_id>/cards", methods=["POST"])
+def add_new_card(board_id, column_id):
     if session.get("username"):
-        card_data = request.get_json()
-        column_id = card_data["columnId"]
-        title = card_data["cardTitle"]
-        queires.add_new_card(board_id, title, column_id)
-        card_id = queires.get_latest_card_id()["id"]
-        return jsonify({"cardId": card_id}), 200
+        title = request.get_json()["cardTitle"]
+        card_id = queires.add_new_card(board_id, title, column_id)["id"]
+        return jsonify({"cardId": card_id, "status": 200})
     else:
-        return jsonify({}), 203
+        return jsonify({"status": 203})
 
 
-@app.route('/api/boards/cards/delete/', methods=["POST"])
-def delete_card():
-    card_id = request.get_json()["cardId"]
+@app.route('/api/boards/columns/cards/<int:card_id>', methods=["DELETE"])
+def delete_card(card_id):
     queires.delete_card(card_id)
-    return redirect("/")
+    return jsonify({"status": 200})
 
 
-@app.route('/api/boards/cards/edit/', methods=["POST"])
-def edit_card():
-    json = request.get_json()
-    card_id = json["cardId"]
-    title = json["title"]
+@app.route('/api/boards/columns/cards/<int:card_id>', methods=["PUT"])
+def edit_card(card_id):
+    title = request.get_json()["title"]
     queires.edit_card(card_id, title)
-    return redirect("/")
+    return jsonify({"status": 200})
 
 
-@app.route('/api/boards/<board_id>/columns/', methods=["POST"])
+@app.route('/api/boards/<int:board_id>/columns', methods=["POST"])
 def add_column(board_id):
     column_name = request.get_json()["columnName"]
     if not data_manager.check_if_column_exists(column_name):
@@ -169,12 +163,12 @@ def add_column(board_id):
     return jsonify({"columnId": new_column_id})
 
 
-@app.route('/api/boards/<board_id>/columns/<column_id>', methods=["PUT"])
+@app.route('/api/boards/<int:board_id>/columns/<int:column_id>', methods=["PUT"])
 def edit_column(board_id, column_id):
     if session.get("username"):
         data = request.get_json()
         column_name = data["columnName"]
-        old_column_id = int(column_id)
+        old_column_id = column_id
         cards_ids = [int(x) for x in data["cardsIds"]]
         if not data_manager.check_if_column_exists(column_name):
             queires.add_column(column_name)
@@ -189,13 +183,11 @@ def edit_column(board_id, column_id):
         return jsonify({}), 203
 
 
-@app.route('/api/boards/<board_id>/columns/<column_id>', methods=["DELETE"])
+@app.route('/api/boards/<int:board_id>/columns/<int:column_id>', methods=["DELETE"])
 def delete_column(board_id, column_id):
-    board_id = int(board_id)
-    column_id = int(column_id)
     queires.delete_column_from_board(board_id, column_id)
     queires.delete_cards_by_board_id_and_column_id(board_id, column_id)
-    return jsonify({"deleted": True})
+    return jsonify({"status": 200})
 
 
 def main():

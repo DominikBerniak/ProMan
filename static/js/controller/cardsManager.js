@@ -60,6 +60,7 @@ export let addNewCardHandler = function (e, boardId, columnId) {
         } else {
             dataHandler.createNewCard(input.value, boardId, columnId)
                 .then(response => {
+                    console.log(response)
                     let newCard = addNewCardToDom(response["cardId"], input, button);
                     newCard.addEventListener("click", cardEditDeleteHandler)
                 });
@@ -78,7 +79,7 @@ function cardEditDeleteHandler() {
     const input = this.querySelector("input");
     const deleteCardButton = this.querySelector(".delete-card");
     input.focus();
-    deleteCardButton.addEventListener("click", e => {
+    deleteCardButton.addEventListener("click", () => {
         dataHandler.deleteCard(cardId)
             .then(() => {
                 this.remove();

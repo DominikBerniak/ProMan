@@ -58,19 +58,20 @@ def rename_board(board_id, new_board_title):
 def add_board_to_db(board_name):
     return data_manager.execute_and_return(
         """
-        INSERT INTO boards
-        (title, columns_ids) VALUES (%(board_name)s, ARRAY[1,2,3,4])
+        INSERT INTO boards (title, columns_ids) 
+        VALUES (%(board_name)s, ARRAY[1,2,3,4])
         RETURNING id;
         """
         , {'board_name': board_name}, False)
 
 
 def add_new_card(board_id, title, column_id):
-    data_manager.execute(
+    return data_manager.execute_and_return(
         """
         INSERT INTO cards (board_id, title, column_id)
-        VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
-        , {"board_id": board_id, "title": title, "column_id": column_id}
+        VALUES (%(board_id)s, %(title)s, %(column_id)s)
+        RETURNING id;"""
+        , {"board_id": board_id, "title": title, "column_id": column_id}, False
     )
 
 
@@ -164,16 +165,6 @@ def get_latest_column_id():
     return data_manager.execute_select(
         """
         SELECT id FROM columns
-        ORDER BY id DESC
-        LIMIT 1;"""
-        , fetchall=False
-    )
-
-
-def get_latest_card_id():
-    return data_manager.execute_select(
-        """
-        SELECT id FROM cards
         ORDER BY id DESC
         LIMIT 1;"""
         , fetchall=False

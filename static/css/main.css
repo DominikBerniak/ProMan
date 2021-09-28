@@ -1,123 +1,163 @@
 body {
     padding-right: 0 !important
 }
-#nav{
+
+#nav {
     display: flex;
     justify-content: space-between;
 }
 
-#login-status{
+#login-status {
     display: flex;
     margin: 4px;
     padding-right: 2px;
 }
 
-#right-site{
+#right-site {
     display: flex;
 }
 
-.board-container{
+.board-container {
     width: 90%;
     margin: 2vh auto;
     background-color: #ffdbff;
 }
-.board-header{
+
+.board-header {
     display: flex;
     background-color: #fdb7fd;
     justify-content: space-between;
     align-items: center;
     min-height: 10vh;
 }
-.board-header .board-title{
+
+.board-header .board-title {
     cursor: pointer;
     font-size: 1.2em;
     width: 25%;
 }
-.board-header .board-title:hover{
+
+.board-header .board-title:hover {
     font-size: 1.3em;
 }
-.board-header button:not(.toggle-board-button){
+
+.board-header button:not(.toggle-board-button) {
     background-color: #fdb7fd;
     color: black;
     cursor: pointer;
 }
+
 .board-header button:not(.toggle-board-button):hover {
     background-color: purple;
     color: #FFF;
     border-color: purple;
 }
-.toggle-board-button{
+
+.toggle-board-button {
     cursor: pointer;
     border: none;
     background-color: transparent;
     color: #6a6a6a;
     font-size: 1.3em;
 }
-.toggle-board-button:hover{
+
+.toggle-board-button:hover {
     color: #404040;
 }
+
 .board-header button:focus {
     outline: none;
 }
-.board{
+
+.board {
     display: flex;
-    justify-content: space-between;
+    overflow-x: auto;
 }
-.column{
+
+.column {
     background-color: rgba(253, 183, 253, 0.24);
     min-height: 18vh;
+    min-width: 20vw;
 }
-.column-header{
+
+.column-header {
     margin-bottom: 1vh;
     border-bottom: 1px solid black;
     text-align: center;
     cursor: pointer;
 }
+
 .btn-default {
     background-color: plum;
-    color:#FFF;
+    color: #FFF;
     border-color: plum;
 }
+
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
     background-color: purple;
-    color:#FFF;
+    color: #FFF;
     border-color: purple;
 }
-.card{
+
+.card {
     cursor: pointer;
 }
 
 
-.hidden{
+.hidden {
     visibility: hidden;
 }
 
-.new-card-button{
+.new-card-button {
     font-size: 100%;
+    margin-top: 1vh;
 }
-.board-container form{
+
+.board-container form {
     display: flex;
 }
-.board-container input{
+
+.board-container input {
     width: 100%;
     border: none;
     outline: none;
 }
-.clear-button{
+
+.clear-button {
     border: none;
     outline: none;
     background-color: transparent;
 }
-.delete-icon-button{
+
+.delete-icon-button {
     font-size: 1.3em;
     cursor: pointer;
     color: #868686;
 }
-.delete-icon-button:hover{
+
+.delete-icon-button:hover {
     color: #000000;
     transform: scale(1.1);
 }
-.delete-icon-button:active, .delete-icon-button:focus{
+
+.delete-icon-button:active, .delete-icon-button:focus {
     border: none;
     outline: none;
+}
+
+/*Scroll bar*/
+::-webkit-scrollbar {
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffe6ff;
+}
+
+::-webkit-scrollbar-thumb {
+    background: plum;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: purple;
 }
