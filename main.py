@@ -45,9 +45,10 @@ def add_new_board():
         user_id = queires.get_id_by_username(session.get("username"))[0]["id"]
         if "private" in json_dictionary.keys():
             board_id = queires.add_board_to_db(board_name, user_id)["id"]
+            return jsonify({"status": 200, "id": board_id, "private": True})
         else:
             board_id = queires.add_board_to_db(board_name, None)["id"]
-        return jsonify({"status": 200, "id": board_id})
+            return jsonify({"status": 200, "id": board_id, "private": False})
     else:
         return jsonify({"status": 203})
 

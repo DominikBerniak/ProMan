@@ -26,7 +26,12 @@ export let dataHandler = {
                         "id": response.id,
                         "title": formData.get("board-name")
                     };
-                    boardsManager.addBoardToDom(newBoard, true);
+                    if (formData.get("private")) {
+                        boardsManager.addBoardToDom(newBoard, true);
+                    }
+                    else {
+                        boardsManager.addBoardToDom(newBoard);
+                    }
                     break;
                 case 203:
                     domManager.displayAlertModal("You are not allowed to add new board. Try to " +
