@@ -108,13 +108,6 @@ export let dataHandler = {
     },
 };
 
-function reloadBoards(form) {
-    let root = document.getElementById("root")
-    root.innerHTML = ''
-    boardsManager.loadBoards();
-    form.querySelector("input").value = "";
-}
-
 async function apiGet(url) {
     let response = await fetch(url, {
         method: "GET",

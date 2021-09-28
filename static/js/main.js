@@ -10,6 +10,7 @@ async function init() {
   userManager.registerUser();
   userManager.loginUser()
   userManager.logoutUser()
+  boardsManager.initRefreshPageButton()
 }
 
 

@@ -60,9 +60,22 @@ body {
     color: #6a6a6a;
     font-size: 1.3em;
 }
-
 .toggle-board-button:hover {
     color: #404040;
+}
+#refresh-page{
+    cursor: pointer;
+    font-size: 1.2em;
+    background-color: plum;
+    color: #FFF;
+    border: none;
+}
+#refresh-page:focus{
+    border: none;
+    outline: none;
+}
+#refresh-page:hover{
+    background-color: purple;
 }
 
 .board-header button:focus {

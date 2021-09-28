@@ -74,6 +74,12 @@ export let boardsManager = {
                     <button type="submit" class="btn btn-default">Add</button>
                 </div>
             </form>`
+    },
+    initRefreshPageButton: function (){
+        const refreshPageButton = document.getElementById("refresh-page");
+        refreshPageButton.addEventListener("click", ()=>{
+            reloadBoards();
+        })
     }
 };
 
@@ -115,5 +121,11 @@ export let changeTitleHandler = function (e) {
                 });
         }
     });
+}
+
+function reloadBoards() {
+    let root = document.getElementById("root")
+    root.innerHTML = '';
+    boardsManager.loadBoards();
 }
 
