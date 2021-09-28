@@ -12,14 +12,9 @@ export let boardsManager = {
             if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")){
                 boardsManager.addBoardToDom(board, true);
             }
-            else if (board["owner"] !== null) {
-                // boardsManager.addBoardToDom(board);
-
-            }
-            else {
+            else if (board["owner"] === null) {
                 boardsManager.addBoardToDom(board);
             }
-
         }
     },
 
@@ -29,7 +24,7 @@ export let boardsManager = {
             let modalTitle = document.querySelector("#boardModalLabel");
             modalTitle.innerHTML = "New board";
             let modalBody = document.getElementById("board-modal-body");
-            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:", true)
+            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:")
             $('#boardModal').modal();
             let form = document.getElementById('board-form');
             let input = document.getElementById("board-name");
@@ -52,6 +47,9 @@ export let boardsManager = {
             'click',
             function () {
                 dataHandler.deleteBoard(boardId)
+                    .then(()=>{
+                        domManager.displayAlertModal("Board successfully deleted.");
+                    })
                 document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
                 $('#confirmModal').modal('hide')
             })
@@ -70,12 +68,12 @@ export let boardsManager = {
                 changeTitleHandler);
         }
     },
-    addFormToModal: function (title, checkbox= false) {
-         let output = `
+    addFormToModal: function (title) {
+        let output = `
             <form action="/api/boards" method="POST" id="board-form">
                 <div class="form-group">
                     <label for="board-name" class="col-form-label">${title}</label>
-                    <input type="text" class="form-control" id="board-name" name="board-name">
+                    <input type="text" class="form-control" id="board-name" name="board-name" placeholder="${placeholder}">
                 </div>
                 <div class="modal-footer">`
                     if (checkbox){
@@ -100,11 +98,6 @@ function showHideButtonHandler(clickEvent) {
     }
 }
 
-function showModal(event) {
-    let modal = this
-    modal.find('.modal-title').text('New board')
-}
-
 export let changeTitleHandler = function (e) {
     if (e.currentTarget.childElementCount !== 0) {
         return;
@@ -113,7 +106,7 @@ export let changeTitleHandler = function (e) {
     let oldBoardTitle = e.currentTarget.innerHTML;
     let boardTitle = e.currentTarget;
     boardTitle.innerHTML = `
-        <form class="board-title-form" action="/api/boards/${boardId}/rename/" method="post">
+        <form class="board-title-form" action="/api/boards/${boardId}/">
             <input class="rounded" name="title" value="${oldBoardTitle}">
         </form>`
     const form = boardTitle.querySelector("form");

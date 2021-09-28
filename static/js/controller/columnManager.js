@@ -46,7 +46,11 @@ export let columnManager = {
 
 function handleColumns(columnCount) {
     document.querySelectorAll(".column").forEach(async column => {
-        column.style.width = `${Math.floor(90 / columnCount)}%`;
+        if (columnCount <5){
+            column.style.width = `${Math.floor(100 / columnCount)}%`;
+        }else{
+            column.style.width = `${Math.floor(100 / 4)}%`;
+        }
         const columnHeader = column.querySelector(".column-header");
         if (localStorage.getItem("username") !== null){
             columnHeader.addEventListener("click", e => {
@@ -101,7 +105,7 @@ export function addColumnHandler(boardId) {
     let modalTitle = document.querySelector("#boardModal #boardModalLabel");
     modalTitle.innerHTML = "New column";
     let modalBody = document.getElementById("board-modal-body");
-    modalBody.innerHTML = boardsManager.addFormToModal("Name your column:");
+    modalBody.innerHTML = boardsManager.addFormToModal("Name your column:", "Column title");
     $('#boardModal').modal();
     let form = document.getElementById('board-form');
     let input = document.getElementById("board-name");

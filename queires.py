@@ -58,6 +58,8 @@ def rename_board(board_id, new_board_title):
 def add_board_to_db(board_name, owner):
     return data_manager.execute_and_return(
         """
+        INSERT INTO boards (title, columns_ids) 
+        VALUES (%(board_name)s, ARRAY[1,2,3,4])
         INSERT INTO boards
         (title, columns_ids, owner) VALUES (%(board_name)s, ARRAY[1,2,3,4], %(owner)s)
         RETURNING id;
@@ -66,11 +68,12 @@ def add_board_to_db(board_name, owner):
 
 
 def add_new_card(board_id, title, column_id):
-    data_manager.execute(
+    return data_manager.execute_and_return(
         """
         INSERT INTO cards (board_id, title, column_id)
-        VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
-        , {"board_id": board_id, "title": title, "column_id": column_id}
+        VALUES (%(board_id)s, %(title)s, %(column_id)s)
+        RETURNING id;"""
+        , {"board_id": board_id, "title": title, "column_id": column_id}, False
     )
 
 
