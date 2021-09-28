@@ -26,6 +26,7 @@ def get_columns_for_board(board_id):
         """
         SELECT columns_ids FROM boards
         WHERE id = %(board_id)s
+        ORDER BY id
         ;
         """
         , {"board_id": board_id})[0]["columns_ids"]
@@ -37,6 +38,7 @@ def get_columns_by_ids(columns_ids):
         """
         SELECT * FROM columns
         WHERE id IN %(columns_ids)s
+        ORDER BY id
         ;
         """
         , {"columns_ids": columns_ids})

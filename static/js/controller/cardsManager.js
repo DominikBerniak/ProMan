@@ -12,12 +12,13 @@ export let cardsManager = {
         for (let card of cards) {
             const cardBuilder = htmlFactory(htmlTemplates.card);
             const content = cardBuilder(card);
-            domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
+            domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"] .card-container`, content);
             domManager.addEventListener(
                 `.card[data-card-id="${card.id}"]`,
                 "click",
                 cardEditDeleteHandler
             );
+            handleDraggableCards()
             
         }
         for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
@@ -31,7 +32,7 @@ export let cardsManager = {
             } else {
                 newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
             }
-            column.appendChild(newCardButton);
+            column.insertAdjacentElement('beforeend', newCardButton);
             const columnId = column.dataset.columnId;
             newCardButton.addEventListener("click", e => {
                 addNewCardHandler(e, boardId, columnId);
@@ -39,6 +40,7 @@ export let cardsManager = {
             column.removeAttribute("hidden");
         }
     },
+    dragged: null
 };
 
 export let addNewCardHandler = function (e, boardId, columnId) {
@@ -63,6 +65,8 @@ export let addNewCardHandler = function (e, boardId, columnId) {
                 .then(response => {
                     let newCard = addNewCardToDom(response["cardId"], input, button);
                     newCard.addEventListener("click", cardEditDeleteHandler)
+                    newCard.addEventListener('dragstart', handleDragStart)
+                    newCard.addEventListener('dragend', handleDragEnd)
                 });
         }
     })
@@ -129,10 +133,41 @@ function createFormFromButton(button){
     return button;
 }
 function getEditCardForm(oldCardMessage){
-    return `<div class="d-flex">
+    return `<div class="d-flex justify-content-between">
         <form method="post">
             <input name="card-title" class="rounded" value="${oldCardMessage}">
         </form>
         <button class="delete-card bi bi-x-square delete-icon-button clear-button"></button>
     </div>`;
+}
+
+
+function handleDraggableCards() {
+    const draggableElements = document.querySelectorAll('.card')
+    draggableElements.forEach((element) => {
+        element.addEventListener('dragstart', handleDragStart)
+        element.addEventListener('dragend', handleDragEnd)
+    })
+}
+
+function handleDragStart(event) {
+    cardsManager.dragged = event.target
+    event.target.style.opacity = '0.5'
+    const dropzones = document.querySelectorAll('.card-container')
+    dropzones.forEach(dropzone => {
+        if (!dropzone.hasChildNodes()) {
+            dropzone.style.minHeight = '6vh'
+            dropzone.style.border = 'dashed MediumOrchid'
+            dropzone.style.marginBottom = '3px'
+        }
+    })
+}
+
+function handleDragEnd(event) {
+    event.target.style.opacity = ''
+    cardsManager.dragged = null
+    const dropzones = document.querySelectorAll('.card-container')
+    dropzones.forEach(dropzone => {
+        dropzone.removeAttribute('style')
+        })
 }

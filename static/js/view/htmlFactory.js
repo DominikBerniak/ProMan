@@ -29,7 +29,10 @@ function boardBuilder(board) {
 }
 
 function columnBuilder(column){
-    return `<div class="column rounded m-2 p-2 d-flex flex-column dropzone" data-column-id="${column.id}" hidden><div class="column-header p-1">${column.name}</div></div>`;
+    return `<div class="column rounded m-2 p-2 d-flex flex-column dropzone" data-column-id="${column.id}" hidden>
+                <div class="column-header p-1">${column.name}</div>
+                <div class="card-container"></div>
+            </div>`;
 }
 
 function cardBuilder(card) {
