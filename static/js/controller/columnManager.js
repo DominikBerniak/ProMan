@@ -38,9 +38,6 @@ export let columnManager = {
             let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
             addColumnButton.remove();
         }
-        const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-        button.classList.remove("bi-caret-up-square")
-        button.classList.add("bi-caret-down-square")
     }
 };
 
@@ -162,7 +159,9 @@ function getEditColumnForm(oldTitle) {
         <form>
             <input name="column-name" class="rounded" value="${oldTitle}">
         </form>
-        <button class="delete-column bi bi-x-square delete-icon-button clear-button"></button>
+        <button class="delete-column delete-icon-button clear-button d-flex">
+            <img class="icon" alt="delete" src="./static/icons/x-square.svg">        
+        </button>
     </div>`
 }
 function handleDeleteColumn(columnHeader){

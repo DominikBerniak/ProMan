@@ -54,18 +54,30 @@ body {
 }
 
 .toggle-board-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     border: none;
     background-color: transparent;
-    color: #6a6a6a;
-    font-size: 1.3em;
 }
-.toggle-board-button:hover {
-    color: #404040;
+.toggle-board-button img{
+    width: 2vw;
+    min-width: 20px;
+    max-width: 30px;
+    filter: invert(33%) sepia(18%) saturate(0%) hue-rotate(172deg) brightness(112%) contrast(74%);
+}
+.toggle-board-button img:hover {
+    transform: scale(1.1);
+    filter: invert(23%) sepia(6%) saturate(13%) hue-rotate(326deg) brightness(99%) contrast(90%);
 }
 #refresh-page{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5vw;
+    max-width: 60px;
     cursor: pointer;
-    font-size: 1.2em;
     background-color: plum;
     color: #FFF;
     border: none;
@@ -143,13 +155,20 @@ body {
 }
 
 .delete-icon-button {
-    font-size: 1.3em;
+    display: flex;
     cursor: pointer;
-    color: #868686;
+    justify-content: center;
+    align-items: center;
+}
+.delete-icon-button img{
+    width: 3vw;
+    min-width: 20px;
+    max-width: 30px;
+    filter: invert(33%) sepia(18%) saturate(0%) hue-rotate(172deg) brightness(112%) contrast(74%);
 }
 
-.delete-icon-button:hover {
-    color: #000000;
+.delete-icon-button img:hover {
+    filter: invert(23%) sepia(6%) saturate(13%) hue-rotate(326deg) brightness(99%) contrast(90%);
     transform: scale(1.1);
 }
 
@@ -176,4 +195,8 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: purple;
+}
+
+.icon{
+    height: 60%;
 }

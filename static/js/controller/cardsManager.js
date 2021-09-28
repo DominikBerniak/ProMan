@@ -6,13 +6,9 @@ import {columnManager} from "./columnManager.js";
 export let cardsManager = {
     loadCards: async function (boardId) {
         const cards = await dataHandler.getCardsByBoardId(boardId);
-        const toggleButton = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-        toggleButton.classList.remove("bi-caret-down-square");
-        toggleButton.classList.add("bi-caret-up-square");
         for (let card of cards) {
             const cardBuilder = htmlFactory(htmlTemplates.card);
             const content = cardBuilder(card);
-
             domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
             if (localStorage.getItem("username") !== null) {
                 domManager.addEventListener(
@@ -133,6 +129,8 @@ function getEditCardForm(oldCardMessage){
         <form method="post">
             <input name="card-title" class="rounded" value="${oldCardMessage}">
         </form>
-        <button class="delete-card bi bi-x-square delete-icon-button clear-button"></button>
+        <button class="delete-card delete-icon-button clear-button">
+            <img class="icon" alt="delete" src="./static/icons/x-square.svg">
+        </button>
     </div>`;
 }

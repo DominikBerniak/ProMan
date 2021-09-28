@@ -57,10 +57,10 @@ export let boardsManager = {
         const boardBuilder = htmlFactory(htmlTemplates.board);
         const content = boardBuilder(board, isPrivate);
         domManager.addChild("#root", content);
-        domManager.addEventListener(
-            `.toggle-board-button[data-board-id="${board.id}"]`,
-            "click",
-            showHideButtonHandler);
+        const toggleButton = document.querySelector(`.toggle-board-button[data-board-id="${board.id}"]`)
+        toggleButton.addEventListener("click", ()=>{
+            showHideButtonHandler(toggleButton, board.id)
+        });
         if (localStorage.getItem("username") !== null){
             domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
                 "click",
@@ -93,12 +93,13 @@ export let boardsManager = {
     }
 };
 
-function showHideButtonHandler(clickEvent) {
-    const boardId = clickEvent.target.dataset.boardId;
+function showHideButtonHandler(button, boardId) {
     const board = document.querySelector(`.board[data-board-id="${boardId}"]`);
     if (board.childElementCount === 0) {
+        button.innerHTML = `<img class="icon" alt="arrow-up" src="./static/icons/caret-up-square.svg">`;
         columnManager.loadColumns(boardId)
     } else {
+        button.innerHTML = `<img class="icon" alt="arrow-down" src="./static/icons/caret-down-square.svg">`;
         columnManager.closeColumns(boardId);
     }
 }
