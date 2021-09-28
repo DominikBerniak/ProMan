@@ -1,4 +1,5 @@
 import {boardsManager} from "../controller/boardsManager.js";
+import {domManager} from "../view/domManager.js";
 
 export let dataHandler = {
     getBoards: async function () {
@@ -8,8 +9,7 @@ export let dataHandler = {
         return await apiGet(`/api/boards/${boardId}/columns/`);
     },
     getCardsByBoardId: async function (boardId) {
-        const response = await apiGet(`/api/boards/${boardId}/cards/`);
-        return response;
+        return await apiGet(`/api/boards/${boardId}/cards/`);
     },
     createNewBoard: async function (e) {
         e.preventDefault()
@@ -29,7 +29,8 @@ export let dataHandler = {
                     boardsManager.addBoardToDom(newBoard);
                     break;
                 case 203:
-                    alert("Unauthorized");
+                    domManager.displayAlertModal("You are not allowed to add new board. Try to " +
+                        "log in again.")
             }
         } catch (error) {
             console.log(error);
@@ -41,16 +42,14 @@ export let dataHandler = {
         try {
             const formData = new FormData(form);
             return await apiPut(url, formData)
-
-        } catch (error) {
+        }catch (error){
             console.log(error);
         }
     },
     deleteBoard: async function (boardId) {
         const url = `/api/boards/${boardId}/`;
         try {
-            let response = await apiDelete(url);
-            console.log(response)
+            return await apiDelete(url);
         } catch (error) {
             console.log(error);
         }

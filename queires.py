@@ -231,3 +231,11 @@ def delete_cards_by_board_id_and_column_id(board_id,column_id):
         """
         , {"board_id": board_id, "column_id": column_id}
     )
+
+
+def get_id_by_username(username):
+    return data_manager.execute_select(f"""
+        SELECT id 
+        FROM users
+        WHERE username='{username}'
+    """)

@@ -14,14 +14,17 @@ export let columnManager = {
             addColumnToDom(column, boardId)
         }
         handleColumns(columnCount);
-        let deleteBoardButton = deleteBoardButtonHandler(boardId)
-        let addColumn = document.createElement("div")
-        addColumn.classList.add("add-column-container")
-        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
-        deleteBoardButton.after(addColumn)
-        addColumn.querySelector("button").addEventListener("click", e => {
-            addColumnHandler(boardId);
-        })
+
+        if (localStorage.getItem("username") !== null) {
+            let deleteBoardButton = deleteBoardButtonHandler(boardId)
+            let addColumn = document.createElement("div")
+            addColumn.classList.add("add-column-container")
+            addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+            deleteBoardButton.after(addColumn)
+            addColumn.querySelector("button").addEventListener("click", e => {
+                addColumnHandler(boardId);
+            })
+        }
         cardsManager.loadCards(boardId);
     },
     closeColumns: function (boardId) {
@@ -29,10 +32,12 @@ export let columnManager = {
         columns.forEach(column => {
             column.remove();
         })
-        let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
-        deleteBoardButton.remove()
-        let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
-        addColumnButton.remove();
+        if (localStorage.getItem("username") !== null) {
+            let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
+            deleteBoardButton.remove()
+            let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
+            addColumnButton.remove();
+        }
         const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
         button.classList.remove("bi-caret-up-square")
         button.classList.add("bi-caret-down-square")
@@ -47,10 +52,7 @@ function handleColumns(columnCount) {
             column.style.width = `${Math.floor(100 / 4)}%`;
         }
         const columnHeader = column.querySelector(".column-header");
-        let response = await fetch("/getUsername", {
-            method: "GET",
-        });
-        if (response.status === 200) {
+        if (localStorage.getItem("username") !== null){
             columnHeader.addEventListener("click", e => {
                 columnTitleEditDeleteHandler(e)
             })
@@ -99,7 +101,7 @@ function checkIfColumnNameExist(columnName, boardId) {
     return columnNameExists;
 }
 
-function addColumnHandler(boardId) {
+export function addColumnHandler(boardId) {
     let modalTitle = document.querySelector("#boardModal #boardModalLabel");
     modalTitle.innerHTML = "New column";
     let modalBody = document.getElementById("board-modal-body");
@@ -133,7 +135,7 @@ function addColumnHandler(boardId) {
     });
 }
 
-function deleteBoardButtonHandler(boardId) {
+export function deleteBoardButtonHandler(boardId) {
     let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
     let deleteButton = document.createElement("div")
     deleteButton.classList.add('delete-board')
@@ -205,14 +207,8 @@ async function addNewCardButton(boardId, columnId){
     columnElem.removeAttribute("hidden");
     const newCardButton = document.createElement("button");
     newCardButton.innerHTML = "New Card";
-
-    let response2 = await fetch("/getUsername", {
-        method: "GET",
-    });
-    if (response2.status === 200) {
+    if (localStorage.getItem("username") !== null){
         newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
-    } else {
-        newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
     }
     columnElem.appendChild(newCardButton);
     newCardButton.addEventListener("click", e => {

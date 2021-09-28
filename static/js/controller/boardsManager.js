@@ -9,7 +9,6 @@ export let boardsManager = {
     loadBoards: async function () {
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            console.log(board)
             boardsManager.addBoardToDom(board);
         }
     },
@@ -57,10 +56,7 @@ export let boardsManager = {
             `.toggle-board-button[data-board-id="${board.id}"]`,
             "click",
             showHideButtonHandler);
-        let response = await fetch("/getUsername", {
-            method: "GET",
-        });
-        if (response.status === 200) {
+        if (localStorage.getItem("username") !== null){
             domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
                 "click",
                 changeTitleHandler);
