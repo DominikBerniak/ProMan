@@ -157,6 +157,9 @@ body {
     border: none;
     outline: none;
 }
+[private="true"]{
+    background-color: lavender;
+}
 
 /*Scroll bar*/
 ::-webkit-scrollbar {

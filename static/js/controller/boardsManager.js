@@ -9,7 +9,12 @@ export let boardsManager = {
     loadBoards: async function () {
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            boardsManager.addBoardToDom(board);
+            if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")){
+                boardsManager.addBoardToDom(board, true);
+            }
+            else if (board["owner"] === null) {
+                boardsManager.addBoardToDom(board);
+            }
         }
     },
     addNewBoard: async function () {
@@ -48,9 +53,9 @@ export let boardsManager = {
                 $('#confirmModal').modal('hide')
             })
     },
-    addBoardToDom: async function (board) {
+    addBoardToDom: async function (board, isPrivate=false) {
         const boardBuilder = htmlFactory(htmlTemplates.board);
-        const content = boardBuilder(board);
+        const content = boardBuilder(board, isPrivate);
         domManager.addChild("#root", content);
         domManager.addEventListener(
             `.toggle-board-button[data-board-id="${board.id}"]`,
@@ -62,18 +67,23 @@ export let boardsManager = {
                 changeTitleHandler);
         }
     },
-    addFormToModal: function (title, placeholder) {
-        return `
+    addFormToModal: function (title) {
+        let output = `
             <form action="/api/boards" method="POST" id="board-form">
                 <div class="form-group">
                     <label for="board-name" class="col-form-label">${title}</label>
                     <input type="text" class="form-control" id="board-name" name="board-name" placeholder="${placeholder}">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="modal-footer">`
+                    if (checkbox){
+                        output += `<input type="checkbox" name="private" id="checkbox">
+                        <label for="checkbox">Private</label>`
+                    }
+                    output += `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-default">Add</button>
                 </div>
             </form>`
+        return output
     },
     initRefreshPageButton: function (){
         const refreshPageButton = document.getElementById("refresh-page");

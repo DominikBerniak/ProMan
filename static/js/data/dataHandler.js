@@ -19,14 +19,14 @@ export let dataHandler = {
             const formData = new FormData(form);
             let response = await apiPost(url, formData);
             console.log(response.status);
-            switch (response.status) {
+            switch (response.status){
                 case 200:
                     let newBoard = {
                         "columns_ids": [1, 2, 3, 4],
                         "id": response.id,
                         "title": formData.get("board-name")
                     };
-                    boardsManager.addBoardToDom(newBoard);
+                    boardsManager.addBoardToDom(newBoard, true);
                     break;
                 case 203:
                     domManager.displayAlertModal("You are not allowed to add new board. Try to " +
