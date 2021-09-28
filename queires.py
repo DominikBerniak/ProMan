@@ -55,22 +55,23 @@ def rename_board(board_id, new_board_title):
     )
 
 
-def add_board_to_db(board_name):
+def add_board_to_db(board_name, owner):
     return data_manager.execute_and_return(
         """
         INSERT INTO boards
-        (title, columns_ids) VALUES (%(board_name)s, ARRAY[1,2,3,4])
+        (title, columns_ids, owner) VALUES (%(board_name)s, ARRAY[1,2,3,4], %(owner)s)
         RETURNING id;
         """
-        , {'board_name': board_name}, False)
+        , {'board_name': board_name, 'owner': owner}, False)
 
 
 def add_new_card(board_id, title, column_id):
-    data_manager.execute(
+    return data_manager.execute_and_return(
         """
         INSERT INTO cards (board_id, title, column_id)
-        VALUES (%(board_id)s, %(title)s, %(column_id)s);"""
-        , {"board_id": board_id, "title": title, "column_id": column_id}
+        VALUES (%(board_id)s, %(title)s, %(column_id)s)
+        RETURNING id;"""
+        , {"board_id": board_id, "title": title, "column_id": column_id}, False
     )
 
 
@@ -240,3 +241,19 @@ def delete_cards_by_board_id_and_column_id(board_id,column_id):
         """
         , {"board_id": board_id, "column_id": column_id}
     )
+
+
+def get_id_by_username(username):
+    return data_manager.execute_select(f"""
+        SELECT id 
+        FROM users
+        WHERE username='{username}'
+    """)
+
+
+def update_column_id(column_id, card_id):
+    data_manager.execute("""
+        UPDATE cards
+        SET column_id = %(column_id)s
+        WHERE id = %(card_id)s
+    """), {'column_id': column_id, 'card_id': card_id}

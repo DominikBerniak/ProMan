@@ -18,14 +18,24 @@ export function htmlFactory(template) {
     }
 }
 
-function boardBuilder(board) {
-    return `<div class="board-container rounded" data-board-id="${board.id}">
-                <div class="board-header border rounded p-2">
-                    <div class="board-title" data-board-id="${board.id}">${board.title}</div>
-                    <button class="toggle-board-button bi bi-caret-down-square" data-board-id="${board.id}"></button>
+function boardBuilder(board, isPrivate) {
+
+    let output = `<div class="board-container rounded" data-board-id="${board.id}">`
+
+    if (isPrivate){
+        output += `<div class="board-header border rounded p-2" private="true">`
+    }
+    else {
+        output += `<div class="board-header border rounded p-2">`
+    }
+    output += `        <div class="board-title" data-board-id="${board.id}">${board.title}</div>
+                    <button class="toggle-board-button" data-board-id="${board.id}">
+                        <img class="icon" alt="arrow-down" src="./static/icons/caret-down-square.svg">
+                    </button>
                 </div>
                 <div class="board" data-board-id=${board.id}></div>
-            </div>`;
+            </div>`
+    return output
 }
 
 function columnBuilder(column){

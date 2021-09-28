@@ -14,14 +14,17 @@ export let columnManager = {
             addColumnToDom(column, boardId)
         }
         handleColumns(columnCount);
-        let deleteBoardButton = deleteBoardButtonHandler(boardId)
-        let addColumn = document.createElement("div")
-        addColumn.classList.add("add-column-container")
-        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
-        deleteBoardButton.after(addColumn)
-        addColumn.querySelector("button").addEventListener("click", e => {
-            addColumnHandler(boardId);
-        })
+
+        if (localStorage.getItem("username") !== null) {
+            let deleteBoardButton = deleteBoardButtonHandler(boardId)
+            let addColumn = document.createElement("div")
+            addColumn.classList.add("add-column-container")
+            addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+            deleteBoardButton.after(addColumn)
+            addColumn.querySelector("button").addEventListener("click", e => {
+                addColumnHandler(boardId);
+            })
+        }
         cardsManager.loadCards(boardId);
         handleDropzone()
     },
@@ -30,24 +33,24 @@ export let columnManager = {
         columns.forEach(column => {
             column.remove();
         })
-        let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
-        deleteBoardButton.remove()
-        let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
-        addColumnButton.remove();
-        const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-        button.classList.remove("bi-caret-up-square")
-        button.classList.add("bi-caret-down-square")
+        if (localStorage.getItem("username") !== null) {
+            let deleteBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .delete-board`)
+            deleteBoardButton.remove()
+            let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
+            addColumnButton.remove();
+        }
     }
 };
 
 function handleColumns(columnCount) {
     document.querySelectorAll(".column").forEach(async column => {
-        column.style.width = `${Math.floor(90 / columnCount)}%`;
+        if (columnCount <5){
+            column.style.width = `${Math.floor(100 / columnCount)}%`;
+        }else{
+            column.style.width = `${Math.floor(100 / 4)}%`;
+        }
         const columnHeader = column.querySelector(".column-header");
-        let response = await fetch("/getUsername", {
-            method: "GET",
-        });
-        if (response.status === 200) {
+        if (localStorage.getItem("username") !== null){
             columnHeader.addEventListener("click", e => {
                 columnTitleEditDeleteHandler(e)
             })
@@ -96,11 +99,11 @@ function checkIfColumnNameExist(columnName, boardId) {
     return columnNameExists;
 }
 
-function addColumnHandler(boardId) {
+export function addColumnHandler(boardId) {
     let modalTitle = document.querySelector("#boardModal #boardModalLabel");
     modalTitle.innerHTML = "New column";
     let modalBody = document.getElementById("board-modal-body");
-    modalBody.innerHTML = boardsManager.addFormToModal("Name your column:");
+    modalBody.innerHTML = boardsManager.addFormToModal("Name your column:", "Column title");
     $('#boardModal').modal();
     let form = document.getElementById('board-form');
     let input = document.getElementById("board-name");
@@ -131,7 +134,7 @@ function addColumnHandler(boardId) {
     });
 }
 
-function deleteBoardButtonHandler(boardId) {
+export function deleteBoardButtonHandler(boardId) {
     let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
     let deleteButton = document.createElement("div")
     deleteButton.classList.add('delete-board')
@@ -158,7 +161,9 @@ function getEditColumnForm(oldTitle) {
         <form>
             <input name="column-name" class="rounded" value="${oldTitle}">
         </form>
-        <button class="delete-column bi bi-x-square delete-icon-button clear-button"></button>
+        <button class="delete-column delete-icon-button clear-button d-flex">
+            <img class="icon" alt="delete" src="./static/icons/x-square.svg">        
+        </button>
     </div>`
 }
 function handleDeleteColumn(columnHeader){
@@ -203,14 +208,8 @@ async function addNewCardButton(boardId, columnId){
     columnElem.removeAttribute("hidden");
     const newCardButton = document.createElement("button");
     newCardButton.innerHTML = "New Card";
-
-    let response2 = await fetch("/getUsername", {
-        method: "GET",
-    });
-    if (response2.status === 200) {
+    if (localStorage.getItem("username") !== null){
         newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto");
-    } else {
-        newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
     }
     columnElem.appendChild(newCardButton);
     newCardButton.addEventListener("click", e => {
@@ -231,13 +230,11 @@ function handleDropzone() {
 
 function handleDragEnter(event) {
     event.preventDefault()
-
-
 }
 
 function handleDragOver(event) {
     event.preventDefault()
-    }
+}
 
 function handleDragLeave(event) {
 }
@@ -245,7 +242,12 @@ function handleDragLeave(event) {
 function handleDrop(event) {
     event.preventDefault()
     const dropzone = event.currentTarget.querySelector('.card-container')
-    cardsManager.dragged.parentNode.removeChild(cardsManager.dragged)
-    dropzone.appendChild(cardsManager.dragged)
+    if (dropzone.parentNode.parentNode.getAttribute('data-board-id') === cardsManager.dragged.parentNode.parentNode.parentNode.getAttribute('data-board-id')) {
+        cardsManager.dragged.parentNode.removeChild(cardsManager.dragged)
+        dropzone.appendChild(cardsManager.dragged)
+        const columnId = event.currentTarget.getAttribute('data-column-id')
+        const cardId = cardsManager.dragged.getAttribute('data-card-id')
+        dataHandler.editCardsColumn(cardId, columnId)
+    }
 }
 

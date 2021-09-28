@@ -9,17 +9,21 @@ export let boardsManager = {
     loadBoards: async function () {
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            boardsManager.addBoardToDom(board);
+            if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")){
+                boardsManager.addBoardToDom(board, true);
+            }
+            else if (board["owner"] === null) {
+                boardsManager.addBoardToDom(board);
+            }
         }
     },
-
     addNewBoard: async function () {
         const newBoardButton = document.getElementById("add-new-board-button");
         newBoardButton.addEventListener("click", () => {
             let modalTitle = document.querySelector("#boardModalLabel");
             modalTitle.innerHTML = "New board";
             let modalBody = document.getElementById("board-modal-body");
-            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:")
+            modalBody.innerHTML = boardsManager.addFormToModal("Name your board:", "Board title", true);
             $('#boardModal').modal();
             let form = document.getElementById('board-form');
             let input = document.getElementById("board-name");
@@ -42,55 +46,62 @@ export let boardsManager = {
             'click',
             function () {
                 dataHandler.deleteBoard(boardId)
+                    .then(()=>{
+                        domManager.displayAlertModal("Board successfully deleted.");
+                    })
                 document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
                 $('#confirmModal').modal('hide')
             })
     },
-    addBoardToDom: async function (board) {
+    addBoardToDom: async function (board, isPrivate=false) {
         const boardBuilder = htmlFactory(htmlTemplates.board);
-        const content = boardBuilder(board);
+        const content = boardBuilder(board, isPrivate);
         domManager.addChild("#root", content);
-        domManager.addEventListener(
-            `.toggle-board-button[data-board-id="${board.id}"]`,
-            "click",
-            showHideButtonHandler);
-        let response = await fetch("/getUsername", {
-            method: "GET",
+        const toggleButton = document.querySelector(`.toggle-board-button[data-board-id="${board.id}"]`)
+        toggleButton.addEventListener("click", ()=>{
+            showHideButtonHandler(toggleButton, board.id)
         });
-        if (response.status === 200) {
+        if (localStorage.getItem("username") !== null){
             domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
                 "click",
                 changeTitleHandler);
         }
     },
-    addFormToModal: function (title) {
-        return `
+    addFormToModal: function (title, placeholder, checkbox=false) {
+        let output = `
             <form action="/api/boards" method="POST" id="board-form">
                 <div class="form-group">
                     <label for="board-name" class="col-form-label">${title}</label>
-                    <input type="text" class="form-control" id="board-name" name="board-name">
+                    <input type="text" class="form-control" id="board-name" name="board-name" placeholder="${placeholder}">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="modal-footer">`
+                    if (checkbox){
+                        output += `<input type="checkbox" name="private" id="checkbox">
+                        <label for="checkbox">Private</label>`
+                    }
+                    output += `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-default">Add</button>
                 </div>
             </form>`
+        return output
+    },
+    initRefreshPageButton: function (){
+        const refreshPageButton = document.getElementById("refresh-page");
+        refreshPageButton.addEventListener("click", ()=>{
+            reloadBoards();
+        })
     }
 };
 
-function showHideButtonHandler(clickEvent) {
-    const boardId = clickEvent.target.dataset.boardId;
+function showHideButtonHandler(button, boardId) {
     const board = document.querySelector(`.board[data-board-id="${boardId}"]`);
     if (board.childElementCount === 0) {
+        button.innerHTML = `<img class="icon" alt="arrow-up" src="./static/icons/caret-up-square.svg">`;
         columnManager.loadColumns(boardId)
     } else {
+        button.innerHTML = `<img class="icon" alt="arrow-down" src="./static/icons/caret-down-square.svg">`;
         columnManager.closeColumns(boardId);
     }
-}
-
-function showModal(event) {
-    let modal = this
-    modal.find('.modal-title').text('New board')
 }
 
 export let changeTitleHandler = function (e) {
@@ -101,7 +112,7 @@ export let changeTitleHandler = function (e) {
     let oldBoardTitle = e.currentTarget.innerHTML;
     let boardTitle = e.currentTarget;
     boardTitle.innerHTML = `
-        <form class="board-title-form" action="/api/boards/${boardId}/rename/" method="post">
+        <form class="board-title-form" action="/api/boards/${boardId}/">
             <input class="rounded" name="title" value="${oldBoardTitle}">
         </form>`
     const form = boardTitle.querySelector("form");
@@ -121,5 +132,11 @@ export let changeTitleHandler = function (e) {
                 });
         }
     });
+}
+
+function reloadBoards() {
+    let root = document.getElementById("root")
+    root.innerHTML = '';
+    boardsManager.loadBoards();
 }
 
