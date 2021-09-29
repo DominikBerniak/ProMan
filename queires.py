@@ -8,6 +8,29 @@ def get_boards():
         """
     )
 
+def get_owner_by_board_id(board_id):
+    return data_manager.execute_select(
+        """
+        SELECT owner FROM boards
+        WHERE boards.id = %(board_id)s
+        ;
+        """
+        , {"board_id": board_id}
+
+
+    )
+
+def get_owner_by_card_id(card_id):
+    return data_manager.execute_select(
+    """
+    SELECT boards.owner
+    FROM boards
+    JOIN cards ON boards.id = cards.board_id
+    WHERE cards.id = %(card_id)s
+    ;
+    """
+     , {"card_id": card_id}
+    )
 
 def get_cards_for_board(board_id):
     matching_cards = data_manager.execute_select(

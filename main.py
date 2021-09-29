@@ -120,41 +120,66 @@ def get_cards_for_board(board_id: int):
 @app.route("/api/boards/<int:board_id>/", methods=["PUT"])
 def rename_board(board_id: int):
     if session.get("username"):
-        new_board_title = request.get_json()["title"]
-        queires.rename_board(board_id, new_board_title)
-        return jsonify({}), 200
-    else:
-        return jsonify({}), 203
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]['id']
+        board_owner = queires.get_owner_by_board_id(board_id)[0]['owner']
+        if board_owner == user_id or board_owner is None :
+            new_board_title = request.get_json()["title"]
+            queires.rename_board(board_id, new_board_title)
+            return jsonify({}), 200
+        else:
+            return jsonify({}), 203
 
 
 @app.route("/api/boards/<int:board_id>/", methods=['DELETE'])
 def delete_board(board_id):
-    queires.delete_cards_by_board_id(board_id)
-    queires.delete_board_from_db(board_id)
-    return jsonify({"status": 200})
+    if session.get("username"):
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]['id']
+        board_owner = queires.get_owner_by_board_id(board_id)[0]['owner']
+        if board_owner == user_id or board_owner is None :
+            queires.delete_cards_by_board_id(board_id)
+            queires.delete_board_from_db(board_id)
+            return jsonify({"status": 200})
+        # else:
+        #     return jsonify({"status": 203})
 
 
 @app.route("/api/boards/<int:board_id>/<int:column_id>/cards", methods=["POST"])
 def add_new_card(board_id, column_id):
     if session.get("username"):
-        title = request.get_json()["cardTitle"]
-        card_id = queires.add_new_card(board_id, title, column_id)["id"]
-        return jsonify({"cardId": card_id, "status": 200})
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]['id']
+        board_owner = queires.get_owner_by_board_id(board_id)[0]['owner']
+        if board_owner == user_id or board_owner is None:
+            title = request.get_json()["cardTitle"]
+            card_id = queires.add_new_card(board_id, title, column_id)["id"]
+            return jsonify({"cardId": card_id, "status": 200})
     else:
         return jsonify({"status": 203})
 
 
 @app.route('/api/boards/columns/cards/<int:card_id>', methods=["DELETE"])
 def delete_card(card_id):
-    queires.delete_card(card_id)
-    return jsonify({"status": 200})
+    if session.get("username"):
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]['id']
+        board_owner = queires.get_owner_by_card_id(card_id)[0]['owner']
+        if board_owner == user_id or board_owner is None:
+            queires.delete_card(card_id)
+            return jsonify({"status": 200})
 
 
 @app.route('/api/boards/columns/cards/<int:card_id>', methods=["PUT"])
 def edit_card(card_id):
-    title = request.get_json()["title"]
-    queires.edit_card(card_id, title)
-    return jsonify({"status": 200})
+    if session.get("username"):
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]['id']
+        board_owner = queires.get_owner_by_card_id(card_id)[0]['owner']
+        if board_owner == user_id or board_owner is None:
+            title = request.get_json()["title"]
+            queires.edit_card(card_id, title)
+            return jsonify({"status": 200})
 
 
 @app.route('/api/boards/<int:board_id>/columns', methods=["POST"])
@@ -191,9 +216,14 @@ def edit_column(board_id, column_id):
 
 @app.route('/api/boards/<int:board_id>/columns/<int:column_id>', methods=["DELETE"])
 def delete_column(board_id, column_id):
-    queires.delete_column_from_board(board_id, column_id)
-    queires.delete_cards_by_board_id_and_column_id(board_id, column_id)
-    return jsonify({"status": 200})
+    if session.get("username"):
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)[0]['id']
+        board_owner = queires.get_owner_by_card_id(board_id)[0]['owner']
+        if board_owner == user_id or board_owner is None:
+            queires.delete_column_from_board(board_id, column_id)
+            queires.delete_cards_by_board_id_and_column_id(board_id, column_id)
+            return jsonify({"status": 200})
 
 
 def main():

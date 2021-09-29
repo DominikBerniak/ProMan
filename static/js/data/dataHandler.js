@@ -52,6 +52,7 @@ export let dataHandler = {
             return await apiDelete(url);
         } catch (error) {
             console.log(error);
+
         }
     },
     createNewCard: async function (cardTitle, boardId, columnId) {
@@ -141,6 +142,7 @@ async function apiDelete(url) {
             'Content-Type': 'application/json'
         }
     });
+    console.log(response.status)
     return response.json();
 }
 

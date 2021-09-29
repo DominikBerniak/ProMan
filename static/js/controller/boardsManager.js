@@ -46,11 +46,13 @@ export let boardsManager = {
             'click',
             function () {
                 dataHandler.deleteBoard(boardId)
-                    .then(()=>{
+                    .then(response =>{
                         domManager.displayAlertModal("Board successfully deleted.");
+
                     })
                 document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
                 $('#confirmModal').modal('hide')
+
             })
     },
     addBoardToDom: async function (board, isPrivate=false) {
