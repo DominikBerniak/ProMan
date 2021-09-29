@@ -265,7 +265,7 @@ def change_column_by_card_id(card_id):
 
 
 def main():
-    app.run()
+    app.run(debug=True)
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))

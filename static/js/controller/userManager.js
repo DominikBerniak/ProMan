@@ -83,10 +83,10 @@ async function handleLogin(e) {
                 domManager.displayAlertModal("Login successful!")
                 document.getElementById("login-status").innerHTML = ""
                 const boards = await dataHandler.getBoards();
-                for (let board of boards) {
-                    domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
-                        "click", changeTitleHandler);
-                }
+                // for (let board of boards) {
+                //     domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+                //         "click", changeTitleHandler);
+                // }
                 document.querySelectorAll(".column-header").forEach(elem => {
                     elem.addEventListener("click", columnTitleEditDeleteHandler)
                 })
@@ -101,19 +101,19 @@ async function handleLogin(e) {
                         cardEditDeleteHandler
                     );
                 }
-                for (let board of document.querySelectorAll(".board")) {
-                    if (board.childElementCount !== 0) {
-                        let boardId = board.parentElement.getAttribute("data-board-id")
-                        let deleteBoardButton = deleteBoardButtonHandler(boardId)
-                        let addColumn = document.createElement("div")
-                        addColumn.classList.add("add-column-container")
-                        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
-                        deleteBoardButton.after(addColumn)
-                        addColumn.querySelector("button").addEventListener("click", e => {
-                            addColumnHandler(boardId);
-                        })
-                    }
-                }
+                // for (let board of document.querySelectorAll(".board")) {
+                //     if (board.childElementCount !== 0) {
+                //         let boardId = board.parentElement.getAttribute("data-board-id")
+                //         let deleteBoardButton = deleteBoardButtonHandler(boardId)
+                //         let addColumn = document.createElement("div")
+                //         addColumn.classList.add("add-column-container")
+                //         addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+                //         deleteBoardButton.after(addColumn)
+                //         addColumn.querySelector("button").addEventListener("click", e => {
+                //             addColumnHandler(boardId);
+                //         })
+                //     }
+                // }
                 navbarManager.generateNavbar()
                 reloadBoards()
                 break
