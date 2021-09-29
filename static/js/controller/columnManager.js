@@ -26,6 +26,7 @@ export let columnManager = {
             })
         }
         cardsManager.loadCards(boardId);
+        handleDropzone()
     },
     closeColumns: function (boardId) {
         let columns = document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`);
@@ -38,9 +39,6 @@ export let columnManager = {
             let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
             addColumnButton.remove();
         }
-        const button = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-        button.classList.remove("bi-caret-up-square")
-        button.classList.add("bi-caret-down-square")
     }
 };
 
@@ -114,6 +112,7 @@ export function addColumnHandler(boardId) {
     form.addEventListener('submit', e => {
         e.preventDefault();
         if (!input.value) {
+            domManager.displayAlertModal('You did not put any name to your column!')
             $('#boardModal').modal('hide');
         } else if (checkIfColumnNameExist(input.value, boardId)) {
             domManager.displayAlertModal(`Column ${input.value} already exists!`)
@@ -139,13 +138,13 @@ export function deleteBoardButtonHandler(boardId) {
     let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
     let deleteButton = document.createElement("div")
     deleteButton.classList.add('delete-board')
-    let testButton = document.createElement('button')
+    let buttonElement = document.createElement('button')
     let dataAttribute = document.createAttribute('data-board-id')
     dataAttribute.value = boardId
-    testButton.classList.add('delete_board_button', "btn");
-    testButton.setAttributeNode(dataAttribute)
-    testButton.innerHTML = 'Delete'
-    deleteButton.appendChild(testButton)
+    buttonElement.classList.add('delete_board_button', "btn");
+    buttonElement.setAttributeNode(dataAttribute)
+    buttonElement.innerHTML = 'Delete'
+    deleteButton.appendChild(buttonElement)
     boardTitle.after(deleteButton)
     deleteButton.firstChild.addEventListener("click", () => boardsManager.handleDeleteBoard(boardId))
     return deleteButton
@@ -162,7 +161,9 @@ function getEditColumnForm(oldTitle) {
         <form>
             <input name="column-name" class="rounded" value="${oldTitle}">
         </form>
-        <button class="delete-column bi bi-x-square delete-icon-button clear-button"></button>
+        <button class="delete-column delete-icon-button clear-button d-flex">
+            <img class="icon" alt="delete" src="./static/icons/x-square.svg">        
+        </button>
     </div>`
 }
 function handleDeleteColumn(columnHeader){
@@ -215,3 +216,38 @@ async function addNewCardButton(boardId, columnId){
         addNewCardHandler(e, boardId, columnId)
     })
 }
+
+
+function handleDropzone() {
+    const dropzones = document.querySelectorAll('.dropzone')
+    dropzones.forEach((dropzone) => {
+        dropzone.addEventListener('dragenter', handleDragEnter);
+        dropzone.addEventListener('dragover', handleDragOver)
+        dropzone.addEventListener('dragleave', handleDragLeave)
+        dropzone.addEventListener('drop', handleDrop)
+    })
+}
+
+function handleDragEnter(event) {
+    event.preventDefault()
+}
+
+function handleDragOver(event) {
+    event.preventDefault()
+}
+
+function handleDragLeave(event) {
+}
+
+function handleDrop(event) {
+    event.preventDefault()
+    const dropzone = event.currentTarget.querySelector('.card-container')
+    if (dropzone.parentNode.parentNode.getAttribute('data-board-id') === cardsManager.dragged.parentNode.parentNode.parentNode.getAttribute('data-board-id')) {
+        cardsManager.dragged.parentNode.removeChild(cardsManager.dragged)
+        dropzone.appendChild(cardsManager.dragged)
+        const columnId = event.currentTarget.getAttribute('data-column-id')
+        const cardId = cardsManager.dragged.getAttribute('data-card-id')
+        dataHandler.editCardsColumn(cardId, columnId)
+    }
+}
+

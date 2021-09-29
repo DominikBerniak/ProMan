@@ -6,21 +6,19 @@ import {columnManager} from "./columnManager.js";
 export let cardsManager = {
     loadCards: async function (boardId) {
         const cards = await dataHandler.getCardsByBoardId(boardId);
-        const toggleButton = document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`);
-        toggleButton.classList.remove("bi-caret-down-square");
-        toggleButton.classList.add("bi-caret-up-square");
         for (let card of cards) {
             const cardBuilder = htmlFactory(htmlTemplates.card);
             const content = cardBuilder(card);
-
-            domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"]`, content);
+            domManager.addChild(`.board[data-board-id="${boardId}"] .column[data-column-id="${card.column_id}"] .card-container`, content);
             if (localStorage.getItem("username") !== null) {
                 domManager.addEventListener(
                     `.card[data-card-id="${card.id}"]`,
                     "click",
                     cardEditDeleteHandler
                 );
+                handleDraggableCards()
             }
+
         }
         for (const column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
             const newCardButton = document.createElement("button");
@@ -31,7 +29,7 @@ export let cardsManager = {
             else {
                 newCardButton.classList.add("new-card-button", "btn", "btn-default", "mx-auto", "hidden");
             }
-            column.appendChild(newCardButton);
+            column.insertAdjacentElement('beforeend', newCardButton);
             const columnId = column.dataset.columnId;
             newCardButton.addEventListener("click", e => {
                 addNewCardHandler(e, boardId, columnId);
@@ -39,6 +37,7 @@ export let cardsManager = {
             column.removeAttribute("hidden");
         }
     },
+    dragged: null
 };
 
 export let addNewCardHandler = function (e, boardId, columnId) {
@@ -61,7 +60,6 @@ export let addNewCardHandler = function (e, boardId, columnId) {
         } else {
             dataHandler.createNewCard(input.value, boardId, columnId)
                 .then(response => {
-                    console.log(response)
                     let newCard = addNewCardToDom(response["cardId"], input, button);
                     newCard.addEventListener("click", cardEditDeleteHandler)
                 });
@@ -112,7 +110,10 @@ function addNewCardToDom(cardId, input, button){
     let dataAttribute = document.createAttribute("data-card-id");
     dataAttribute.value = cardId;
     newCard.setAttributeNode(dataAttribute);
+    newCard.draggable = true
     newCard.innerHTML = `${input.value}`
+    newCard.addEventListener('dragstart', handleDragStart)
+    newCard.addEventListener('dragend', handleDragEnd)
     button.before(newCard);
     button.innerHTML = "New card";
     button.classList.remove("clear-button");
@@ -133,6 +134,42 @@ function getEditCardForm(oldCardMessage){
         <form method="post">
             <input name="card-title" class="rounded" value="${oldCardMessage}">
         </form>
-        <button class="delete-card bi bi-x-square delete-icon-button clear-button"></button>
+        <button class="delete-card delete-icon-button clear-button">
+            <img class="icon" alt="delete" src="./static/icons/x-square.svg">
+        </button>
     </div>`;
 }
+
+
+function handleDraggableCards() {
+    const draggableElements = document.querySelectorAll('.card')
+    draggableElements.forEach((element) => {
+        element.addEventListener('dragstart', handleDragStart)
+        element.addEventListener('dragend', handleDragEnd)
+    })
+}
+
+function handleDragStart(event) {
+    cardsManager.dragged = event.target
+    event.target.style.opacity = '0.5'
+    const dropzones = document.querySelectorAll('.card-container')
+    dropzones.forEach(dropzone => {
+        if (dropzone.parentNode.parentNode.getAttribute('data-board-id') === event.target.parentNode.parentNode.parentNode.getAttribute('data-board-id')) {
+            if (!dropzone.hasChildNodes()) {
+            dropzone.style.minHeight = '6vh'
+            dropzone.style.border = 'dashed MediumOrchid'
+            dropzone.style.marginBottom = '3px'
+        }}
+    })
+}
+
+function handleDragEnd(event) {
+    event.target.style.opacity = ''
+    cardsManager.dragged = null
+    const dropzones = document.querySelectorAll('.card-container')
+    dropzones.forEach(dropzone => {
+        dropzone.removeAttribute('style')
+        })
+}
+
+
