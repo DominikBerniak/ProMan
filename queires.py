@@ -15,7 +15,7 @@ def get_owner_by_board_id(board_id):
         WHERE boards.id = %(board_id)s
         ;
         """
-        , {"board_id": board_id}
+        , {"board_id": board_id},False
 
 
     )
@@ -29,7 +29,8 @@ def get_owner_by_card_id(card_id):
     WHERE cards.id = %(card_id)s
     ;
     """
-     , {"card_id": card_id}
+     , {"card_id": card_id}, False
+
     )
 
 def get_cards_for_board(board_id):
@@ -271,7 +272,8 @@ def get_id_by_username(username):
         SELECT id 
         FROM users
         WHERE username='{username}'
-    """)
+    """
+                                       , None, False)
 
 
 def update_column_id(column_id, card_id):

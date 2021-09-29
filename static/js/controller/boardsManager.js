@@ -47,11 +47,14 @@ export let boardsManager = {
             function () {
                 dataHandler.deleteBoard(boardId)
                     .then(response =>{
-                        domManager.displayAlertModal("Board successfully deleted.");
-
+                        if(response.status == 200)
+                            domManager.displayAlertModal("Board successfully deleted.");
+                             document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                            $('#confirmModal').modal('hide')
                     })
-                document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
-                $('#confirmModal').modal('hide')
+                    domManager.displayAlertModal("Sorry , You can NOT delete this board");
+                    $('#confirmModal').modal('hide')
+
 
             })
     },
@@ -136,7 +139,7 @@ export let changeTitleHandler = function (e) {
     });
 }
 
-function reloadBoards() {
+export function reloadBoards() {
     let root = document.getElementById("root")
     root.innerHTML = '';
     boardsManager.loadBoards();

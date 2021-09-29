@@ -1,6 +1,6 @@
 import {domManager} from "../view/domManager.js";
 import {navbarManager} from "./navbarManager.js";
-import {boardsManager} from "./boardsManager.js";
+import {boardsManager, reloadBoards} from "./boardsManager.js";
 import {dataHandler} from "../data/dataHandler.js";
 import {changeTitleHandler} from "./boardsManager.js";
 import {
@@ -115,6 +115,7 @@ async function handleLogin(e) {
                     }
                 }
                 navbarManager.generateNavbar()
+                reloadBoards()
                 break
             case 203:
                 domManager.displayAlertModal("Wrong data, please try again!")
@@ -160,6 +161,7 @@ async function handleLogout(e) {
 
 
         navbarManager.generateNavbar()
+        reloadBoards()
     }
 }
 

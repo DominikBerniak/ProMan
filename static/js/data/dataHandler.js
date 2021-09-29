@@ -155,7 +155,6 @@ async function apiDelete(url) {
             'Content-Type': 'application/json'
         }
     });
-    console.log(response.status)
     return response.json();
 }
 
