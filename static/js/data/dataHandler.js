@@ -18,7 +18,6 @@ export let dataHandler = {
         try {
             const formData = new FormData(form);
             let response = await apiPost(url, formData);
-            console.log(response.status);
             switch (response.status) {
                 case 200:
                     let newBoard = {
@@ -26,10 +25,12 @@ export let dataHandler = {
                         "id": response.id,
                         "title": formData.get("board-name")
                     };
-                    if (formData.get("private")) {
-                        boardsManager.addBoardToDom(newBoard, true);
-                    } else {
-                        boardsManager.addBoardToDom(newBoard);
+                    if (!boardsManager.showArchivedBoards) {
+                        if (formData.get("private")) {
+                            boardsManager.addBoardToDom(newBoard, true);
+                        } else {
+                            boardsManager.addBoardToDom(newBoard);
+                        }
                     }
                     break;
                 case 203:

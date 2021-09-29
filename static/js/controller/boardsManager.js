@@ -45,6 +45,9 @@ export let boardsManager = {
     },
     handleDeleteBoard: function (boardId) {
         domManager.displayConfirmModal("Are you sure you want to delete this board?")
+        let old_element = document.getElementById("confirmButton");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
         domManager.addEventListener('#confirmButton',
             'click',
             function () {
