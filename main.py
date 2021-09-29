@@ -24,9 +24,6 @@ def index():
 @app.route("/api/boards")
 @json_response
 def get_boards():
-    """
-    All the boards
-    """
     return queires.get_boards()
 
 
@@ -195,6 +192,14 @@ def delete_column(board_id, column_id):
     queires.delete_column_from_board(board_id, column_id)
     queires.delete_cards_by_board_id_and_column_id(board_id, column_id)
     return jsonify({"status": 200})
+
+
+@app.route('/api/boards/columns/cards/<int:card_id>/status', methods = ['PUT'])
+def change_column_by_card_id(card_id):
+    response = request.get_json()
+    column_id = response['columnId']
+    queires.update_column_for_card(card_id, column_id)
+    return jsonify({}), 200
 
 
 def main():

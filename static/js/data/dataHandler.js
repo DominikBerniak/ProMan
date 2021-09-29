@@ -19,7 +19,7 @@ export let dataHandler = {
             const formData = new FormData(form);
             let response = await apiPost(url, formData);
             console.log(response.status);
-            switch (response.status){
+            switch (response.status) {
                 case 200:
                     let newBoard = {
                         "columns_ids": [1, 2, 3, 4],
@@ -28,8 +28,7 @@ export let dataHandler = {
                     };
                     if (formData.get("private")) {
                         boardsManager.addBoardToDom(newBoard, true);
-                    }
-                    else {
+                    } else {
                         boardsManager.addBoardToDom(newBoard);
                     }
                     break;
@@ -47,7 +46,7 @@ export let dataHandler = {
         try {
             const formData = new FormData(form);
             return await apiPut(url, formData)
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
     },
@@ -81,6 +80,15 @@ export let dataHandler = {
         try {
             const data = {"title": title};
             return await apiPut(url, data, false);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    editCardsColumn: async function (cardId, columnId) {
+        const url = `/api/boards/columns/cards/${cardId}/status`
+        try {
+            const data = {'columnId': columnId}
+            return await apiPut(url, data, false)
         } catch (error) {
             console.log(error);
         }

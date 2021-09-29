@@ -249,3 +249,11 @@ def get_id_by_username(username):
         FROM users
         WHERE username='{username}'
     """)
+
+
+def update_column_id(column_id, card_id):
+    data_manager.execute("""
+        UPDATE cards
+        SET column_id = %(column_id)s
+        WHERE id = %(card_id)s
+    """), {'column_id': column_id, 'card_id': card_id}
