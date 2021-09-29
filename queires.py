@@ -281,4 +281,21 @@ def update_column_id(column_id, card_id):
         UPDATE cards
         SET column_id = %(column_id)s
         WHERE id = %(card_id)s
-    """), {'column_id': column_id, 'card_id': card_id}
+    """, {'column_id': column_id, 'card_id': card_id})
+
+
+def archive_board(board_id):
+    data_manager.execute("""
+        UPDATE boards
+        SET is_archived = true
+        WHERE id = %(board_id)s
+    """, {"board_id": board_id})
+
+
+def restore_board(board_id):
+    data_manager.execute("""
+        UPDATE boards
+        SET is_archived = false
+        WHERE id = %(board_id)s
+    """, {"board_id": board_id})
+

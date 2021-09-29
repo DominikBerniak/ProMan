@@ -14,13 +14,19 @@ export let columnManager = {
             addColumnToDom(column, boardId)
         }
         handleColumns(columnCount);
-
         if (localStorage.getItem("username") !== null) {
             let deleteBoardButton = deleteBoardButtonHandler(boardId)
             let addColumn = document.createElement("div")
             addColumn.classList.add("add-column-container")
             addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
             deleteBoardButton.after(addColumn)
+            if (!boardsManager.showArchivedBoards){
+                let archiveBoardButton = archiveBoardButtonHandler(boardId)
+                archiveBoardButton.after(deleteBoardButton)
+            } else {
+                let restoreBoardButton = archiveBoardButtonHandler(boardId, true)
+                restoreBoardButton.after(deleteBoardButton)
+            }
             addColumn.querySelector("button").addEventListener("click", e => {
                 addColumnHandler(boardId);
             })
@@ -38,6 +44,8 @@ export let columnManager = {
             deleteBoardButton.remove()
             let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
             addColumnButton.remove();
+            let archiveBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .archive_board_button`)
+            archiveBoardButton.remove()
         }
     }
 };
@@ -133,6 +141,28 @@ export function addColumnHandler(boardId) {
         }
     });
 }
+
+export function archiveBoardButtonHandler(boardId, restore=false) {
+    let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)
+    let archiveButton = document.createElement("div")
+    let buttonElement = document.createElement('button')
+    let dataAttribute = document.createAttribute('data-board-id')
+    dataAttribute.value = boardId
+    buttonElement.classList.add('archive_board_button', "btn");
+    buttonElement.setAttributeNode(dataAttribute)
+    archiveButton.classList.add('archive-board')
+    archiveButton.appendChild(buttonElement)
+    boardTitle.after(archiveButton)
+    if (!restore) {
+        buttonElement.innerHTML = 'Archive'
+        archiveButton.firstChild.addEventListener("click", () => boardsManager.handleArchiveBoard(boardId))
+    } else {
+        buttonElement.innerHTML = 'Restore'
+        archiveButton.firstChild.addEventListener("click", () => boardsManager.handleRestoreBoard(boardId))
+    }
+    return archiveButton
+}
+
 
 export function deleteBoardButtonHandler(boardId) {
     let boardTitle = document.querySelector(`.board-title[data-board-id="${boardId}"]`)

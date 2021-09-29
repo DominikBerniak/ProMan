@@ -59,6 +59,22 @@ export let dataHandler = {
 
         }
     },
+    archiveBoard: async function (boardId) {
+      const url = `/api/boards/archive/${boardId}`;
+      try {
+          return apiGet(url);
+      } catch (error) {
+          console.log(error)
+      }
+    },
+    restoreBoard: async function (boardId) {
+      const url = `/api/boards/restore/${boardId}`;
+      try {
+          return apiGet(url);
+      } catch (error) {
+          console.log(error)
+      }
+    },
     createNewCard: async function (cardTitle, boardId, columnId) {
         let url = `/api/boards/${boardId}/${columnId}/cards`;
         try {

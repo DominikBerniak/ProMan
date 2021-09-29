@@ -71,6 +71,10 @@ body {
     transform: scale(1.1);
     filter: invert(23%) sepia(6%) saturate(13%) hue-rotate(326deg) brightness(99%) contrast(90%);
 }
+#archived-boards-button{
+    margin: 0 1.3vh 0 0;
+    min-width: 23.5vh;
+}
 #refresh-page{
     display: flex;
     align-items: center;

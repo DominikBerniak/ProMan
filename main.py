@@ -83,7 +83,7 @@ def login():
     if queires.check_if_email_exists(email) and data_manager.check_password(email, password):
         session["email"] = email
         session["username"] = username
-        return session, 200
+        return jsonify({"session": 200})
     else:
         return jsonify(json_dictionary), 203
 
@@ -135,9 +135,35 @@ def delete_board(board_id):
         username = session["username"]
         user_id = queires.get_id_by_username(username)['id']
         board_owner = queires.get_owner_by_board_id(board_id)['owner']
-        if board_owner == user_id or board_owner is None :
+        if board_owner == user_id or board_owner is None:
             queires.delete_cards_by_board_id(board_id)
             queires.delete_board_from_db(board_id)
+            return jsonify({"status": 200})
+        else:
+            return jsonify({"status": 203})
+
+
+@app.route("/api/boards/archive/<board_id>", methods=["GET"])
+def archive_board(board_id):
+    if session.get("username"):
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)['id']
+        board_owner = queires.get_owner_by_board_id(board_id)['owner']
+        if board_owner == user_id or board_owner is None:
+            queires.archive_board(board_id)
+            return jsonify({"status": 200})
+        else:
+            return jsonify({"status": 203})
+
+
+@app.route("/api/boards/restore/<board_id>", methods=["GET"])
+def restore_board(board_id):
+    if session.get("username"):
+        username = session["username"]
+        user_id = queires.get_id_by_username(username)['id']
+        board_owner = queires.get_owner_by_board_id(board_id)['owner']
+        if board_owner == user_id or board_owner is None:
+            queires.restore_board(board_id)
             return jsonify({"status": 200})
         else:
             return jsonify({"status": 203})
@@ -239,7 +265,7 @@ def change_column_by_card_id(card_id):
 
 
 def main():
-    app.run(debug=True)
+    app.run()
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))

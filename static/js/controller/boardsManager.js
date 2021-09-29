@@ -5,15 +5,18 @@ import {columnManager} from "./columnManager.js";
 import {cardsManager} from "./cardsManager.js";
 
 export let boardsManager = {
+    showArchivedBoards: false,
     root: document.getElementById("root"),
     loadBoards: async function () {
+        boardsManager.root.innerHTML = '';
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")){
-                boardsManager.addBoardToDom(board, true);
-            }
-            else if (board["owner"] === null) {
-                boardsManager.addBoardToDom(board);
+            if (!board["is_archived"]) {
+                if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")) {
+                    boardsManager.addBoardToDom(board, true);
+                } else if (board["owner"] === null) {
+                    boardsManager.addBoardToDom(board);
+                }
             }
         }
     },
@@ -54,8 +57,48 @@ export let boardsManager = {
                     })
                     domManager.displayAlertModal("Sorry , You can NOT delete this board");
                     $('#confirmModal').modal('hide')
-
-
+            })
+    },
+    handleArchiveBoard: function (boardId) {
+        domManager.displayConfirmModal("Are you sure you want to archive this board?")
+        let old_element = document.getElementById("confirmButton");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
+        domManager.addEventListener('#confirmButton',
+            'click',
+            function () {
+                dataHandler.archiveBoard(boardId)
+                    .then(response => {
+                        if (response.status === 200){
+                            domManager.displayAlertModal("Board successfully archived.");
+                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                        }
+                        else {
+                            domManager.displayAlertModal("You are not allowed to archive this board.");
+                        }
+                    })
+                $('#confirmModal').modal('hide')
+            })
+    },
+    handleRestoreBoard: function (boardId) {
+        domManager.displayConfirmModal("Are you sure you want to restore this board?")
+        let old_element = document.getElementById("confirmButton");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
+        domManager.addEventListener('#confirmButton',
+            'click',
+            function () {
+                dataHandler.restoreBoard(boardId)
+                    .then(response => {
+                        if (response.status === 200){
+                            domManager.displayAlertModal("Board successfully restored.");
+                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                        }
+                        else {
+                            domManager.displayAlertModal("You are not allowed to restore this board.");
+                        }
+                    })
+                $('#confirmModal').modal('hide')
             })
     },
     addBoardToDom: async function (board, isPrivate=false) {
@@ -94,6 +137,12 @@ export let boardsManager = {
         const refreshPageButton = document.getElementById("refresh-page");
         refreshPageButton.addEventListener("click", ()=>{
             reloadBoards();
+        })
+    },
+    initArchivePageButton: function (){
+        const refreshPageButton = document.getElementById("archived-boards-button");
+        refreshPageButton.addEventListener("click", ()=>{
+            toggleBoards()
         })
     }
 };
@@ -142,6 +191,38 @@ export let changeTitleHandler = function (e) {
 export function reloadBoards() {
     let root = document.getElementById("root")
     root.innerHTML = '';
-    boardsManager.loadBoards();
+    if (boardsManager.showArchivedBoards){
+        loadArchivedBoards()
+    } else {
+        boardsManager.loadBoards();
+    }
+}
+async function loadArchivedBoards(){
+    let root = document.getElementById("root")
+        root.innerHTML = '';
+        const boards = await dataHandler.getBoards();
+        for (let board of boards) {
+            if (board["is_archived"]) {
+                if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")) {
+                    boardsManager.addBoardToDom(board, true);
+                } else if (board["owner"] === null) {
+                    boardsManager.addBoardToDom(board);
+                }
+            }
+        }
+}
+
+
+function toggleBoards() {
+    if (!boardsManager.showArchivedBoards) {
+        boardsManager.showArchivedBoards = true
+        loadArchivedBoards()
+        document.getElementById("archived-boards-button").innerText = "Active boards"
+    }
+    else {
+        boardsManager.showArchivedBoards = false
+        boardsManager.loadBoards()
+        document.getElementById("archived-boards-button").innerText = "Archived boards"
+    }
 }
 

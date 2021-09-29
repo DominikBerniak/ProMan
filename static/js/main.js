@@ -11,6 +11,7 @@ async function init() {
   userManager.loginUser()
   userManager.logoutUser()
   boardsManager.initRefreshPageButton()
+  boardsManager.initArchivePageButton()
 }
 
 
