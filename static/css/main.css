@@ -219,6 +219,11 @@ body {
 [data-private="true"] .toggle-board-button:hover{
     background-color: transparent!important;
 }
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    background-color: purple;
+    color: #FFF;
+    border-color: rebeccapurple;
+}
 
 /*Scroll bar*/
 ::-webkit-scrollbar {
