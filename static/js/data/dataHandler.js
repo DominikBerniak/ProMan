@@ -1,5 +1,6 @@
 import {boardsManager} from "../controller/boardsManager.js";
 import {domManager} from "../view/domManager.js";
+import {socket} from "../socketHandler.js";
 
 export let dataHandler = {
     getBoards: async function () {
@@ -23,13 +24,13 @@ export let dataHandler = {
                     let newBoard = {
                         "columns_ids": [1, 2, 3, 4],
                         "id": response.id,
-                        "title": formData.get("board-name")
+                        "title": response.name
                     };
                     if (!boardsManager.showArchivedBoards) {
                         if (formData.get("private")) {
                             boardsManager.addBoardToDom(newBoard, true);
                         } else {
-                            boardsManager.addBoardToDom(newBoard);
+                            socket.connection.emit("new board", newBoard);
                         }
                     }
                     break;
@@ -57,7 +58,6 @@ export let dataHandler = {
             return await apiDelete(url);
         } catch (error) {
             console.log(error);
-
         }
     },
     archiveBoard: async function (boardId) {

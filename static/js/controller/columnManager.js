@@ -4,6 +4,7 @@ import {domManager} from "../view/domManager.js";
 import {cardsManager} from "./cardsManager.js";
 import {addNewCardHandler} from "./cardsManager.js";
 import {boardsManager} from "./boardsManager.js";
+import {socket} from "../socketHandler.js";
 
 export let columnManager = {
     loadColumns: async function (boardId) {
@@ -50,7 +51,7 @@ export let columnManager = {
     }
 };
 
-function handleColumns(columnCount) {
+export function handleColumns(columnCount) {
     document.querySelectorAll(".column").forEach(async column => {
         if (columnCount <5){
             column.style.width = `${Math.floor(100 / columnCount)}%`;
@@ -128,14 +129,8 @@ export function addColumnHandler(boardId) {
         } else {
             dataHandler.addColumn(input.value, boardId)
                 .then(async response => {
-                    const columnId = response["columnId"];
-                    addColumnToDom({id: columnId, name: input.value}, boardId);
-                    addNewCardButton(boardId, columnId);
-                    let columnCount = 0;
-                    for (let column of document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`)) {
-                        columnCount++;
-                    }
-                    handleColumns(columnCount);
+                    const data = {boardId: boardId, columnId: response["columnId"], name: input.value}
+                    socket.connection.emit("new column", data);
                 })
             $('#boardModal').modal('hide');
         }
@@ -180,7 +175,7 @@ export function deleteBoardButtonHandler(boardId) {
     return deleteButton
 }
 
-function addColumnToDom(column, boardId) {
+export function addColumnToDom(column, boardId) {
     const columnBuilder = htmlFactory(htmlTemplates.column);
     const content = columnBuilder(column);
     domManager.addChild(`.board[data-board-id="${boardId}"]`, content);
@@ -202,9 +197,8 @@ function handleDeleteColumn(columnHeader){
     const boardId = column.closest(".board").dataset.boardId;
     dataHandler.deleteColumn(boardId, columnId)
         .then(() => {
-            column.remove();
-            const columnNum = document.querySelectorAll(`.board[data-board-id="${boardId}"] .column`).length;
-            handleColumns(columnNum);
+            let data = {"boardId": boardId, "columnId": columnId}
+            socket.connection.emit("delete column", data);
         })
 }
 function handleEditColumn(e, columnHeader, oldTitle, input, submitSuccess){
@@ -227,13 +221,13 @@ function handleEditColumn(e, columnHeader, oldTitle, input, submitSuccess){
         })
         dataHandler.editColumn(input.value, columnId, boardId, cardsIds)
             .then(response => {
-                column.dataset.columnId = response["columnId"];
-                columnHeader.innerHTML = input.value;
+                let data = {"boardId": boardId, "columnId": columnId, "newId": response["columnId"],"name": input.value}
+                socket.connection.emit("edit column", data);
             })
         return submitSuccess
     }
 }
-async function addNewCardButton(boardId, columnId){
+export async function addNewCardButton(boardId, columnId){
     let columnElem = document.querySelector(`.board[data-board-id="${boardId}"] .column[data-column-id="${columnId}"]`);
     columnElem.removeAttribute("hidden");
     const newCardButton = document.createElement("button");

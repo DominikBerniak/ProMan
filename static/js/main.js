@@ -1,6 +1,6 @@
-import { boardsManager } from "./controller/boardsManager.js";
-import { userManager } from "./controller/userManager.js";
-import { navbarManager } from "./controller/navbarManager.js";
+import {boardsManager} from "./controller/boardsManager.js";
+import {userManager} from "./controller/userManager.js";
+import {navbarManager} from "./controller/navbarManager.js";
 
 
 async function init() {
@@ -14,7 +14,6 @@ async function init() {
   boardsManager.initArchivePageButton()
 }
 
-
-window.onload = function (){
-  init();
-}
+window.addEventListener('load', () => {
+    init();
+});

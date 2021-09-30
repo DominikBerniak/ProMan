@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify, session
+from flask_socketio import SocketIO, send, emit
 from dotenv import load_dotenv
 import data_manager
 import util
@@ -11,6 +12,7 @@ mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
 app.secret_key = "\xfd\x1b\xc9]0\x17\x1a\xd1\xe4\xf4#a\xbd/\xeb"
+socketio = SocketIO(app)
 
 
 @app.route("/")
@@ -38,14 +40,14 @@ def get_columns_for_board(board_id: int):
 def add_new_board():
     if session.get("username"):
         json_dictionary = request.get_json()
-        board_name = json_dictionary["board-name"]
+        board_name = json_dictionary["board-name"].replace("<", "&lt;").replace(">", "&gt;")
         user_id = queires.get_id_by_username(session.get("username"))["id"]
         if "private" in json_dictionary.keys():
             board_id = queires.add_board_to_db(board_name, user_id)["id"]
-            return jsonify({"status": 200, "id": board_id, "private": True})
+            return jsonify({"status": 200, "id": board_id, "private": True, "name": board_name})
         else:
             board_id = queires.add_board_to_db(board_name, None)["id"]
-            return jsonify({"status": 200, "id": board_id, "private": False})
+            return jsonify({"status": 200, "id": board_id, "private": False, "name": board_name})
     else:
         return jsonify({"status": 203})
 
@@ -264,8 +266,54 @@ def change_column_by_card_id(card_id):
     return jsonify({}), 200
 
 
+@socketio.on("new board")
+def new_board_broadcast(data):
+    emit("new board response", data, broadcast=True)
+
+
+@socketio.on("edit board")
+def edit_board_broadcast(data):
+    emit("edit board response", data, broadcast=True)
+
+
+@socketio.on("delete board")
+def delete_board_broadcast(data):
+    emit("delete board response", data, broadcast=True)
+
+
+@socketio.on("new column")
+def new_column_broadcast(data):
+    emit("new column response", data, broadcast=True)
+
+
+@socketio.on("delete column")
+def new_column_broadcast(data):
+    emit("delete column response", data, broadcast=True)
+
+
+@socketio.on("edit column")
+def new_column_broadcast(data):
+    emit("edit column response", data, broadcast=True)
+
+
+@socketio.on("new card")
+def new_column_broadcast(data):
+    emit("new card response", data, broadcast=True)
+
+
+@socketio.on("delete card")
+def new_column_broadcast(data):
+    emit("delete card response", data, broadcast=True)
+
+
+@socketio.on("edit card")
+def new_column_broadcast(data):
+    emit("edit card response", data, broadcast=True)
+
+
 def main():
-    app.run(debug=True)
+    socketio.run(app)
+    # app.run()
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))
