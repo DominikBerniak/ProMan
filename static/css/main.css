@@ -181,16 +181,44 @@ body {
     border: none;
     outline: none;
 }
-[private="true"]{
-    background-color: lavender;
-    /*background-color: #ffccff;*/
+[data-private="true"] .board-header{
+    background-color: greenyellow;
+    border: transparent;
 }
-[private="true"] .board-header{
-    background-color: #bebeff;
+[data-private="true"] .board-header button:not(.toggle-board-button) {
+    background-color: greenyellow;
+}
+[data-private="true"] .board-header button:hover{
+    background-color: #5a8e00;
+    border-color: transparent;
+}
+[data-private="true"] .btn-default{
+    background-color: #69a700;
+    border-color: greenyellow;
+}
+[data-private="true"] .btn-default:hover{
+    background-color: #466f00;
+    color: #FFF;
+    border-color: greenyellow;
+}
+[data-private="true"] .board::-webkit-scrollbar-track  {
+    background: #cefd95;
+}
+[data-private="true"] .board::-webkit-scrollbar-thumb  {
+    background: yellowgreen;
+}
+[data-private="true"] .board::-webkit-scrollbar-thumb:hover  {
+    background: #466f00;
 }
 
-.board-container:has(div[private="true"]){
-    border: 3px dashed mediumpurple;
+[data-private="true"] .board{
+    background-color: #c3fd78;
+}
+[data-private="true"] .column{
+    background-color: #b0ff48;
+}
+[data-private="true"] .toggle-board-button:hover{
+    background-color: transparent!important;
 }
 
 /*Scroll bar*/

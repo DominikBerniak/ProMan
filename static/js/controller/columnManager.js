@@ -45,7 +45,7 @@ export let columnManager = {
             deleteBoardButton.remove()
             let addColumnButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .add-column-container`)
             addColumnButton.remove();
-            let archiveBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .archive_board_button`)
+            let archiveBoardButton = document.querySelector(`.board-container[data-board-id="${boardId}"] .archive-board`)
             archiveBoardButton.remove()
         }
     }
