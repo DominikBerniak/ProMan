@@ -4,13 +4,14 @@ import {navbarManager} from "./controller/navbarManager.js";
 
 
 async function init() {
-    navbarManager.generateNavbar()
-    boardsManager.loadBoards();
-    boardsManager.addNewBoard();
-    userManager.registerUser();
-    userManager.loginUser()
-    userManager.logoutUser()
-    boardsManager.initRefreshPageButton()
+  navbarManager.generateNavbar()
+  boardsManager.loadBoards();
+  boardsManager.addNewBoard();
+  userManager.registerUser();
+  userManager.loginUser()
+  userManager.logoutUser()
+  boardsManager.initRefreshPageButton()
+  boardsManager.initArchivePageButton()
 }
 
 window.addEventListener('load', () => {

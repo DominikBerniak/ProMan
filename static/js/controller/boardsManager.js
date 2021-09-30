@@ -6,15 +6,18 @@ import {cardsManager} from "./cardsManager.js";
 import {socket} from "../socketHandler.js";
 
 export let boardsManager = {
+    showArchivedBoards: false,
     root: document.getElementById("root"),
     loadBoards: async function () {
+        boardsManager.root.innerHTML = '';
         const boards = await dataHandler.getBoards();
         for (let board of boards) {
-            if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")){
-                boardsManager.addBoardToDom(board, true);
-            }
-            else if (board["owner"] === null) {
-                boardsManager.addBoardToDom(board);
+            if (!board["is_archived"]) {
+                if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")) {
+                    boardsManager.addBoardToDom(board, true);
+                } else if (board["owner"] === null) {
+                    boardsManager.addBoardToDom(board);
+                }
             }
         }
     },
@@ -43,15 +46,62 @@ export let boardsManager = {
     },
     handleDeleteBoard: function (boardId) {
         domManager.displayConfirmModal("Are you sure you want to delete this board?")
+        let old_element = document.getElementById("confirmButton");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
         domManager.addEventListener('#confirmButton',
             'click',
             function () {
                 dataHandler.deleteBoard(boardId)
-                    .then(()=>{
-                        domManager.displayAlertModal("Board successfully deleted.");
+                    .then(response =>{
+                        if(response.status == 200)
+                            domManager.displayAlertModal("Board successfully deleted.");
+                             socket.connection.emit("delete board", boardId);
+                            $('#confirmModal').modal('hide')
                     })
-                console.log(boardId)
-                socket.connection.emit("delete board", boardId);
+                    domManager.displayAlertModal("Sorry , You can NOT delete this board");
+                    $('#confirmModal').modal('hide')
+            })
+    },
+    handleArchiveBoard: function (boardId) {
+        domManager.displayConfirmModal("Are you sure you want to archive this board?")
+        let old_element = document.getElementById("confirmButton");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
+        domManager.addEventListener('#confirmButton',
+            'click',
+            function () {
+                dataHandler.archiveBoard(boardId)
+                    .then(response => {
+                        if (response.status === 200){
+                            domManager.displayAlertModal("Board successfully archived.");
+                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                        }
+                        else {
+                            domManager.displayAlertModal("You are not allowed to archive this board.");
+                        }
+                    })
+                $('#confirmModal').modal('hide')
+            })
+    },
+    handleRestoreBoard: function (boardId) {
+        domManager.displayConfirmModal("Are you sure you want to restore this board?")
+        let old_element = document.getElementById("confirmButton");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
+        domManager.addEventListener('#confirmButton',
+            'click',
+            function () {
+                dataHandler.restoreBoard(boardId)
+                    .then(response => {
+                        if (response.status === 200){
+                            domManager.displayAlertModal("Board successfully restored.");
+                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                        }
+                        else {
+                            domManager.displayAlertModal("You are not allowed to restore this board.");
+                        }
+                    })
                 $('#confirmModal').modal('hide')
             })
     },
@@ -92,6 +142,12 @@ export let boardsManager = {
         refreshPageButton.addEventListener("click", ()=>{
             reloadBoards();
         })
+    },
+    initArchivePageButton: function (){
+        const refreshPageButton = document.getElementById("archived-boards-button");
+        refreshPageButton.addEventListener("click", ()=>{
+            toggleBoards()
+        })
     }
 };
 
@@ -131,15 +187,46 @@ export let changeTitleHandler = function (e) {
             dataHandler.renameBoard(e)
                 .then(() => {
                     socket.connection.emit("edit board", {"id": boardId, "title": input.value});
-                    // boardTitle.innerHTML = input.value;
                 });
         }
     });
 }
 
-function reloadBoards() {
+export function reloadBoards() {
     let root = document.getElementById("root")
     root.innerHTML = '';
-    boardsManager.loadBoards();
+    if (boardsManager.showArchivedBoards){
+        loadArchivedBoards()
+    } else {
+        boardsManager.loadBoards();
+    }
+}
+async function loadArchivedBoards(){
+    let root = document.getElementById("root")
+        root.innerHTML = '';
+        const boards = await dataHandler.getBoards();
+        for (let board of boards) {
+            if (board["is_archived"]) {
+                if (board["owner"] !== null && board["owner"] == localStorage.getItem("userId")) {
+                    boardsManager.addBoardToDom(board, true);
+                } else if (board["owner"] === null) {
+                    boardsManager.addBoardToDom(board);
+                }
+            }
+        }
+}
+
+
+function toggleBoards() {
+    if (!boardsManager.showArchivedBoards) {
+        boardsManager.showArchivedBoards = true
+        loadArchivedBoards()
+        document.getElementById("archived-boards-button").innerText = "Active boards"
+    }
+    else {
+        boardsManager.showArchivedBoards = false
+        boardsManager.loadBoards()
+        document.getElementById("archived-boards-button").innerText = "Archived boards"
+    }
 }
 

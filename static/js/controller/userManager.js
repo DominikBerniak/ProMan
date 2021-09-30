@@ -1,6 +1,6 @@
 import {domManager} from "../view/domManager.js";
 import {navbarManager} from "./navbarManager.js";
-import {boardsManager} from "./boardsManager.js";
+import {boardsManager, reloadBoards} from "./boardsManager.js";
 import {dataHandler} from "../data/dataHandler.js";
 import {changeTitleHandler} from "./boardsManager.js";
 import {
@@ -83,10 +83,10 @@ async function handleLogin(e) {
                 domManager.displayAlertModal("Login successful!")
                 document.getElementById("login-status").innerHTML = ""
                 const boards = await dataHandler.getBoards();
-                for (let board of boards) {
-                    domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
-                        "click", changeTitleHandler);
-                }
+                // for (let board of boards) {
+                //     domManager.addEventListener(`.board-title[data-board-id="${board.id}"]`,
+                //         "click", changeTitleHandler);
+                // }
                 document.querySelectorAll(".column-header").forEach(elem => {
                     elem.addEventListener("click", columnTitleEditDeleteHandler)
                 })
@@ -101,20 +101,21 @@ async function handleLogin(e) {
                         cardEditDeleteHandler
                     );
                 }
-                for (let board of document.querySelectorAll(".board")) {
-                    if (board.childElementCount !== 0) {
-                        let boardId = board.parentElement.getAttribute("data-board-id")
-                        let deleteBoardButton = deleteBoardButtonHandler(boardId)
-                        let addColumn = document.createElement("div")
-                        addColumn.classList.add("add-column-container")
-                        addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
-                        deleteBoardButton.after(addColumn)
-                        addColumn.querySelector("button").addEventListener("click", e => {
-                            addColumnHandler(boardId);
-                        })
-                    }
-                }
+                // for (let board of document.querySelectorAll(".board")) {
+                //     if (board.childElementCount !== 0) {
+                //         let boardId = board.parentElement.getAttribute("data-board-id")
+                //         let deleteBoardButton = deleteBoardButtonHandler(boardId)
+                //         let addColumn = document.createElement("div")
+                //         addColumn.classList.add("add-column-container")
+                //         addColumn.innerHTML = `<button class="add_column_button btn header-button">Add column</button>`
+                //         deleteBoardButton.after(addColumn)
+                //         addColumn.querySelector("button").addEventListener("click", e => {
+                //             addColumnHandler(boardId);
+                //         })
+                //     }
+                // }
                 navbarManager.generateNavbar()
+                reloadBoards()
                 break
             case 203:
                 domManager.displayAlertModal("Wrong data, please try again!")
@@ -160,6 +161,7 @@ async function handleLogout(e) {
 
 
         navbarManager.generateNavbar()
+        reloadBoards()
     }
 }
 

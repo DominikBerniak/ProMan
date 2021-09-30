@@ -8,6 +8,30 @@ def get_boards():
         """
     )
 
+def get_owner_by_board_id(board_id):
+    return data_manager.execute_select(
+        """
+        SELECT owner FROM boards
+        WHERE boards.id = %(board_id)s
+        ;
+        """
+        , {"board_id": board_id},False
+
+
+    )
+
+def get_owner_by_card_id(card_id):
+    return data_manager.execute_select(
+    """
+    SELECT boards.owner
+    FROM boards
+    JOIN cards ON boards.id = cards.board_id
+    WHERE cards.id = %(card_id)s
+    ;
+    """
+     , {"card_id": card_id}, False
+
+    )
 
 def get_cards_for_board(board_id):
     matching_cards = data_manager.execute_select(
@@ -248,4 +272,30 @@ def get_id_by_username(username):
         SELECT id 
         FROM users
         WHERE username='{username}'
-    """)
+    """
+                                       , None, False)
+
+
+def update_column_id(column_id, card_id):
+    data_manager.execute("""
+        UPDATE cards
+        SET column_id = %(column_id)s
+        WHERE id = %(card_id)s
+    """, {'column_id': column_id, 'card_id': card_id})
+
+
+def archive_board(board_id):
+    data_manager.execute("""
+        UPDATE boards
+        SET is_archived = true
+        WHERE id = %(board_id)s
+    """, {"board_id": board_id})
+
+
+def restore_board(board_id):
+    data_manager.execute("""
+        UPDATE boards
+        SET is_archived = false
+        WHERE id = %(board_id)s
+    """, {"board_id": board_id})
+

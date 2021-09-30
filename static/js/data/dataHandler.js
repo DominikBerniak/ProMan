@@ -19,19 +19,19 @@ export let dataHandler = {
         try {
             const formData = new FormData(form);
             let response = await apiPost(url, formData);
-            console.log(response.status);
-            switch (response.status){
+            switch (response.status) {
                 case 200:
                     let newBoard = {
                         "columns_ids": [1, 2, 3, 4],
                         "id": response.id,
                         "title": formData.get("board-name")
                     };
-                    if (formData.get("private")) {
-                        boardsManager.addBoardToDom(newBoard, true);
-                    }
-                    else {
-                        socket.connection.emit("new board", newBoard);
+                    if (!boardsManager.showArchivedBoards) {
+                        if (formData.get("private")) {
+                            boardsManager.addBoardToDom(newBoard, true);
+                        } else {
+                            socket.connection.emit("new board", newBoard);
+                        }
                     }
                     break;
                 case 203:
@@ -48,7 +48,7 @@ export let dataHandler = {
         try {
             const formData = new FormData(form);
             return await apiPut(url, formData)
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
     },
@@ -59,6 +59,22 @@ export let dataHandler = {
         } catch (error) {
             console.log(error);
         }
+    },
+    archiveBoard: async function (boardId) {
+      const url = `/api/boards/archive/${boardId}`;
+      try {
+          return apiGet(url);
+      } catch (error) {
+          console.log(error)
+      }
+    },
+    restoreBoard: async function (boardId) {
+      const url = `/api/boards/restore/${boardId}`;
+      try {
+          return apiGet(url);
+      } catch (error) {
+          console.log(error)
+      }
     },
     createNewCard: async function (cardTitle, boardId, columnId) {
         let url = `/api/boards/${boardId}/${columnId}/cards`;
@@ -82,6 +98,15 @@ export let dataHandler = {
         try {
             const data = {"title": title};
             return await apiPut(url, data, false);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    editCardsColumn: async function (cardId, columnId) {
+        const url = `/api/boards/columns/cards/${cardId}/status`
+        try {
+            const data = {'columnId': columnId}
+            return await apiPut(url, data, false)
         } catch (error) {
             console.log(error);
         }
