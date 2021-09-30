@@ -83,7 +83,7 @@ def login():
     if queires.check_if_email_exists(email) and data_manager.check_password(email, password):
         session["email"] = email
         session["username"] = username
-        return jsonify({"session": 200})
+        return jsonify({"status": 200})
     else:
         return jsonify(json_dictionary), 203
 

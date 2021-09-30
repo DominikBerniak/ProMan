@@ -19,16 +19,14 @@ export function htmlFactory(template) {
 }
 
 function boardBuilder(board, isPrivate) {
-
-    let output = `<div class="board-container rounded" data-board-id="${board.id}">`
-
+    let output = ``
     if (isPrivate){
-        output += `<div class="board-header border rounded p-2" private="true">`
+        output += `<div class="board-container rounded" data-board-id="${board.id}" data-private="true">`
+    } else {
+        output += `<div class="board-container rounded" data-board-id="${board.id}">`
     }
-    else {
-        output += `<div class="board-header border rounded p-2">`
-    }
-    output += `        <div class="board-title" data-board-id="${board.id}">${board.title}</div>
+    output += `     <div class="board-header border rounded p-2"> 
+                    <div class="board-title" data-board-id="${board.id}">${board.title}</div>
                     <button class="toggle-board-button" data-board-id="${board.id}">
                         <img class="icon" alt="arrow-down" src="./static/icons/caret-down-square.svg">
                     </button>
