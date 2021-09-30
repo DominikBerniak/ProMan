@@ -24,7 +24,7 @@ export let dataHandler = {
                     let newBoard = {
                         "columns_ids": [1, 2, 3, 4],
                         "id": response.id,
-                        "title": formData.get("board-name")
+                        "title": response.name
                     };
                     if (!boardsManager.showArchivedBoards) {
                         if (formData.get("private")) {

@@ -40,14 +40,14 @@ def get_columns_for_board(board_id: int):
 def add_new_board():
     if session.get("username"):
         json_dictionary = request.get_json()
-        board_name = json_dictionary["board-name"]
+        board_name = json_dictionary["board-name"].replace("<", "&lt;").replace(">", "&gt;")
         user_id = queires.get_id_by_username(session.get("username"))["id"]
         if "private" in json_dictionary.keys():
             board_id = queires.add_board_to_db(board_name, user_id)["id"]
             return jsonify({"status": 200, "id": board_id, "private": True})
         else:
             board_id = queires.add_board_to_db(board_name, None)["id"]
-            return jsonify({"status": 200, "id": board_id, "private": False})
+            return jsonify({"status": 200, "id": board_id, "private": False, "name": board_name})
     else:
         return jsonify({"status": 203})
 
@@ -278,8 +278,37 @@ def edit_board_broadcast(data):
 
 @socketio.on("delete board")
 def delete_board_broadcast(data):
-    print(data)
     emit("delete board response", data, broadcast=True)
+
+
+@socketio.on("new column")
+def new_column_broadcast(data):
+    emit("new column response", data, broadcast=True)
+
+
+@socketio.on("delete column")
+def new_column_broadcast(data):
+    emit("delete column response", data, broadcast=True)
+
+
+@socketio.on("edit column")
+def new_column_broadcast(data):
+    emit("edit column response", data, broadcast=True)
+
+
+@socketio.on("new card")
+def new_column_broadcast(data):
+    emit("new card response", data, broadcast=True)
+
+
+@socketio.on("delete card")
+def new_column_broadcast(data):
+    emit("delete card response", data, broadcast=True)
+
+
+@socketio.on("edit card")
+def new_column_broadcast(data):
+    emit("edit card response", data, broadcast=True)
 
 
 def main():

@@ -75,7 +75,7 @@ export let boardsManager = {
                     .then(response => {
                         if (response.status === 200){
                             domManager.displayAlertModal("Board successfully archived.");
-                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                            socket.connection.emit("delete board", boardId);
                         }
                         else {
                             domManager.displayAlertModal("You are not allowed to archive this board.");
@@ -96,7 +96,7 @@ export let boardsManager = {
                     .then(response => {
                         if (response.status === 200){
                             domManager.displayAlertModal("Board successfully restored.");
-                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                            socket.connection.emit("delete board", boardId);
                         }
                         else {
                             domManager.displayAlertModal("You are not allowed to restore this board.");
