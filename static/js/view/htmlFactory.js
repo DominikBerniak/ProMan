@@ -19,7 +19,7 @@ export function htmlFactory(template) {
 }
 
 function boardBuilder(board, isPrivate) {
-    let output = ``
+    let output = "";
     if (isPrivate){
         output += `<div class="board-container rounded" data-board-id="${board.id}" data-private="true">`
     } else {

@@ -3,6 +3,7 @@ import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import {columnManager} from "./columnManager.js";
 import {cardsManager} from "./cardsManager.js";
+import {socket} from "../socketHandler.js";
 
 export let boardsManager = {
     showArchivedBoards: false,
@@ -55,7 +56,7 @@ export let boardsManager = {
                     .then(response =>{
                         if(response.status == 200)
                             domManager.displayAlertModal("Board successfully deleted.");
-                             document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                             socket.connection.emit("delete board", boardId);
                             $('#confirmModal').modal('hide')
                     })
                     domManager.displayAlertModal("Sorry , You can NOT delete this board");
@@ -74,7 +75,7 @@ export let boardsManager = {
                     .then(response => {
                         if (response.status === 200){
                             domManager.displayAlertModal("Board successfully archived.");
-                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                            socket.connection.emit("delete board", boardId);
                         }
                         else {
                             domManager.displayAlertModal("You are not allowed to archive this board.");
@@ -95,7 +96,7 @@ export let boardsManager = {
                     .then(response => {
                         if (response.status === 200){
                             domManager.displayAlertModal("Board successfully restored.");
-                            document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                            socket.connection.emit("delete board", boardId);
                         }
                         else {
                             domManager.displayAlertModal("You are not allowed to restore this board.");
@@ -185,7 +186,7 @@ export let changeTitleHandler = function (e) {
         } else {
             dataHandler.renameBoard(e)
                 .then(() => {
-                    boardTitle.innerHTML = input.value;
+                    socket.connection.emit("edit board", {"id": boardId, "title": input.value});
                 });
         }
     });

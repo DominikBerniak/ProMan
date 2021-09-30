@@ -15,6 +15,7 @@ body {
 
 #right-site {
     display: flex;
+    align-items: center;
 }
 
 .board-container {

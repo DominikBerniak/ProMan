@@ -2,6 +2,7 @@ import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import {columnManager} from "./columnManager.js";
+import {socket} from "../socketHandler.js";
 
 export let cardsManager = {
     loadCards: async function (boardId) {
@@ -60,8 +61,9 @@ export let addNewCardHandler = function (e, boardId, columnId) {
         } else {
             dataHandler.createNewCard(input.value, boardId, columnId)
                 .then(response => {
-                    let newCard = addNewCardToDom(response["cardId"], input, button);
-                    newCard.addEventListener("click", cardEditDeleteHandler)
+                    let data = {"boardId": boardId, "columnId": columnId, "cardId": response["cardId"], "name": input.value}
+                    socket.connection.emit("new card", data);
+                    handleDraggableCards();
                 });
         }
     })
@@ -81,7 +83,7 @@ export function cardEditDeleteHandler() {
     deleteCardButton.addEventListener("click", () => {
         dataHandler.deleteCard(cardId)
             .then(() => {
-                this.remove();
+                socket.connection.emit("delete card", cardId);
             })
     });
     let unfocused = false;
@@ -93,7 +95,8 @@ export function cardEditDeleteHandler() {
         }else{
             dataHandler.editCard(cardId, input.value)
                 .then(() => {
-                    this.innerHTML = input.value;
+                    let data = {"cardId": cardId, "name": input.value};
+                    socket.connection.emit("edit card", data);
                 })
         }
     })
@@ -104,16 +107,17 @@ export function cardEditDeleteHandler() {
         }
     })
 }
-function addNewCardToDom(cardId, input, button){
+export function addNewCardToDom(boardId, columnId, cardId, title){
     const newCard = document.createElement("div");
     newCard.classList.add("card", "p-2", "mt-1", "mb-1");
     let dataAttribute = document.createAttribute("data-card-id");
     dataAttribute.value = cardId;
     newCard.setAttributeNode(dataAttribute);
     newCard.draggable = true
-    newCard.innerHTML = `${input.value}`
+    newCard.innerHTML = title
     newCard.addEventListener('dragstart', handleDragStart)
     newCard.addEventListener('dragend', handleDragEnd)
+    let button = document.querySelector(`.board[data-board-id="${boardId}"] .column[data-column-id="${columnId}"] button`);
     button.before(newCard);
     button.innerHTML = "New card";
     button.classList.remove("clear-button");
@@ -141,7 +145,7 @@ function getEditCardForm(oldCardMessage){
 }
 
 
-function handleDraggableCards() {
+export function handleDraggableCards() {
     const draggableElements = document.querySelectorAll('.card')
     draggableElements.forEach((element) => {
         element.addEventListener('dragstart', handleDragStart)
