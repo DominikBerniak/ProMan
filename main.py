@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify, session
+from flask_socketio import SocketIO, send, emit
 from dotenv import load_dotenv
 import data_manager
 import util
@@ -11,6 +12,7 @@ mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
 app.secret_key = "\xfd\x1b\xc9]0\x17\x1a\xd1\xe4\xf4#a\xbd/\xeb"
+socketio = SocketIO(app)
 
 
 @app.route("/")
@@ -86,7 +88,7 @@ def login():
     if queires.check_if_email_exists(email) and data_manager.check_password(email, password):
         session["email"] = email
         session["username"] = username
-        return session, 200
+        return jsonify({"status": 200})
     else:
         return jsonify(json_dictionary), 203
 
@@ -197,8 +199,25 @@ def delete_column(board_id, column_id):
     return jsonify({"status": 200})
 
 
+@socketio.on("new board")
+def new_board_broadcast(data):
+    emit("new board response", data, broadcast=True)
+
+
+@socketio.on("edit board")
+def edit_board_broadcast(data):
+    emit("edit board response", data, broadcast=True)
+
+
+@socketio.on("delete board")
+def delete_board_broadcast(data):
+    print(data)
+    emit("delete board response", data, broadcast=True)
+
+
 def main():
-    app.run(debug=True)
+    socketio.run(app)
+    # app.run()
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))

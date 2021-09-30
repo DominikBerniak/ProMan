@@ -3,6 +3,7 @@ import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import {columnManager} from "./columnManager.js";
 import {cardsManager} from "./cardsManager.js";
+import {socket} from "../socketHandler.js";
 
 export let boardsManager = {
     root: document.getElementById("root"),
@@ -49,7 +50,8 @@ export let boardsManager = {
                     .then(()=>{
                         domManager.displayAlertModal("Board successfully deleted.");
                     })
-                document.querySelector(`#root .board-container[data-board-id="${boardId}"]`).remove();
+                console.log(boardId)
+                socket.connection.emit("delete board", boardId);
                 $('#confirmModal').modal('hide')
             })
     },
@@ -128,7 +130,8 @@ export let changeTitleHandler = function (e) {
         } else {
             dataHandler.renameBoard(e)
                 .then(() => {
-                    boardTitle.innerHTML = input.value;
+                    socket.connection.emit("edit board", {"id": boardId, "title": input.value});
+                    // boardTitle.innerHTML = input.value;
                 });
         }
     });

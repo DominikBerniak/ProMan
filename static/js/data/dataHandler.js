@@ -1,5 +1,6 @@
 import {boardsManager} from "../controller/boardsManager.js";
 import {domManager} from "../view/domManager.js";
+import {socket} from "../socketHandler.js";
 
 export let dataHandler = {
     getBoards: async function () {
@@ -30,7 +31,7 @@ export let dataHandler = {
                         boardsManager.addBoardToDom(newBoard, true);
                     }
                     else {
-                        boardsManager.addBoardToDom(newBoard);
+                        socket.connection.emit("new board", newBoard);
                     }
                     break;
                 case 203:

@@ -15,6 +15,7 @@ body {
 
 #right-site {
     display: flex;
+    align-items: center;
 }
 
 .board-container {
@@ -178,6 +179,14 @@ body {
 }
 [private="true"]{
     background-color: lavender;
+    /*background-color: #ffccff;*/
+}
+[private="true"] .board-header{
+    background-color: #bebeff;
+}
+
+.board-container:has(div[private="true"]){
+    border: 3px dashed mediumpurple;
 }
 
 /*Scroll bar*/
